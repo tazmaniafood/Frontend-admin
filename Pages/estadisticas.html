@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../IMG/Logo-taz.png?v=1" type="image/png">
+<title>Estadísticas · Admin TAZ</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../Styles/base.css?v=1">
+<link rel="stylesheet" href="../Styles/estadisticas.css?v=1">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="../index.html" aria-label="Ir al panel" title="Ir al panel"><img src="../IMG/Logo-taz-trans.png?v=1" alt="TAZ Fast Food"></a>
+  <nav aria-label="Secciones del panel">
+    <a href="../index.html">🏠 Panel</a>
+    <a href="cocina.html">👨‍🍳 Cocina</a>
+    <a href="delivery.html">🛵 Delivery</a>
+    <a href="estadisticas.html" class="on" aria-current="page">📊 Estadísticas</a>
+  </nav>
+  <div class="admin"><span class="tag">ADMIN</span><time id="reloj"></time></div>
+</header>
+<main>
+  <div class="pagehead">
+    <div><h1>📊 Estadísticas</h1><p>Resumen del día de hoy.</p></div>
+    <span class="demo">⚠️ Datos de ejemplo</span>
+  </div>
+  <div class="kpis" id="kpis"></div>
+  <div class="graficas">
+    <section class="panel g-horas">
+      <h2>Ventas por hora</h2>
+      <p class="sub">Dólares vendidos en cada hora del día</p>
+      <div class="barras" id="horas" role="img" aria-label="Gráfica de ventas por hora"></div>
+    </section>
+    <section class="panel g-top">
+      <h2>Lo más vendido</h2>
+      <p class="sub">Unidades vendidas hoy</p>
+      <ol class="top5" id="top"></ol>
+    </section>
+  </div>
+  <details class="panel tabla">
+    <summary>Ver ventas por hora en tabla</summary>
+    <table id="tabla"><thead><tr><th>Hora</th><th>Pedidos</th><th>Ventas</th></tr></thead><tbody></tbody></table>
+  </details>
+</main>
+<footer>
+  <span class="stick">Panel de administración</span>
+  <p class="fn">TAZ Fast Food</p>
+  <p>Hecho en Colombia · Servido en San José, California</p>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+<script src="../JS/data.js?v=1"></script>
+<script src="../JS/estadisticas.js?v=1"></script>
+</body>
+</html>

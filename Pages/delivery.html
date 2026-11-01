@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../IMG/Logo-taz.png?v=1" type="image/png">
+<title>Delivery · Admin TAZ</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../Styles/base.css?v=1">
+<link rel="stylesheet" href="../Styles/delivery.css?v=1">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="../index.html" aria-label="Ir al panel" title="Ir al panel"><img src="../IMG/Logo-taz-trans.png?v=1" alt="TAZ Fast Food"></a>
+  <nav aria-label="Secciones del panel">
+    <a href="../index.html">🏠 Panel</a>
+    <a href="cocina.html">👨‍🍳 Cocina</a>
+    <a href="delivery.html" class="on" aria-current="page">🛵 Delivery</a>
+    <a href="estadisticas.html">📊 Estadísticas</a>
+  </nav>
+  <div class="admin"><span class="tag">ADMIN</span><time id="reloj"></time></div>
+</header>
+<main>
+  <div class="pagehead">
+    <div><h1>🛵 Delivery</h1><p>Asigna un repartidor, marca la salida y la entrega.</p></div>
+    <button class="btn sm" id="reset" type="button">↺ Reiniciar pedidos de prueba</button>
+  </div>
+  <div class="filtros" role="tablist" aria-label="Filtrar pedidos">
+    <button class="f on" data-f="listo" role="tab" aria-selected="true">✅ Por salir <b></b></button>
+    <button class="f" data-f="camino" role="tab" aria-selected="false">🛵 En camino <b></b></button>
+    <button class="f" data-f="entregado" role="tab" aria-selected="false">🏁 Entregados <b></b></button>
+  </div>
+  <div class="entregas" id="entregas"></div>
+</main>
+<footer>
+  <span class="stick">Panel de administración</span>
+  <p class="fn">TAZ Fast Food</p>
+  <p>Hecho en Colombia · Servido en San José, California</p>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+<script src="../JS/data.js?v=1"></script>
+<script src="../JS/delivery.js?v=1"></script>
+</body>
+</html>

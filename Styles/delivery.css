@@ -1,0 +1,26 @@
+/* ============ DELIVERY ============ */
+.filtros{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.f{display:inline-flex;align-items:center;gap:8px;background:var(--card);color:var(--cream);border:3px solid var(--ink);border-radius:99px;box-shadow:0 3px 0 var(--ink);padding:5px 14px;font:400 18px/1.4 var(--hd);letter-spacing:.5px;transition:background .12s}
+.f b{min-width:26px;padding:0 6px;text-align:center;background:var(--ink);color:var(--cream);border-radius:99px;font:800 13px/1.6 var(--bd)}
+.f:hover{background:var(--card2)}
+.f.on{background:var(--yel);color:var(--ink)}
+.entregas{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:18px}
+.entrega{display:grid;gap:10px;padding:14px 16px;border-left:10px solid var(--c);animation:entra .25s ease-out}
+@keyframes entra{from{opacity:0;transform:translateY(6px)}}
+.cab{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.cab>b:first-child{font:400 26px/1 var(--hd);color:var(--yel)}
+.cab .estado{background:var(--cream);color:var(--ink)}
+.cab .t{font-size:12.5px;color:var(--mut);font-weight:800}
+.cab .total{margin-left:auto;font:400 22px/1 var(--hd);color:var(--cream)}
+.cliente p{margin:2px 0;font-size:14px}
+.cliente .nom{font-size:17px;font-weight:900}
+.cliente a{color:var(--cream);text-decoration-color:#ffffff55;text-underline-offset:3px}
+.cliente a:hover{color:var(--yel)}
+.items{margin:0;padding:8px 12px;list-style:none;background:var(--card2);border:2px solid var(--ink);border-radius:12px;font-size:14px}
+.acc{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.acc .btn{margin-left:auto}
+.acc .btn:disabled{opacity:.5;cursor:not-allowed}
+.rep{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--mut)}
+.rep select{background:var(--cream);color:var(--ink);border:3px solid var(--ink);border-radius:10px;padding:4px 8px;font-weight:800}
+.acc .chip{color:var(--cream);border-color:var(--cream)}
+@media(max-width:420px){.entregas{grid-template-columns:1fr}.acc .btn{margin-left:0;flex:1}}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="icon" href="IMG/Logo-taz.png?v=1" type="image/png">
+<title>Panel · Admin TAZ</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="Styles/base.css?v=1">
+<link rel="stylesheet" href="Styles/index.css?v=1">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html" aria-label="Ir al panel" title="Ir al panel"><img src="IMG/Logo-taz-trans.png?v=1" alt="TAZ Fast Food"></a>
+  <nav aria-label="Secciones del panel">
+    <a href="index.html" class="on" aria-current="page">🏠 Panel</a>
+    <a href="Pages/cocina.html">👨‍🍳 Cocina</a>
+    <a href="Pages/delivery.html">🛵 Delivery</a>
+    <a href="Pages/estadisticas.html">📊 Estadísticas</a>
+  </nav>
+  <div class="admin"><span class="tag">ADMIN</span><time id="reloj"></time></div>
+</header>
+<main>
+  <section class="hola">
+    <div>
+      <span class="sticker">¡Buen turno!</span>
+      <h1>Panel de TAZ</h1>
+      <p>Escoge a dónde vas: la cocina, los domicilios o los números del día.</p>
+    </div>
+    <div class="resumen" id="resumen" aria-label="Resumen de pedidos"></div>
+  </section>
+
+  <div class="modulos">
+    <a class="mod mod-cocina" href="Pages/cocina.html">
+      <span class="ico">👨‍🍳</span>
+      <span class="tx"><h2>Cocina</h2><small>Pedidos nuevos y en preparación. Márcalos listos cuando salgan.</small></span>
+      <b class="cuenta" id="cCocina">0</b>
+      <span class="ir">Entrar ›</span>
+    </a>
+    <a class="mod mod-delivery" href="Pages/delivery.html">
+      <span class="ico">🛵</span>
+      <span class="tx"><h2>Delivery</h2><small>Pedidos listos para salir, repartidor asignado y entregas.</small></span>
+      <b class="cuenta" id="cDelivery">0</b>
+      <span class="ir">Entrar ›</span>
+    </a>
+    <a class="mod mod-stats" href="Pages/estadisticas.html">
+      <span class="ico">📊</span>
+      <span class="tx"><h2>Estadísticas</h2><small>Ventas del día, pedidos por hora y lo más vendido.</small></span>
+      <b class="cuenta" id="cVentas">$0</b>
+      <span class="ir">Entrar ›</span>
+    </a>
+  </div>
+
+  <p class="demo">⚠️ Estos son pedidos de prueba guardados en este navegador, mientras se conecta el sistema real.</p>
+</main>
+<footer>
+  <span class="stick">Panel de administración</span>
+  <p class="fn">TAZ Fast Food</p>
+  <p>Hecho en Colombia · Servido en San José, California</p>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+<script src="JS/data.js?v=1"></script>
+<script src="JS/index.js?v=1"></script>
+</body>
+</html>
