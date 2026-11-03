@@ -1,5 +1,6 @@
-/* Sesión del panel admin, con dos usuarios:
-   - cocina:     ve Estadísticas y Cocina
+/* Sesión del panel admin, con tres usuarios:
+   - admin:      ve solo Estadísticas
+   - cocina:     ve solo Cocina
    - repartidor: ve solo Delivery
    PROVISIONAL: usuarios y contraseñas fijos en el navegador, solo para pruebas.
    No es seguridad real (cualquiera puede leer este archivo). Cuando exista el
@@ -7,7 +8,8 @@
 (()=>{
 const KEY='taz-admin-sesion';
 const USUARIOS={
-  cocina:    {clave:'Cocina2026*', rol:'COCINA',     inicio:'estadisticas.html', paginas:['estadisticas.html','cocina.html']},
+  admin:     {clave:'Admin2026*', rol:'ADMIN',      inicio:'estadisticas.html', paginas:['estadisticas.html']},
+  cocina:    {clave:'Cocina2026*', rol:'COCINA',     inicio:'cocina.html',       paginas:['cocina.html']},
   repartidor:{clave:'Reparto2026*',rol:'REPARTIDOR', inicio:'delivery.html',     paginas:['delivery.html']}
 };
 const TODAS=['estadisticas.html','cocina.html','delivery.html'];
