@@ -1,12 +1,16 @@
 /* Delivery: solo los pedidos listos por entregar.
-   Para entregar se arrastra el botón verde hasta el final ("Desliza para entregar")
-   y se abre la cámara del celular para tomar la foto de la entrega. Sin foto no
-   se entrega: si se cancela la cámara, el botón vuelve al inicio.
-   Con teclado: enfocar el botón y presionar Enter o Espacio.
-   La foto se guarda reducida en el pedido (o.foto, JPEG en base64) junto con la
-   hora de entrega (o.entregado). Cuando exista el backend, hay que subirla a la API. */
+   1. El repartidor desliza el botón verde hasta el final.
+   2. Se abre la cámara DENTRO del navegador (pide permiso la primera vez).
+   3. Toma la foto, puede repetirla, y al "Enviar" se sube al servidor:
+        POST /api/pedidos/{numero}/entrega   (cuerpo: la foto en JPEG, Content-Type image/jpeg)
+      El servidor la guarda en la base de datos y marca el pedido como entregado.
+   Si no hay conexión o el servidor falla, la foto queda guardada en el celular como
+   "pendiente de enviar" y se reintenta sola (cada 30 s y al volver la conexión).
+   Sin foto no se entrega. Con teclado: enfocar el botón y presionar Enter o Espacio. */
 (()=>{
+const API='/api'; // Nginx manda /api/ al backend (Server-TAZ)
 let d=TAZ.load();
+
 function tarjeta(o){
   return `<article class="entrega panel" data-id="${o.id}" style="--c:${TAZ.ESTADOS[o.estado].c}">
     <div class="cab"><b>#${o.id}</b><span class="t">${TAZ.hace(o.creado)}</span><b class="total">${TAZ.fmt(o.total)}</b></div>
@@ -27,79 +31,118 @@ function pintar(){
   const lista=d.filter(o=>o.estado==='listo').sort((a,b)=>a.creado-b.creado);
   const n=document.getElementById('n');
   if(n)n.textContent=lista.length===1?'1 pedido por entregar':`${lista.length} pedidos por entregar`;
+  const p=document.getElementById('pend'),np=d.filter(o=>o.fotoPendiente).length;
+  if(p)p.textContent=np?`⏳ ${np} foto${np>1?'s':''} sin enviar`:'';
   document.getElementById('entregas').innerHTML=lista.length?lista.map(tarjeta).join(''):'<p class="empty">No hay pedidos por entregar 🎉</p>';
 }
-
-/* ---- Cámara: un input de archivo con capture abre la cámara normal del celular ---- */
-const cam=document.createElement('input');
-cam.type='file';cam.accept='image/*';cam.setAttribute('capture','environment');cam.hidden=true;
-document.body.appendChild(cam);
-let pendiente=null; // {el, o}
-
 function volver(el){
+  if(!el||!el.isConnected)return;
   el.classList.remove('hecho','foto');el.style.setProperty('--x','0px');el.style.setProperty('--p',0);
   el.querySelector('.txt').textContent='Desliza para entregar';el.querySelector('.perilla').textContent='➜';
 }
-function pedirFoto(el){
-  const o=d.find(x=>x.id===+el.closest('.entrega').dataset.id);if(!o||o.estado!=='listo')return volver(el);
-  pendiente={el,o};
-  el.classList.add('foto');el.querySelector('.txt').textContent='Toma la foto de la entrega';el.querySelector('.perilla').textContent='📷';
-  cam.value='';
-  cam.click(); // debe llamarse en el mismo gesto del usuario (al soltar o con Enter)
-}
-function cancelar(){
-  if(!pendiente)return;const {el}=pendiente;pendiente=null;volver(el);
-  TAZ.aviso('Sin foto no se puede entregar');
-}
-cam.addEventListener('cancel',cancelar);
-/* Navegadores sin evento "cancel": al volver a la página sin foto, se cancela */
-window.addEventListener('focus',()=>setTimeout(()=>{if(pendiente&&!cam.files.length&&!pendiente.leyendo)cancelar()},800));
+function guardar(){try{localStorage.setItem('taz-admin',JSON.stringify(d));return true}catch(e){return false}}
 
-cam.addEventListener('change',async()=>{
-  const f=cam.files&&cam.files[0];if(!pendiente)return;
-  if(!f)return cancelar();
-  pendiente.leyendo=true;
-  const {el,o}=pendiente;
-  el.querySelector('.txt').textContent='Guardando foto…';
-  let foto;
-  try{foto=await reducir(f,800,0.6)}catch(e){pendiente=null;volver(el);return TAZ.aviso('No se pudo leer la foto, intenta de nuevo')}
-  pendiente=null;
-  o.estado='entregado';o.entregado=Date.now();o.foto=foto;
-  if(!guardar()){o.estado='listo';delete o.entregado;delete o.foto;volver(el);return TAZ.aviso('No hay espacio para guardar la foto')}
+/* =================== Cámara en el navegador =================== */
+const dlg=document.getElementById('camara'),video=document.getElementById('cam-video'),
+      img=document.getElementById('cam-foto'),msg=document.getElementById('cam-msg');
+let stream=null,actual=null,blob=null; // actual = {el, o}
+
+function apagar(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}video.srcObject=null}
+async function encender(){
+  apagar();dlg.classList.add('sin');msg.textContent='Abriendo cámara…';
+  if(!window.isSecureContext||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    msg.textContent='Este navegador no permite usar la cámara aquí. Abre el panel con https:// en Chrome o Safari.';return;
+  }
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}}});
+    if(!dlg.open)return apagar();
+    video.srcObject=stream;await video.play().catch(()=>{});
+    msg.textContent='';dlg.classList.remove('sin');
+  }catch(e){
+    msg.textContent=e&&e.name==='NotAllowedError'
+      ?'No diste permiso para la cámara. Toca el candado 🔒 junto a la dirección, permite la cámara y vuelve a intentar.'
+      :e&&(e.name==='NotFoundError'||e.name==='OverconstrainedError')
+      ?'No se encontró una cámara en este dispositivo.'
+      :'No se pudo abrir la cámara. Cierra otras apps que la estén usando y vuelve a intentar.';
+  }
+}
+function abrirCamara(el){
+  const o=d.find(x=>x.id===+el.closest('.entrega').dataset.id);if(!o||o.estado!=='listo')return volver(el);
+  actual={el,o};blob=null;
+  el.classList.add('foto');el.querySelector('.txt').textContent='Toma la foto de la entrega';el.querySelector('.perilla').textContent='📷';
+  document.getElementById('cam-ped').textContent='#'+o.id;
+  dlg.classList.remove('tomada','enviando');img.removeAttribute('src');
+  dlg.showModal();encender();
+}
+function cerrarCamara(cancelado){
+  apagar();if(dlg.open)dlg.close();
+  if(cancelado&&actual){volver(actual.el);TAZ.aviso('Sin foto no se puede entregar')}
+  actual=null;blob=null;
+}
+function tomar(){
+  if(!stream||!video.videoWidth)return;
+  const max=1280,s=Math.min(1,max/Math.max(video.videoWidth,video.videoHeight));
+  const c=document.createElement('canvas');c.width=Math.round(video.videoWidth*s);c.height=Math.round(video.videoHeight*s);
+  c.getContext('2d').drawImage(video,0,0,c.width,c.height);
+  c.toBlob(b=>{
+    if(!b)return;blob=b;img.src=URL.createObjectURL(b);
+    dlg.classList.add('tomada');apagar(); // la cámara se apaga mientras se revisa la foto
+    if(navigator.vibrate)try{navigator.vibrate(20)}catch(e){}
+  },'image/jpeg',0.7);
+}
+async function enviar(){
+  if(!actual||!blob)return;
+  const {el,o}=actual;dlg.classList.add('enviando');msg.textContent='Enviando foto…';
+  const ok=await subir(o.id,blob);
+  o.estado='entregado';o.entregado=Date.now();
+  if(ok){delete o.foto;delete o.fotoPendiente}
+  else{o.foto=await aTexto(blob);o.fotoPendiente=true}
+  if(!guardar()){ // sin espacio en el celular: no se pierde la entrega, pero avisa
+    delete o.foto;guardar();TAZ.aviso('⚠️ No hay espacio para guardar la foto en el celular');
+  }
+  msg.textContent='';cerrarCamara(false);
   el.classList.remove('foto');el.classList.add('hecho');
   el.querySelector('.txt').textContent='¡Entregado!';el.querySelector('.perilla').textContent='✓';
-  const acc=el.closest('.acc');acc.insertAdjacentHTML('afterbegin',`<img class="prueba" src="${foto}" alt="Foto de la entrega del pedido #${o.id}">`);
   if(navigator.vibrate)try{navigator.vibrate(30)}catch(e){}
-  setTimeout(()=>{pintar();TAZ.aviso(`Pedido #${o.id}: Entregado 📷`)},1200);
+  setTimeout(()=>{pintar();TAZ.aviso(ok?`Pedido #${o.id}: entregado y foto enviada ✅`:`Pedido #${o.id}: entregado. La foto se enviará cuando haya conexión ⏳`)},900);
+}
+dlg.addEventListener('click',e=>{
+  const b=e.target.closest('[data-cam]');if(!b)return;
+  ({cerrar:()=>cerrarCamara(true),tomar,repetir:()=>{blob=null;dlg.classList.remove('tomada');encender()},enviar})[b.dataset.cam]();
 });
-/* Guarda los pedidos; si no cabe, borra las fotos más viejas y reintenta */
-function guardar(){
-  const ok=()=>{try{localStorage.setItem('taz-admin',JSON.stringify(d));return true}catch(e){return false}};
-  if(ok())return true;
-  const conFoto=d.filter(x=>x.foto&&x.estado==='entregado').sort((a,b)=>(a.entregado||0)-(b.entregado||0));
-  while(conFoto.length>1){delete conFoto.shift().foto;if(ok())return true}
-  return false;
-}
-/* Reduce la foto (lado mayor = max px) y la pasa a JPEG para que ocupe poco */
-function reducir(file,max,q){
-  return new Promise((res,rej)=>{
-    const url=URL.createObjectURL(file),img=new Image();
-    img.onload=()=>{
-      const s=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));
-      const c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*s);c.height=Math.round(img.naturalHeight*s);
-      c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);
-      res(c.toDataURL('image/jpeg',q));
-    };
-    img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error('imagen'))};
-    img.src=url;
-  });
-}
+dlg.addEventListener('cancel',e=>{e.preventDefault();cerrarCamara(true)}); // tecla Esc
+document.addEventListener('visibilitychange',()=>{ // al salir de la app se apaga la cámara
+  if(!dlg.open)return;
+  if(document.hidden)apagar();else if(!dlg.classList.contains('tomada'))encender();
+});
 
-/* ---- Deslizar ---- */
+/* =================== Envío al servidor =================== */
+async function subir(id,b){
+  const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),20000);
+  try{
+    const r=await fetch(`${API}/pedidos/${encodeURIComponent(id)}/entrega`,{method:'POST',headers:{'Content-Type':'image/jpeg'},body:b,signal:ctl.signal,credentials:'same-origin'});
+    return r.ok;
+  }catch(e){return false}finally{clearTimeout(t)}
+}
+const aTexto=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.onerror=()=>r(null);f.readAsDataURL(b)});
+const aBlob=async u=>(await fetch(u)).blob();
+let reintentando=false;
+async function reintentar(){
+  if(reintentando||!navigator.onLine)return;reintentando=true;
+  try{
+    for(const o of d.filter(x=>x.fotoPendiente&&x.foto)){
+      if(!(await subir(o.id,await aBlob(o.foto))))break;
+      delete o.foto;delete o.fotoPendiente;guardar();pintar();TAZ.aviso(`Foto del pedido #${o.id} enviada ✅`);
+    }
+  }finally{reintentando=false}
+}
+window.addEventListener('online',reintentar);
+
+/* =================== Deslizar =================== */
 const max=el=>el.clientWidth-el.querySelector('.perilla').offsetWidth-8;
 document.addEventListener('keydown',e=>{
   const el=e.target.closest&&e.target.closest('.desliza');
-  if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();if(!el.matches('.hecho,.foto')){el.style.setProperty('--x',max(el)+'px');el.style.setProperty('--p',1);pedirFoto(el)}}
+  if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();if(!el.matches('.hecho,.foto')){el.style.setProperty('--x',max(el)+'px');el.style.setProperty('--p',1);abrirCamara(el)}}
 });
 let arr=null;
 document.addEventListener('pointerdown',e=>{
@@ -117,11 +160,12 @@ function soltar(e){
   if(!arr||e.pointerId!==arr.id)return;
   const {el}=arr;arr=null;el.classList.remove('arrastrando');
   const x=parseFloat(el.style.getPropertyValue('--x'))||0;
-  if(e.type==='pointerup'&&x>=max(el)*0.85){el.style.setProperty('--x',max(el)+'px');el.style.setProperty('--p',1);pedirFoto(el)}
+  if(e.type==='pointerup'&&x>=max(el)*0.85){el.style.setProperty('--x',max(el)+'px');el.style.setProperty('--p',1);abrirCamara(el)}
   else volver(el);
 }
 document.addEventListener('pointerup',soltar);
 document.addEventListener('pointercancel',soltar);
-pintar();
-setInterval(()=>{if(!pendiente&&!arr){d=TAZ.load();pintar()}},30000);
+
+pintar();reintentar();
+setInterval(()=>{if(!actual&&!arr){d=TAZ.load();pintar();reintentar()}},30000);
 })();

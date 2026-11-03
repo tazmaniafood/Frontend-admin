@@ -28,6 +28,30 @@
 @media(max-width:420px){.entregas{grid-template-columns:1fr}}
 .desliza.foto{background:#087f08}
 .desliza.foto .txt{animation:none;-webkit-text-fill-color:#fff;opacity:1;padding:0 calc(var(--h) - 6px) 0 0}
-.acc .prueba{width:58px;height:58px;flex:none;object-fit:cover;border:3px solid var(--cream);border-radius:12px;animation:entra .25s ease-out}
 .pagehead .cuenta{display:inline-block;margin-left:4px;background:var(--yel);color:var(--ink);border-radius:99px;padding:0 10px;font-weight:900}
 .pagehead .cuenta:empty{display:none}
+
+/* ---- Cámara en el navegador ---- */
+.camara{width:min(560px,calc(100% - 24px));max-height:calc(100dvh - 24px);padding:0;background:var(--card);color:var(--cream);border:3px solid var(--ink);border-radius:20px;box-shadow:6px 6px 0 var(--ink);overflow:hidden}
+.camara::backdrop{background:#000c}
+.camara[open]{display:flex;flex-direction:column}
+.cam-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:var(--red);border-bottom:3px solid var(--ink)}
+.cam-top h2{font-size:22px;color:var(--cream)}
+.cam-x{width:38px;height:38px;flex:none;background:var(--ink);color:var(--cream);border:2px solid var(--cream);border-radius:50%;font-weight:900}
+.cam-vista{position:relative;flex:1;min-height:240px;background:#000;display:grid;place-items:center}
+.cam-vista video,.cam-vista img{display:block;width:100%;max-height:calc(100dvh - 190px);object-fit:contain}
+.cam-vista img{display:none}
+.cam-msg{position:absolute;inset:auto 14px 14px;margin:0;padding:10px 14px;background:#000b;border-radius:12px;text-align:center;font-weight:800}
+.cam-msg:empty{display:none}
+.cam-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:14px;min-height:96px}
+.cam-disparo{width:68px;height:68px;border-radius:50%;background:#fff;border:5px solid var(--card);box-shadow:0 0 0 4px #fff}
+.cam-disparo:active{transform:scale(.92)}
+.cam-bar .btn{min-height:46px;font-size:16px}
+.camara [data-cam=repetir],.camara [data-cam=enviar]{display:none}
+.camara.tomada video,.camara.tomada [data-cam=tomar]{display:none}
+.camara.tomada img,.camara.tomada [data-cam=repetir],.camara.tomada [data-cam=enviar]{display:inline-flex}
+.camara.tomada img{display:block}
+.camara.sin [data-cam=tomar]{opacity:.35;pointer-events:none}
+.camara.enviando .cam-bar{opacity:.6;pointer-events:none}
+.pendientes{display:inline-block;margin-left:4px;background:#ffc93333;color:var(--yel);border:2px dashed var(--yel);border-radius:99px;padding:0 10px;font-weight:900}
+.pendientes:empty{display:none}
