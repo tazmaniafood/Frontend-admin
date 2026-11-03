@@ -1,8 +1,8 @@
 /* ============ COCINA: tablero de pedidos ============ */
-.tablero{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
+.tablero{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:start}
 .col{background:var(--card);border:3px solid var(--ink);border-radius:18px;box-shadow:5px 5px 0 var(--ink);overflow:hidden}
 .col h2{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;font-size:24px;color:var(--ink);background:var(--c);border-bottom:3px solid var(--ink)}
-.col[data-estado="nuevo"]{--c:#7fb2ee}.col[data-estado="prep"]{--c:#f7941d}.col[data-estado="listo"]{--c:#5fc27a}
+.col[data-estado="nuevo"]{--c:#7fb2ee}.col[data-estado="listo"]{--c:#5fc27a}
 .col h2 .n{min-width:34px;padding:0 8px;text-align:center;background:var(--ink);color:var(--cream);border-radius:99px;font:400 20px/1.5 var(--hd)}
 .lista{display:grid;gap:12px;padding:14px}
 

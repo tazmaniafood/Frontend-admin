@@ -1,8 +1,8 @@
-/* Cocina: tablero de 3 columnas. Cada pedido avanza Nuevo → En preparación → Listo.
+/* Cocina: tablero de 2 columnas. Cada pedido avanza Nuevo → Listo.
    Al quedar listo pasa a Delivery. */
 (()=>{
 let d=TAZ.load();
-const SIG={nuevo:['prep','Empezar 🔥'],prep:['listo','¡Listo! ✅'],listo:null};
+const SIG={nuevo:['listo','¡Listo! ✅'],listo:null};
 function ticket(o){
   const min=TAZ.minutos(o.creado),tarde=o.estado!=='listo'&&min>=15;
   const sig=SIG[o.estado];
