@@ -9,9 +9,11 @@ const ESTADOS={
   entregado:{t:'Entregado',ico:'🏁',c:'#cdb39d'}
 };
 
+/* Tipo de pedido: 'domicilio' (lo lleva el repartidor) o 'llevar' (el cliente lo recoge en el local) */
+const LLEVAR=[1040,1036,1034];
 function seed(){
   const now=Date.now();
-  const o=(id,min,estado,cliente,tel,dir,items,total,rep)=>({id,creado:now-min*MIN,estado,cliente,tel,dir,items,total,repartidor:rep||''});
+  const o=(id,min,estado,cliente,tel,dir,items,total,rep)=>({id,creado:now-min*MIN,estado,tipo:LLEVAR.includes(id)?'llevar':'domicilio',cliente,tel,dir,items,total,repartidor:rep||''});
   return [
     o(1041,2,'nuevo','Laura M.','+1 408 555 0141','1180 Lincoln Ave, San Jose',[{q:1,n:'Pizza Hawaiana',d:'Familiar · Borde de bocadillo'},{q:2,n:'Coca-Cola'}],32),
     o(1040,6,'nuevo','Jorge P.','+1 669 555 0177','455 Park Ave, San Jose',[{q:1,n:'Salchi Tazmania',d:'Extra: Huevo'}],20.5),
@@ -27,7 +29,8 @@ function seed(){
 function load(){
   try{const d=JSON.parse(localStorage.getItem(KEY));if(Array.isArray(d)&&d.length){
     /* Estados que ya no existen: "En preparación" vuelve a Nuevos y "En camino" a Listos */
-    const MAPA={prep:'nuevo',camino:'listo'};let cambio=false;d.forEach(o=>{if(MAPA[o.estado]){o.estado=MAPA[o.estado];cambio=true}});if(cambio)save(d);return d}}catch(e){}
+    const MAPA={prep:'nuevo',camino:'listo'};let cambio=false;d.forEach(o=>{if(MAPA[o.estado]){o.estado=MAPA[o.estado];cambio=true}
+      if(!o.tipo){o.tipo=LLEVAR.includes(o.id)?'llevar':'domicilio';cambio=true}});if(cambio)save(d);return d}}catch(e){}
   const d=seed();save(d);return d;
 }
 function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}

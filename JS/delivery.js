@@ -9,6 +9,9 @@
    Sin foto no se entrega. Con teclado: enfocar el botón y presionar Enter o Espacio. */
 (()=>{
 const API='/api'; // Nginx manda /api/ al backend (Server-TAZ)
+/* Esta misma lógica sirve para dos páginas: Delivery (domicilio) y Para llevar (llevar).
+   La página lo indica con <body data-tipo="...">. En Para llevar no se muestra la dirección. */
+const TIPO=document.body.dataset.tipo||'domicilio';
 let d=TAZ.load();
 
 function tarjeta(o){
@@ -16,7 +19,7 @@ function tarjeta(o){
     <div class="cab"><b>#${o.id}</b><span class="t">${TAZ.hace(o.creado)}</span><b class="total">${TAZ.fmt(o.total)}</b></div>
     <div class="cliente">
       <p class="nom">${o.cliente}</p>
-      <p>📍 <a href="https://maps.google.com/?q=${encodeURIComponent(o.dir)}" target="_blank" rel="noopener">${o.dir}</a></p>
+      ${TIPO==='domicilio'&&o.dir?`<p>📍 <a href="https://maps.google.com/?q=${encodeURIComponent(o.dir)}" target="_blank" rel="noopener">${o.dir}</a></p>`:''}
       <p>📞 <a href="tel:${o.tel.replace(/\s/g,'')}">${o.tel}</a></p>
     </div>
     <ul class="items">${o.items.map(i=>`<li><b>${i.q}×</b> ${i.n}</li>`).join('')}</ul>
@@ -28,7 +31,7 @@ function tarjeta(o){
   </article>`;
 }
 function pintar(){
-  const lista=d.filter(o=>o.estado==='listo').sort((a,b)=>a.creado-b.creado);
+  const lista=d.filter(o=>o.estado==='listo'&&(o.tipo||'domicilio')===TIPO).sort((a,b)=>a.creado-b.creado);
   const n=document.getElementById('n');
   if(n)n.textContent=lista.length===1?'1 pedido por entregar':`${lista.length} pedidos por entregar`;
   const p=document.getElementById('pend'),np=d.filter(o=>o.fotoPendiente).length;

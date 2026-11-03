@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../IMG/Logo-taz.png?v=13" type="image/png">
+<title>Para llevar · Admin TAZ</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../Styles/base.css?v=13">
+<link rel="stylesheet" href="../Styles/delivery.css?v=13">
+<link rel="stylesheet" href="../Styles/login.css?v=13">
+<script src="../JS/auth.js?v=13"></script>
+</head>
+<body data-tipo="llevar">
+<header class="top">
+  <a class="brand" href="#" role="button" aria-haspopup="menu" aria-expanded="false" aria-label="Menú de la cuenta" title="Cuenta"><img src="../IMG/Logo-taz-trans.png?v=13" alt="TAZ Fast Food"></a>
+  <nav aria-label="Secciones del panel">
+    <a href="estadisticas.html">📊 Estadísticas</a>
+    <a href="cocina.html">👨‍🍳 Cocina</a>
+    <a href="delivery.html">🛵 Delivery</a>
+    <a href="para-llevar.html" class="on" aria-current="page">🥡 Para llevar</a>
+  </nav>
+</header>
+<main>
+  <div class="pagehead">
+    <div><h1>🥡 Para llevar</h1><p>Pedidos que el cliente recoge en el local. Desliza para entregar y toma la foto de la entrega. <b class="cuenta" id="n" aria-live="polite"></b> <b class="pendientes" id="pend" aria-live="polite"></b></p></div>
+  </div>
+  <div class="entregas" id="entregas"></div>
+</main>
+<footer>
+  <span class="stick">Panel de administración</span>
+  <p class="fn">TAZ Fast Food</p>
+  <p>Hecho en Colombia · Servido en San José, California</p>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+<dialog class="camara" id="camara" aria-labelledby="cam-tit">
+  <div class="cam-top"><h2 id="cam-tit">📷 Foto de la entrega <span id="cam-ped"></span></h2><button class="cam-x" type="button" data-cam="cerrar" aria-label="Cancelar">✕</button></div>
+  <div class="cam-vista">
+    <video id="cam-video" playsinline muted autoplay></video>
+    <img id="cam-foto" alt="Foto tomada">
+    <p class="cam-msg" id="cam-msg" role="status"></p>
+  </div>
+  <div class="cam-bar">
+    <button class="cam-disparo" type="button" data-cam="tomar" aria-label="Tomar foto"></button>
+    <button class="btn" type="button" data-cam="repetir">↺ Repetir</button>
+    <button class="btn ok" type="button" data-cam="enviar">✓ Enviar y entregar</button>
+  </div>
+</dialog>
+<script src="../JS/data.js?v=13"></script>
+<script src="../JS/delivery.js?v=13"></script>
+</body>
+</html>

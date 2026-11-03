@@ -25,4 +25,5 @@ main{max-width:1000px}
 .chip.espera{background:#5fc27a40}
 .col .empty{border-color:#ffffff22}
 
+.chip.llevar{vertical-align:middle;margin-left:6px;background:var(--yel);color:var(--ink);font:800 12px/1.5 var(--bd);letter-spacing:0}
 @media(max-width:900px){.tablero{grid-template-columns:1fr}}

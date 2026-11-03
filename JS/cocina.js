@@ -7,7 +7,7 @@ function ticket(o){
   const min=TAZ.minutos(o.creado),tarde=o.estado!=='listo'&&min>=15;
   const sig=SIG[o.estado];
   return `<article class="ticket${tarde?' tarde':''}" data-id="${o.id}">
-    <header><b>#${o.id}</b><span class="t">${tarde?'⏰ ':''}${TAZ.hace(o.creado)}</span></header>
+    <header><b>#${o.id}${o.tipo==='llevar'?' <span class="chip llevar">🥡 Para llevar</span>':''}</b><span class="t">${tarde?'⏰ ':''}${TAZ.hace(o.creado)}</span></header>
     <ul>${o.items.map(i=>`<li><b>${i.q}×</b> ${i.n}${i.d?`<small>${i.d}</small>`:''}</li>`).join('')}</ul>
     <div class="pie-t"><span>${o.cliente}</span>${sig?`<button class="btn sm go" data-go="${sig[0]}">${sig[1]}</button>`:'<span class="chip espera">Listo para entregar</span>'}</div>
   </article>`;
