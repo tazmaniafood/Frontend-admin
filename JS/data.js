@@ -5,7 +5,6 @@
 const KEY='taz-admin',MIN=60000;
 const ESTADOS={
   nuevo:{t:'Nuevo',ico:'🆕',c:'#4c8dd9'},
-  prep:{t:'En preparación',ico:'🔥',c:'#f7941d'},
   listo:{t:'Listo',ico:'✅',c:'#5fc27a'},
   camino:{t:'En camino',ico:'🛵',c:'#ffc933'},
   entregado:{t:'Entregado',ico:'🏁',c:'#cdb39d'}
@@ -18,8 +17,8 @@ function seed(){
   return [
     o(1041,2,'nuevo','Laura M.','+1 408 555 0141','1180 Lincoln Ave, San Jose',[{q:1,n:'Pizza Hawaiana',d:'Familiar · Borde de bocadillo'},{q:2,n:'Coca-Cola'}],32),
     o(1040,6,'nuevo','Jorge P.','+1 669 555 0177','455 Park Ave, San Jose',[{q:1,n:'Salchi Tazmania',d:'Extra: Huevo'}],20.5),
-    o(1039,11,'prep','Ana R.','+1 408 555 0102','77 Race St, San Jose',[{q:1,n:'Pizza a tu gusto',d:'Medium · Pollo, Champiñones, Maíz'},{q:1,n:'Perro salvaje'}],32),
-    o(1038,17,'prep','Miguel S.','+1 650 555 0190','2010 The Alameda, San Jose',[{q:2,n:'Gran Burguer',d:'Extra: Tocineta'},{q:2,n:'Pepsi'}],35),
+    o(1039,11,'nuevo','Ana R.','+1 408 555 0102','77 Race St, San Jose',[{q:1,n:'Pizza a tu gusto',d:'Medium · Pollo, Champiñones, Maíz'},{q:1,n:'Perro salvaje'}],32),
+    o(1038,17,'nuevo','Miguel S.','+1 650 555 0190','2010 The Alameda, San Jose',[{q:2,n:'Gran Burguer',d:'Extra: Tocineta'},{q:2,n:'Pepsi'}],35),
     o(1037,24,'listo','Valentina C.','+1 408 555 0133','63 N Keeble Ave, San Jose',[{q:1,n:'Pizza La 4K',d:'Personal'}],22),
     o(1036,31,'listo','Pedro G.','+1 669 555 0118','300 Meridian Ave, San Jose',[{q:1,n:'Mazorcada TAZ',d:'Extra: Queso extra'},{q:1,n:'Sprite'}],20),
     o(1035,38,'camino','Sofía L.','+1 408 555 0165','901 Bird Ave, San Jose',[{q:1,n:'Pizza Mexicana',d:'Familiar'}],29,'Carlos'),
@@ -28,7 +27,9 @@ function seed(){
   ];
 }
 function load(){
-  try{const d=JSON.parse(localStorage.getItem(KEY));if(Array.isArray(d)&&d.length)return d}catch(e){}
+  try{const d=JSON.parse(localStorage.getItem(KEY));if(Array.isArray(d)&&d.length){
+    /* Ya no existe "En preparación": esos pedidos vuelven a Nuevos */
+    let cambio=false;d.forEach(o=>{if(o.estado==='prep'){o.estado='nuevo';cambio=true}});if(cambio)save(d);return d}}catch(e){}
   const d=seed();save(d);return d;
 }
 function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
