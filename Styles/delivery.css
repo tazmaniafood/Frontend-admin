@@ -18,9 +18,9 @@
 .cliente a:hover{color:var(--yel)}
 .items{margin:0;padding:8px 12px;list-style:none;background:var(--card2);border:2px solid var(--ink);border-radius:12px;font-size:14px}
 .acc{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
-.acc .btn{margin-left:auto}
-.acc .btn:disabled{opacity:.5;cursor:not-allowed}
-.rep{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--mut)}
-.rep select{background:var(--cream);color:var(--ink);border:3px solid var(--ink);border-radius:10px;padding:4px 8px;font-weight:800}
+.entregar{flex:1;display:flex;align-items:center;justify-content:center;gap:10px;min-height:52px;background:#0aad0a;color:#fff;border:0;border-radius:99px;box-shadow:0 4px 0 #076b07;font:900 18px/1 var(--bd);letter-spacing:.2px;transition:background .12s,transform .12s,box-shadow .12s}
+.entregar:hover{background:#089a08}
+.entregar:active{transform:translateY(3px);box-shadow:0 1px 0 #076b07}
+.entregar .ck{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#fff;color:#0aad0a;font-size:16px;font-weight:900}
 .acc .chip{color:var(--cream);border-color:var(--cream)}
-@media(max-width:420px){.entregas{grid-template-columns:1fr}.acc .btn{margin-left:0;flex:1}}
+@media(max-width:420px){.entregas{grid-template-columns:1fr}}

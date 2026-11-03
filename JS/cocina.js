@@ -9,7 +9,7 @@ function ticket(o){
   return `<article class="ticket${tarde?' tarde':''}" data-id="${o.id}">
     <header><b>#${o.id}</b><span class="t">${tarde?'⏰ ':''}${TAZ.hace(o.creado)}</span></header>
     <ul>${o.items.map(i=>`<li><b>${i.q}×</b> ${i.n}${i.d?`<small>${i.d}</small>`:''}</li>`).join('')}</ul>
-    <div class="pie-t"><span>${o.cliente}</span>${sig?`<button class="btn sm go" data-go="${sig[0]}">${sig[1]}</button>`:'<span class="chip espera">Esperando repartidor</span>'}</div>
+    <div class="pie-t"><span>${o.cliente}</span>${sig?`<button class="btn sm go" data-go="${sig[0]}">${sig[1]}</button>`:'<span class="chip espera">Listo para entregar</span>'}</div>
   </article>`;
 }
 function pintar(){
@@ -22,7 +22,6 @@ function pintar(){
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-go]');
   if(b){const o=d.find(x=>x.id===+b.closest('.ticket').dataset.id);o.estado=b.dataset.go;TAZ.save(d);pintar();TAZ.aviso(`Pedido #${o.id}: ${TAZ.ESTADOS[o.estado].t}`)}
-  if(e.target.id==='reset'){d=TAZ.reset();pintar();TAZ.aviso('Pedidos de prueba reiniciados')}
 });
 pintar();
 setInterval(pintar,30000);
