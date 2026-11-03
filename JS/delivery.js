@@ -1,6 +1,7 @@
 /* Delivery: pedidos listos por entregar y entregados.
    Para entregar se arrastra el botón verde hasta el final ("Desliza para entregar").
-   Con teclado: enfocar el botón y presionar Enter o Espacio. */
+   Con teclado: enfocar el botón y presionar Enter o Espacio.
+   Un pedido entregado se puede "Desentregar" y vuelve a Por entregar. */
 (()=>{
 let d=TAZ.load(),filtro='listo';
 function tarjeta(o){
@@ -11,7 +12,7 @@ function tarjeta(o){
       <span class="txt" aria-hidden="true">Desliza para entregar</span>
       <span class="perilla" aria-hidden="true">➜</span>
     </div>`;
-  if(o.estado==='entregado')acc=`<span class="chip">🏁 Entregado</span>`;
+  if(o.estado==='entregado')acc=`<button class="btn sm desentregar" type="button" data-volver aria-label="Desentregar el pedido #${o.id}">↩ Desentregar</button>`;
   return `<article class="entrega panel" data-id="${o.id}" style="--c:${E.c}">
     <div class="cab"><b>#${o.id}</b><span class="chip estado">${E.ico} ${E.t}</span><span class="t">${TAZ.hace(o.creado)}</span><b class="total">${TAZ.fmt(o.total)}</b></div>
     <div class="cliente">
@@ -40,6 +41,10 @@ function entregar(el){
 }
 document.addEventListener('click',e=>{
   const f=e.target.closest('.f');if(f){filtro=f.dataset.f;return pintar()}
+  /* Desentregar: el pedido vuelve a "Por entregar" (por si se marcó por error) */
+  const v=e.target.closest('[data-volver]');
+  if(v){const o=d.find(x=>x.id===+v.closest('.entrega').dataset.id);if(!o)return;
+    o.estado='listo';TAZ.save(d);pintar();TAZ.aviso(`Pedido #${o.id}: vuelve a Por entregar`)}
 });
 document.addEventListener('keydown',e=>{
   const el=e.target.closest&&e.target.closest('.desliza');

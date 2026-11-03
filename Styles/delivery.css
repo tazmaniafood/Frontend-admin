@@ -31,3 +31,4 @@
 .desliza.hecho .txt{opacity:1;padding:0 calc(var(--h) - 6px) 0 0;animation:none;-webkit-text-fill-color:#fff}
 .acc .chip{color:var(--cream);border-color:var(--cream)}
 @media(max-width:420px){.entregas{grid-template-columns:1fr}}
+.desentregar{margin-left:auto}
