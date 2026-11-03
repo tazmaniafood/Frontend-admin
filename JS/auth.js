@@ -39,15 +39,23 @@ if(enPages){
   if(TODAS.includes(pagina)&&!u.paginas.includes(pagina)){location.replace(u.inicio);return}
   /* Esconder del menú las secciones que este usuario no ve (antes de pintar) */
   const css=TODAS.filter(p=>!u.paginas.includes(p)).map(p=>`.top nav a[href="${p}"]`).join(',');
-  if(css)document.write(`<style>${css}{display:none!important}</style>`);
+  const solo=u.paginas.length<2?'.top nav{display:none!important}':'';
+  if(css||solo)document.write(`<style>${css?css+'{display:none!important}':''}${solo}</style>`);
   document.addEventListener('DOMContentLoaded',()=>{
-    const brand=document.querySelector('.top .brand');
-    if(brand){brand.href=u.inicio;brand.title=brand.ariaLabel='Ir al inicio'}
-    const a=document.querySelector('.top .admin');if(!a)return;
-    const tag=a.querySelector('.tag');if(tag)tag.textContent=u.rol;
-    const b=document.createElement('button');
-    b.type='button';b.className='salir';b.textContent='Salir';b.title='Cerrar sesión';
-    b.addEventListener('click',AUTH.salir);a.appendChild(b);
+    const top=document.querySelector('.top'),brand=document.querySelector('.top .brand');
+    if(!top||!brand)return;
+    /* Con una sola sección (repartidor) no hace falta el menú de secciones */
+    if(u.paginas.length<2)top.classList.add('solo');
+    /* El logo abre un menú con el usuario y el botón Salir */
+    const m=document.createElement('div');
+    m.className='cuenta-menu';m.id='cuenta-menu';m.setAttribute('role','menu');
+    m.innerHTML=`<span class="rol">Conectado como <b>${u.rol}</b></span><button class="salir" type="button" role="menuitem">🚪 Salir</button>`;
+    top.appendChild(m);brand.setAttribute('aria-controls','cuenta-menu');
+    const abrir=on=>{m.classList.toggle('on',on);brand.setAttribute('aria-expanded',on);if(on)m.querySelector('.salir').focus()};
+    brand.addEventListener('click',e=>{e.preventDefault();abrir(!m.classList.contains('on'))});
+    m.querySelector('.salir').addEventListener('click',AUTH.salir);
+    document.addEventListener('click',e=>{if(m.classList.contains('on')&&!m.contains(e.target)&&!brand.contains(e.target))abrir(false)});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&m.classList.contains('on')){abrir(false);brand.focus()}});
   });
 }
 })();
