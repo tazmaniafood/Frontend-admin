@@ -1,16 +1,13 @@
-/* Sesión del panel admin, con tres usuarios:
-   - admin:      ve solo Estadísticas
-   - cocina:     ve solo Cocina
-   - repartidor: ve solo Delivery
-   PROVISIONAL: usuarios y contraseñas fijos en el navegador, solo para pruebas.
+/* Sesión del panel admin: un solo usuario (admin) que ve todo el panel:
+   Estadísticas, Cocina y Delivery.
+   PROVISIONAL: usuario y contraseña fijos en el navegador, solo para pruebas.
    No es seguridad real (cualquiera puede leer este archivo). Cuando exista el
-   backend, login() debe llamar a la API y la sesión debe validarse en el servidor. */
+   backend, login() debe llamar a la API y la sesión debe validarse en el servidor.
+   Para volver a tener varios perfiles, basta con agregar usuarios aquí con sus páginas. */
 (()=>{
 const KEY='taz-admin-sesion';
 const USUARIOS={
-  admin:     {clave:'Admin2026*', rol:'ADMIN',      inicio:'estadisticas.html', paginas:['estadisticas.html']},
-  cocina:    {clave:'Cocina2026*', rol:'COCINA',     inicio:'cocina.html',       paginas:['cocina.html']},
-  repartidor:{clave:'Reparto2026*',rol:'REPARTIDOR', inicio:'delivery.html',     paginas:['delivery.html']}
+  admin:{clave:'Admin2026*', rol:'ADMIN', inicio:'estadisticas.html', paginas:['estadisticas.html','cocina.html','delivery.html']}
 };
 const TODAS=['estadisticas.html','cocina.html','delivery.html'];
 const get=()=>{try{return JSON.parse(sessionStorage.getItem(KEY))}catch(e){return null}};
