@@ -1,4 +1,4 @@
-/* Datos compartidos del panel (cocina, delivery, para llevar, todos los pedidos, estadísticas).
+/* Datos compartidos del panel (cocina, entregas, todos los pedidos, estadísticas).
    Por ahora son PEDIDOS DE PRUEBA guardados en el navegador (localStorage 'taz-admin').
    Cuando exista el backend, solo hay que cambiar load()/save() por llamadas a la API. */
 (()=>{

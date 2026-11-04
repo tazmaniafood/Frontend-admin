@@ -1,8 +1,18 @@
-/* ============ DELIVERY ============ */
+/* ============ ENTREGAS (domicilio y para llevar) ============ */
+.filtros{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.f{display:inline-flex;align-items:center;gap:8px;background:var(--card);color:var(--cream);border:3px solid var(--ink);border-radius:99px;box-shadow:0 3px 0 var(--ink);padding:5px 14px;font:400 18px/1.4 var(--hd);letter-spacing:.5px}
+.f b{min-width:26px;padding:0 6px;text-align:center;background:var(--ink);color:var(--cream);border-radius:99px;font:800 13px/1.6 var(--bd)}
+.f:hover{background:var(--card2)}
+.f.on{background:var(--yel);color:var(--ink)}
+.cab .tipo{font-size:12px}
+.cab .tipo.llevar{background:var(--yel);color:var(--ink)}
+.cab .tipo.domicilio{background:var(--cream);color:var(--ink)}
 .entregas{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:18px}
 .entrega{display:grid;gap:10px;padding:14px 16px;border-left:10px solid var(--c);animation:entra .25s ease-out}
 @keyframes entra{from{opacity:0;transform:translateY(6px)}}
-.cab{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.cab{display:flex;flex-wrap:nowrap;align-items:center;gap:6px 10px;min-width:0}
+.cab .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cab .tipo,.cab .total{flex:none}
 .cab>b:first-child{font:400 26px/1 var(--hd);color:var(--yel)}
 .cab .estado{background:var(--cream);color:var(--ink)}
 .cab .t{font-size:12.5px;color:var(--mut);font-weight:800}

@@ -1,4 +1,5 @@
-/* Delivery: solo los pedidos listos por entregar.
+/* Entregas: todos los pedidos listos por entregar, a domicilio y para llevar.
+   Filtro arriba: Todos / Domicilio / Para llevar. Los de domicilio muestran la dirección.
    1. El repartidor desliza el botón verde hasta el final.
    2. Se abre la cámara DENTRO del navegador (pide permiso la primera vez).
    3. Toma la foto, puede repetirla, y al "Enviar" se sube al servidor:
@@ -9,17 +10,15 @@
    Sin foto no se entrega. Con teclado: enfocar el botón y presionar Enter o Espacio. */
 (()=>{
 const API='/api'; // Nginx manda /api/ al backend (Server-TAZ)
-/* Esta misma lógica sirve para dos páginas: Delivery (domicilio) y Para llevar (llevar).
-   La página lo indica con <body data-tipo="...">. En Para llevar no se muestra la dirección. */
-const TIPO=document.body.dataset.tipo||'domicilio';
-let d=TAZ.load();
+let d=TAZ.load(),filtro='todos';
+const tipo=o=>o.tipo||'domicilio';
 
 function tarjeta(o){
   return `<article class="entrega panel" data-id="${o.id}" style="--c:${TAZ.ESTADOS[o.estado].c}">
-    <div class="cab"><b>#${o.id}</b><span class="t">${TAZ.hace(o.creado)}</span><b class="total">${TAZ.fmt(o.total)}</b></div>
+    <div class="cab"><b>#${o.id}</b>${tipo(o)==='llevar'?'<span class="chip tipo llevar">🥡 Para llevar</span>':'<span class="chip tipo domicilio">🛵 Domicilio</span>'}<span class="t">${TAZ.hace(o.creado)}</span><b class="total">${TAZ.fmt(o.total)}</b></div>
     <div class="cliente">
       <p class="nom">${o.cliente}</p>
-      ${TIPO==='domicilio'&&o.dir?`<p>📍 <a href="https://maps.google.com/?q=${encodeURIComponent(o.dir)}" target="_blank" rel="noopener">${o.dir}</a></p>`:''}
+      ${tipo(o)==='domicilio'&&o.dir?`<p>📍 <a href="https://maps.google.com/?q=${encodeURIComponent(o.dir)}" target="_blank" rel="noopener">${o.dir}</a></p>`:''}
       <p>📞 <a href="tel:${o.tel.replace(/\s/g,'')}">${o.tel}</a></p>
     </div>
     <ul class="items">${o.items.map(i=>`<li><b>${i.q}×</b> ${i.n}</li>`).join('')}</ul>
@@ -31,7 +30,12 @@ function tarjeta(o){
   </article>`;
 }
 function pintar(){
-  const lista=d.filter(o=>o.estado==='listo'&&(o.tipo||'domicilio')===TIPO).sort((a,b)=>a.creado-b.creado);
+  const listos=d.filter(o=>o.estado==='listo');
+  document.querySelectorAll('.f').forEach(b=>{
+    const on=b.dataset.f===filtro;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);
+    b.querySelector('b').textContent=b.dataset.f==='todos'?listos.length:listos.filter(o=>tipo(o)===b.dataset.f).length;
+  });
+  const lista=listos.filter(o=>filtro==='todos'||tipo(o)===filtro).sort((a,b)=>a.creado-b.creado);
   const n=document.getElementById('n');
   if(n)n.textContent=lista.length===1?'1 pedido por entregar':`${lista.length} pedidos por entregar`;
   const p=document.getElementById('pend'),np=d.filter(o=>o.fotoPendiente).length;
@@ -149,6 +153,7 @@ async function reintentar(){
   }finally{reintentando=false}
 }
 window.addEventListener('online',reintentar);
+document.addEventListener('click',e=>{const f=e.target.closest('.f');if(f){filtro=f.dataset.f;pintar()}});
 
 /* =================== Deslizar =================== */
 const max=el=>el.clientWidth-el.querySelector('.perilla').offsetWidth-8;
