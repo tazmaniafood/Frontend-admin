@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../IMG/Logo-taz.png?v=14" type="image/png">
+<title>Todos los pedidos · Admin TAZ</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../Styles/base.css?v=14">
+<link rel="stylesheet" href="../Styles/todos-pedidos.css?v=14">
+<link rel="stylesheet" href="../Styles/login.css?v=14">
+<script src="../JS/auth.js?v=14"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#" role="button" aria-haspopup="menu" aria-expanded="false" aria-label="Menú de la cuenta" title="Cuenta"><img src="../IMG/Logo-taz-trans.png?v=14" alt="TAZ Fast Food"></a>
+  <nav aria-label="Secciones del panel">
+    <a href="estadisticas.html">📊 Estadísticas</a>
+    <a href="cocina.html">👨‍🍳 Cocina</a>
+    <a href="delivery.html">🛵 Delivery</a>
+    <a href="para-llevar.html">🥡 Para llevar</a>
+    <a href="todos-pedidos.html" class="on" aria-current="page">📋 Todos los pedidos</a>
+  </nav>
+</header>
+<main>
+  <div class="pagehead">
+    <div><h1>📋 Todos los pedidos</h1><p>Número, orden, cliente, pago y foto de entrega de cada pedido. <b class="cuenta" id="n" aria-live="polite"></b></p></div>
+  </div>
+  <div class="herramientas">
+    <label class="buscar"><span aria-hidden="true">🔎</span><input id="buscar" type="search" placeholder="Buscar por número, nombre o celular" aria-label="Buscar pedidos" autocomplete="off"></label>
+    <div class="filtros" role="group" aria-label="Filtrar por pago">
+      <button class="f on" type="button" data-f="todos" aria-pressed="true">Todos</button>
+      <button class="f" type="button" data-f="pagado" aria-pressed="false">✅ Pagados</button>
+      <button class="f" type="button" data-f="pendiente" aria-pressed="false">⏳ Sin pagar</button>
+    </div>
+  </div>
+  <div class="panel tabla-wrap">
+    <table class="pedidos">
+      <thead><tr>
+        <th scope="col">N.º pedido</th><th scope="col">Orden</th><th scope="col">Celular</th><th scope="col">Nombre</th>
+        <th scope="col">Pago</th><th scope="col">Medio de pago</th><th scope="col">Evidencia</th>
+      </tr></thead>
+      <tbody id="filas"></tbody>
+    </table>
+  </div>
+</main>
+<footer>
+  <span class="stick">Panel de administración</span>
+  <p class="fn">TAZ Fast Food</p>
+  <p>Hecho en Colombia · Servido en San José, California</p>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+<dialog class="visor" id="visor" aria-labelledby="visor-tit">
+  <div class="visor-top"><h2 id="visor-tit">📷 Evidencia</h2><button class="visor-x" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+  <img id="visor-img" alt="">
+  <p class="visor-pie" id="visor-pie"></p>
+</dialog>
+<script src="../JS/data.js?v=14"></script>
+<script src="../JS/todos-pedidos.js?v=14"></script>
+</body>
+</html>

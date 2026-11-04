@@ -1,4 +1,4 @@
-/* Datos compartidos del panel (cocina, delivery, estadísticas).
+/* Datos compartidos del panel (cocina, delivery, para llevar, todos los pedidos, estadísticas).
    Por ahora son PEDIDOS DE PRUEBA guardados en el navegador (localStorage 'taz-admin').
    Cuando exista el backend, solo hay que cambiar load()/save() por llamadas a la API. */
 (()=>{
@@ -11,9 +11,14 @@ const ESTADOS={
 
 /* Tipo de pedido: 'domicilio' (lo lleva el repartidor) o 'llevar' (el cliente lo recoge en el local) */
 const LLEVAR=[1040,1036,1034];
+/* Medio de pago y si el pago ya está confirmado (mismos valores que la tabla pedidos del servidor) */
+const MEDIOS={efectivo:'💵 Efectivo',tarjeta:'💳 Tarjeta',transferencia:'🏦 Transferencia',nequi:'📱 Nequi',daviplata:'📱 Daviplata'};
+const PAGOS={1041:['tarjeta',true],1040:['efectivo',false],1039:['nequi',true],1038:['tarjeta',true],1037:['transferencia',false],
+             1036:['efectivo',false],1035:['daviplata',true],1034:['efectivo',true],1033:['tarjeta',true]};
+const pago=id=>PAGOS[id]||['efectivo',false];
 function seed(){
   const now=Date.now();
-  const o=(id,min,estado,cliente,tel,dir,items,total,rep)=>({id,creado:now-min*MIN,estado,tipo:LLEVAR.includes(id)?'llevar':'domicilio',cliente,tel,dir,items,total,repartidor:rep||''});
+  const o=(id,min,estado,cliente,tel,dir,items,total,rep)=>({id,creado:now-min*MIN,estado,tipo:LLEVAR.includes(id)?'llevar':'domicilio',medio:pago(id)[0],pagado:pago(id)[1],cliente,tel,dir,items,total,repartidor:rep||''});
   return [
     o(1041,2,'nuevo','Laura M.','+1 408 555 0141','1180 Lincoln Ave, San Jose',[{q:1,n:'Pizza Hawaiana',d:'Familiar · Borde de bocadillo'},{q:2,n:'Coca-Cola'}],32),
     o(1040,6,'nuevo','Jorge P.','+1 669 555 0177','455 Park Ave, San Jose',[{q:1,n:'Salchi Tazmania',d:'Extra: Huevo'}],20.5),
@@ -30,7 +35,8 @@ function load(){
   try{const d=JSON.parse(localStorage.getItem(KEY));if(Array.isArray(d)&&d.length){
     /* Estados que ya no existen: "En preparación" vuelve a Nuevos y "En camino" a Listos */
     const MAPA={prep:'nuevo',camino:'listo'};let cambio=false;d.forEach(o=>{if(MAPA[o.estado]){o.estado=MAPA[o.estado];cambio=true}
-      if(!o.tipo){o.tipo=LLEVAR.includes(o.id)?'llevar':'domicilio';cambio=true}});if(cambio)save(d);return d}}catch(e){}
+      if(!o.tipo){o.tipo=LLEVAR.includes(o.id)?'llevar':'domicilio';cambio=true}
+      if(o.medio===undefined){[o.medio,o.pagado]=pago(o.id);cambio=true}});if(cambio)save(d);return d}}catch(e){}
   const d=seed();save(d);return d;
 }
 function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
@@ -42,6 +48,6 @@ const minutos=t=>Math.round((Date.now()-t)/MIN);
 function reloj(){const el=document.getElementById('reloj');if(!el)return;const f=()=>el.textContent=new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});f();setInterval(f,15000)}
 function aviso(txt){const t=document.getElementById('toast');if(!t)return;t.textContent=txt;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1800)}
 
-window.TAZ={ESTADOS,load,save,reset(){const d=seed();save(d);return d},fmt,hace,minutos,aviso};
+window.TAZ={ESTADOS,MEDIOS,load,save,reset(){const d=seed();save(d);return d},fmt,hace,minutos,aviso};
 document.addEventListener('DOMContentLoaded',reloj);
 })();

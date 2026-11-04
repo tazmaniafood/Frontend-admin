@@ -98,10 +98,11 @@ async function enviar(){
   const {el,o}=actual;dlg.classList.add('enviando');msg.textContent='Enviando foto…';
   const ok=await subir(o.id,blob);
   o.estado='entregado';o.entregado=Date.now();
-  if(ok){delete o.foto;delete o.fotoPendiente}
+  o.miniatura=await miniatura(blob); // pequeña, para verla en "Todos los pedidos"
+  if(ok){delete o.foto;delete o.fotoPendiente;o.fotoEnviada=true}
   else{o.foto=await aTexto(blob);o.fotoPendiente=true}
   if(!guardar()){ // sin espacio en el celular: no se pierde la entrega, pero avisa
-    delete o.foto;guardar();TAZ.aviso('⚠️ No hay espacio para guardar la foto en el celular');
+    delete o.foto;delete o.miniatura;guardar();TAZ.aviso('⚠️ No hay espacio para guardar la foto en el celular');
   }
   msg.textContent='';cerrarCamara(false);
   el.classList.remove('foto');el.classList.add('hecho');
@@ -127,6 +128,14 @@ async function subir(id,b){
     return r.ok;
   }catch(e){return false}finally{clearTimeout(t)}
 }
+/* Miniatura de la foto (lado mayor 320 px) en base64 */
+function miniatura(b){
+  return new Promise(r=>{const u=URL.createObjectURL(b),i=new Image();
+    i.onload=()=>{const s=Math.min(1,320/Math.max(i.naturalWidth,i.naturalHeight)),c=document.createElement('canvas');
+      c.width=Math.round(i.naturalWidth*s);c.height=Math.round(i.naturalHeight*s);c.getContext('2d').drawImage(i,0,0,c.width,c.height);
+      URL.revokeObjectURL(u);r(c.toDataURL('image/jpeg',0.6))};
+    i.onerror=()=>{URL.revokeObjectURL(u);r(null)};i.src=u});
+}
 const aTexto=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.onerror=()=>r(null);f.readAsDataURL(b)});
 const aBlob=async u=>(await fetch(u)).blob();
 let reintentando=false;
@@ -135,7 +144,7 @@ async function reintentar(){
   try{
     for(const o of d.filter(x=>x.fotoPendiente&&x.foto)){
       if(!(await subir(o.id,await aBlob(o.foto))))break;
-      delete o.foto;delete o.fotoPendiente;guardar();pintar();TAZ.aviso(`Foto del pedido #${o.id} enviada ✅`);
+      delete o.foto;delete o.fotoPendiente;o.fotoEnviada=true;guardar();pintar();TAZ.aviso(`Foto del pedido #${o.id} enviada ✅`);
     }
   }finally{reintentando=false}
 }
