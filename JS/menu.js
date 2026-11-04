@@ -1,7 +1,7 @@
 /* Menú: la cocina cambia lo que YA existe en la tienda (no puede crear ni borrar):
    - Platos: nombre, descripción, precio y sus ingredientes, cada uno con su porción
      (en pizzas, por tamaño); la porción total del plato es la suma de los ingredientes.
-   - Bordes y bebidas: nombre, precio y porción (bordes según el tamaño de la pizza, bebidas en ml).
+   - Bordes y bebidas: nombre, precio y porción por tamaño (bordes según el tamaño de la pizza, bebidas en ml).
    - Toppings y salsas: nombre (uno solo) y, por cada plato, su precio y su porción
      (en pizza la porción va por tamaño).
    Pantalla compacta: una pestaña por sección; cada plato es una fila que se abre para editar;
@@ -33,7 +33,7 @@ const guardado=leer();guardado.cambios=guardado.cambios||{};
 Object.keys(guardado.cambios).forEach(id=>{
   if(!BASE[id])return delete guardado.cambios[id];
   /* y los campos que ese elemento ya no tiene (p. ej. el precio único de un topping de la versión anterior) */
-  const c=guardado.cambios[id];Object.keys(c).forEach(k=>{if(!(k in BASE[id]))delete c[k]});
+  const c=guardado.cambios[id];Object.keys(c).forEach(k=>{if(!(k in BASE[id])||Array.isArray(c[k])!==Array.isArray(BASE[id][k]))delete c[k]});
   if(!Object.keys(c).length)delete guardado.cambios[id];
 });
 let borrador={};
@@ -91,7 +91,7 @@ function editor(id){
     ?`<div class="precios">${s.tamanos.map((t,i)=>`<label><span>${esc(t)}</span>${inPrecio(id,it.p[i],i,`Precio ${t}`)}</label>`).join('')}</div>`
     :`<div class="precios uno"><label><span>Precio</span>${inPrecio(id,it.p,null,'Precio')}</label></div>`;
   const porc=it.g===undefined?'':Array.isArray(o.g)
-    ?`<div class="bloque"><h4>📏 Porción${s.id==='bordes'?' según el tamaño de la pizza':''}</h4><div class="precios">${s.tamanos.map((t,i)=>`<label><span>${esc(t)}</span>${inPorcion(id,it.g[i],i,s.u,`Porción ${t}`)}</label>`).join('')}</div></div>`
+    ?`<div class="bloque"><h4>📏 Porción${s.id==='bordes'?' según el tamaño de la pizza':' por tamaño'}</h4><div class="precios">${s.tamanos.map((t,i)=>`<label><span>${esc(t)}</span>${inPorcion(id,it.g[i],i,s.u,`Porción ${t}`)}</label>`).join('')}</div></div>`
     :`<div class="bloque"><h4>📏 Porción</h4><div class="precios uno"><label><span>Porción</span>${inPorcion(id,it.g,null,s.u,'Porción')}</label></div></div>`;
   return `<div class="editor">
     <div class="ed-top">
@@ -255,7 +255,7 @@ async function guardarTodo(msg){
   if(!escribir(guardado)){TAZ.aviso('⚠️ No se pudo guardar en este navegador');return}
   pintar();
   const ok=await enviar(true);
-  TAZ.aviso(ok?`✅ ${msg} y enviados al servidor`:`💾 ${msg}. Se enviarán al servidor cuando esté disponible`);
+  TAZ.aviso(ok?`✅ ${msg} · enviado al servidor`:`💾 ${msg} · se enviará al servidor cuando esté disponible`);
 }
 let enviando=false;
 async function enviar(callado){

@@ -40,7 +40,7 @@
 .precios{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .precios.uno{grid-template-columns:minmax(0,180px)}
 .precios label{display:grid;gap:3px}
-.precios label>span{color:var(--mut);font-size:11.5px;font-weight:900;text-transform:uppercase;letter-spacing:.4px}
+.precios label>span:first-child{color:var(--mut);font-size:11.5px;font-weight:900;text-transform:uppercase;letter-spacing:.4px}
 .bloque{display:grid;gap:6px}
 .bloque h4{margin:4px 0 0;font:400 18px/1.2 var(--hd);letter-spacing:.4px;color:var(--yel)}
 /* Ingredientes */

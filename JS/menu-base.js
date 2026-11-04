@@ -1,7 +1,7 @@
 /* Menú base: lo que existe hoy en la tienda (Frontend-consumidor) con sus nombres,
    descripciones y precios originales. La página Menú solo MODIFICA estos elementos:
    no se pueden crear ni borrar.
-   - p: precio (lista con un precio por tamaño en pizzas y bebidas).
+   - p: precio (lista con un precio por tamaño en pizzas, bordes y bebidas).
    - ing: ingredientes del plato [{n, g}]: cada uno con su porción (en pizzas, una por tamaño).
           La porción total del plato es la suma de sus ingredientes.
    - g: porción directa (bebidas en ml y bordes por tamaño de pizza), en la unidad u.
@@ -673,12 +673,16 @@ window.TAZ_MENU_BASE={
     "Medium",
     "Familiar"
    ],
-   "nota": "Bordes de pizza: el precio es uno solo y la porción va según el tamaño de la pizza",
+   "nota": "Bordes de pizza: el precio y la porción cambian según el tamaño de la pizza",
    "items": [
     {
      "id": "borde-normal",
      "n": "Normal",
-     "p": 0.0,
+     "p": [
+      0.0,
+      0.0,
+      0.0
+     ],
      "g": [
       null,
       null,
@@ -688,7 +692,11 @@ window.TAZ_MENU_BASE={
     {
      "id": "borde-bocadillo",
      "n": "Bocadillo",
-     "p": 3.0,
+     "p": [
+      3.0,
+      3.0,
+      3.0
+     ],
      "g": [
       null,
       null,
@@ -698,7 +706,11 @@ window.TAZ_MENU_BASE={
     {
      "id": "borde-queso",
      "n": "Queso",
-     "p": 3.0,
+     "p": [
+      3.0,
+      3.0,
+      3.0
+     ],
      "g": [
       null,
       null,
