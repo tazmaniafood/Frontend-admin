@@ -4,17 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<link rel="icon" href="../IMG/Logo-taz.png?v=28" type="image/png">
+<link rel="icon" href="../IMG/Logo-taz.png?v=30" type="image/png">
 <title>Todos los pedidos · Admin TAZ</title>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../Styles/base.css?v=28">
-<link rel="stylesheet" href="../Styles/todos-pedidos.css?v=28">
-<link rel="stylesheet" href="../Styles/login.css?v=28">
-<script src="../JS/auth.js?v=28"></script>
+<link rel="stylesheet" href="../Styles/base.css?v=30">
+<link rel="stylesheet" href="../Styles/todos-pedidos.css?v=30">
+<link rel="stylesheet" href="../Styles/login.css?v=30">
+<script src="../JS/auth.js?v=30"></script>
 </head>
 <body>
 <header class="top">
-  <a class="brand" href="#" role="button" aria-haspopup="menu" aria-expanded="false" aria-label="Menú de la cuenta" title="Cuenta"><img src="../IMG/Logo-taz-trans.png?v=28" alt="TAZ Fast Food"></a>
+  <a class="brand" href="#" role="button" aria-haspopup="menu" aria-expanded="false" aria-label="Menú de la cuenta" title="Cuenta"><img src="../IMG/Logo-taz-trans.png?v=30" alt="TAZ Fast Food"></a>
   <nav aria-label="Secciones del panel">
     <a href="estadisticas.html">📊 Estadísticas</a>
     <a href="cocina.html">👨‍🍳 Cocina</a>
@@ -25,22 +25,22 @@
 </header>
 <main>
   <div class="pagehead">
-    <h1>📋 Todos los pedidos</h1><p>Número, orden, cliente, pago, estado y foto de entrega de cada pedido.</p>
+    <h1>📋 Todos los pedidos</h1><p>Cliente, orden, pago, estado y foto de entrega de cada pedido.</p>
   </div>
-  <div class="herramientas">
-    <label class="buscar"><span aria-hidden="true">🔎</span><input id="buscar" type="search" placeholder="Buscar por número, nombre o celular" aria-label="Buscar pedidos" autocomplete="off"></label>
-    <div class="chips" role="group" aria-label="Filtrar por pago">
-      <button class="f on" type="button" data-f="todos" aria-pressed="true">Todos</button>
-      <button class="f" type="button" data-f="pagado" aria-pressed="false">✅ Pagados</button>
-      <button class="f" type="button" data-f="pendiente" aria-pressed="false">⏳ Sin pagar</button>
+  <section class="caja tabla-wrap">
+    <div class="herramientas">
+      <label class="buscar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="buscar" type="search" placeholder="Buscar por número, nombre o celular" aria-label="Buscar pedidos" autocomplete="off"></label>
+      <div class="chips" role="group" aria-label="Filtrar por pago">
+        <button class="f on" type="button" data-f="todos" aria-pressed="true">Todos</button>
+        <button class="f" type="button" data-f="pagado" aria-pressed="false">Pagados</button>
+        <button class="f" type="button" data-f="pendiente" aria-pressed="false">Sin pagar</button>
+      </div>
+      <span class="total-ped"><b id="n" aria-live="polite"></b> pedidos</span>
     </div>
-  </div>
-  <section class="caja c-amarillo tabla-wrap">
-    <h2 class="banda"><span>📋 Pedidos <small>los más recientes primero</small></span><b class="n" id="n" aria-live="polite"></b></h2>
     <table class="pedidos">
       <thead><tr>
-        <th scope="col">N.º pedido</th><th scope="col">Orden</th><th scope="col">Celular</th><th scope="col">Nombre</th>
-        <th scope="col">Pago</th><th scope="col">Medio de pago</th><th scope="col">Evidencia</th><th scope="col">Estado</th>
+        <th scope="col">Pedido</th><th scope="col">Cliente</th><th scope="col">Orden</th>
+        <th scope="col">Pago</th><th scope="col">Estado</th><th scope="col" class="c-foto">Foto</th>
       </tr></thead>
       <tbody id="filas"></tbody>
     </table>
@@ -53,11 +53,11 @@
 </footer>
 <div class="toast" id="toast" role="status"></div>
 <dialog class="visor" id="visor" aria-labelledby="visor-tit">
-  <div class="visor-top"><h2 id="visor-tit">📷 Evidencia</h2><button class="visor-x" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+  <div class="visor-top"><h2 id="visor-tit">Foto de entrega</h2><button class="visor-x" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
   <img id="visor-img" alt="">
   <p class="visor-pie" id="visor-pie"></p>
 </dialog>
-<script src="../JS/data.js?v=28"></script>
-<script src="../JS/todos-pedidos.js?v=28"></script>
+<script src="../JS/data.js?v=30"></script>
+<script src="../JS/todos-pedidos.js?v=30"></script>
 </body>
 </html>

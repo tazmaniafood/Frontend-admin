@@ -1,5 +1,5 @@
-/* Todos los pedidos: tabla con número de pedido, orden, celular, nombre,
-   estado del pago, medio de pago y la foto de entrega (evidencia).
+/* Todos los pedidos: tabla de 6 columnas (pedido, cliente con celular y dirección, orden,
+   pago con total/estado/medio, estado del pedido y foto de entrega).
    La foto se muestra así:
      - si todavía no se envió al servidor, la que quedó guardada en el celular;
      - si ya se envió, se pide al servidor: GET /api/pedidos/{numero}/entrega
@@ -9,34 +9,33 @@ const API='/api';
 let d=TAZ.load(),filtro='todos',texto='';
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 
+const MEDIO={efectivo:'Efectivo',tarjeta:'Tarjeta',transferencia:'Transferencia',nequi:'Nequi',daviplata:'Daviplata'};
 function evidencia(o){
   const mini=o.miniatura||o.foto;
-  if(mini)return `<button class="foto" type="button" data-ver="${o.id}" aria-label="Ver foto de entrega del pedido #${o.id}"><img src="${mini}" alt=""></button>${o.fotoPendiente?'<small class="sub">⏳ Sin enviar</small>':''}`;
-  if(o.fotoEnviada)return `<button class="btn sm" type="button" data-ver="${o.id}">📷 Ver foto</button>`;
-  return o.estado==='entregado'?'<span class="nada">Sin foto</span>':'<span class="nada">Aún no se entrega</span>';
+  if(mini)return `<button class="foto" type="button" data-ver="${o.id}" aria-label="Ver foto de entrega del pedido #${o.id}"><img src="${mini}" alt=""></button>${o.fotoPendiente?'<small class="sub">Sin enviar</small>':''}`;
+  if(o.fotoEnviada)return `<button class="ver" type="button" data-ver="${o.id}">Ver foto</button>`;
+  return '<span class="nada">—</span>';
 }
-/* Estado que se muestra al final de cada fila.
+/* Estado del pedido:
    nuevo     -> En cocina   (está en el tablero de Cocina)
    listo     -> En reparto  (cocina lo terminó y va a Entregas; para llevar: listo para recoger)
    entregado -> Entregado
    "Nuevo" queda para cuando el pedido llegue de la tienda y cocina aún no lo haya visto. */
-const STATUS={recibido:['nuevo','🆕 Nuevo'],nuevo:['cocina','👨‍🍳 En cocina'],listo:['reparto','🛵 En reparto'],entregado:['entregado','🏁 Entregado']};
+const STATUS={recibido:['nuevo','Nuevo'],nuevo:['cocina','En cocina'],listo:['reparto','En reparto'],entregado:['entregado','Entregado']};
 function status(o){
-  if(o.estado==='listo'&&o.tipo==='llevar')return '<span class="st reparto">🥡 Listo para recoger</span>';
-  const [c,t]=STATUS[o.estado]||['nuevo',o.estado];return `<span class="st ${c}">${t}</span>`;
+  const [c,t]=o.estado==='listo'&&o.tipo==='llevar'?['reparto','Listo para recoger']:(STATUS[o.estado]||['nuevo',o.estado]);
+  return `<span class="st ${c}"><i aria-hidden="true"></i>${t}</span>`;
 }
 function fila(o){
+  const dir=o.tipo==='llevar'?'<span class="tag">Para llevar</span>'
+    :`<span class="tag dom">Domicilio</span>${o.dir?` <a class="dir" href="https://maps.google.com/?q=${encodeURIComponent(o.dir)}" target="_blank" rel="noopener">${esc(o.dir)}</a>`:''}`;
   return `<tr>
-    <td data-l="N.º pedido"><div><b class="num">#${esc(o.id)}</b>${o.tipo==='llevar'
-      ?'<span class="dir llevar">🥡 Para llevar</span>'
-      :`<span class="dir"><span class="dir-t">🛵 Domicilio</span>${o.dir?`<a href="https://maps.google.com/?q=${encodeURIComponent(o.dir)}" target="_blank" rel="noopener">📍 ${esc(o.dir)}</a>`:''}</span>`}</div></td>
-    <td data-l="Orden"><div><ul class="orden">${o.items.map(i=>`<li><b>${esc(i.q)}×</b> ${esc(i.n)}${i.d?` <small>${esc(i.d)}</small>`:''}</li>`).join('')}</ul><small class="sub total">${TAZ.fmt(o.total)}</small></div></td>
-    <td data-l="Celular"><div><a href="tel:${esc(String(o.tel).replace(/\s/g,''))}">${esc(o.tel)}</a></div></td>
-    <td data-l="Nombre"><div>${esc(o.cliente)}</div></td>
-    <td data-l="Pago"><div>${o.pagado?'<span class="chip si">✅ Pagado</span>':'<span class="chip no">⏳ Sin pagar</span>'}</div></td>
-    <td data-l="Medio de pago"><div>${esc(TAZ.MEDIOS[o.medio]||o.medio||'—')}</div></td>
-    <td data-l="Evidencia"><div>${evidencia(o)}</div></td>
+    <td data-l="Pedido"><div><b class="num">#${esc(o.id)}</b><small class="sub">${TAZ.hace(o.creado)}</small></div></td>
+    <td data-l="Cliente"><div><span class="cli">${esc(o.cliente)}</span><a class="tel" href="tel:${esc(String(o.tel).replace(/\s/g,''))}">${esc(o.tel)}</a><span class="lugar">${dir}</span></div></td>
+    <td data-l="Orden"><div><ul class="orden">${o.items.map(i=>`<li><b>${esc(i.q)}×</b> ${esc(i.n)}${i.d?`<small>${esc(i.d)}</small>`:''}</li>`).join('')}</ul></div></td>
+    <td data-l="Pago" class="c-pago"><div><b class="total">${TAZ.fmt(o.total)}</b><span class="pago ${o.pagado?'si':'no'}"><i aria-hidden="true"></i>${o.pagado?'Pagado':'Sin pagar'}</span><small class="sub">${esc(MEDIO[o.medio]||o.medio||'—')}</small></div></td>
     <td data-l="Estado"><div>${status(o)}</div></td>
+    <td data-l="Foto" class="c-foto"><div>${evidencia(o)}</div></td>
   </tr>`;
 }
 function pintar(){
@@ -45,14 +44,14 @@ function pintar(){
     &&(!q||String(o.id).includes(q)||String(o.cliente).toLowerCase().includes(q)||String(o.tel).replace(/\s/g,'').includes(q.replace(/\s/g,''))))
     .sort((a,b)=>b.creado-a.creado);
   document.getElementById('n').textContent=lista.length;
-  document.getElementById('filas').innerHTML=lista.length?lista.map(fila).join(''):'<tr class="vacio"><td colspan="8"><p class="empty">No hay pedidos que coincidan</p></td></tr>';
+  document.getElementById('filas').innerHTML=lista.length?lista.map(fila).join(''):'<tr class="vacio"><td colspan="6"><p class="empty">No hay pedidos que coincidan</p></td></tr>';
 }
 
 /* ---- Visor de la foto ---- */
 const vis=document.getElementById('visor'),vimg=document.getElementById('visor-img'),vpie=document.getElementById('visor-pie');
 function ver(id){
   const o=d.find(x=>x.id===+id);if(!o)return;
-  document.getElementById('visor-tit').textContent=`📷 Evidencia del pedido #${o.id}`;
+  document.getElementById('visor-tit').textContent=`Foto de entrega · pedido #${o.id}`;
   vpie.textContent=o.entregado?`Entregado el ${new Date(o.entregado).toLocaleString('es-CO',{dateStyle:'medium',timeStyle:'short'})}`:'';
   vimg.alt=`Foto de entrega del pedido #${o.id}`;
   const respaldo=o.foto||o.miniatura;

@@ -1,138 +1,125 @@
-/* ============ MENÚ (editar lo que ya existe), versión compacta ============ */
+/* ============ MENÚ (editar lo que ya existe): sobrio y condensado ============ */
+main{max-width:1180px;padding-bottom:110px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sec .sub{margin:0 0 12px;color:var(--mut);font-size:13px;font-weight:700}
+.sec .sub b{color:var(--cream)}
 
-.sec .sub{margin:2px 0 12px;color:var(--mut);font-size:13.5px;font-weight:700;text-align:center}
-.sub b{color:var(--cream)}
-
-/* Lista de platos: filas compactas que se abren */
-.lista-cab,.f-cab{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) auto 28px;gap:14px;align-items:center}
-.lista-cab{padding:10px 18px 8px;background:var(--card2);border-bottom:2px solid var(--ink);color:var(--mut);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.5px}
+/* ---- Lista de platos ---- */
+.lista-cab,.f-cab{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr) minmax(0,1fr) 110px 20px;gap:16px;align-items:center}
+.lista-cab{padding:10px 18px 6px;color:var(--mut);font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
 .lista{display:grid}
-.fila{padding:0;border-left:6px solid transparent;border-bottom:2px solid var(--line);transition:border-color .15s,background .15s}
-.fila:last-child{border-bottom:0}
-.fila.cambiado{border-left-color:var(--yel)}
-.fila.abierta{border-left-color:var(--org);background:#ffffff06}
-.f-cab{width:100%;padding:11px 14px 11px 12px;background:none;border:0;color:var(--cream);text-align:left;font-weight:800}
-.f-cab:hover{background:#ffffff08}
+.fila{border-top:1px solid #ffffff0f;transition:background .15s}
+.fila.cambiado{box-shadow:inset 3px 0 0 var(--yel)}
+.fila.abierta{background:#ffffff05}
+.f-cab{width:100%;padding:12px 18px;background:none;border:0;color:var(--cream);text-align:left}
+.f-cab:hover{background:#ffffff06}
 .f-nom{min-width:0}
-.f-nom b{display:block;font-size:15.5px}
-.f-nom small{display:block;color:var(--mut);font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.f-pre,.f-por{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:14px;font-variant-numeric:tabular-nums}
-.f-pre small,.f-por small{color:var(--mut);font-weight:900;font-size:11px}
+.f-nom b{display:block;font-size:15px;font-weight:900}
+.f-nom small{display:block;margin-top:1px;color:var(--mut);font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.f-pre,.f-por{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:13.5px;font-weight:800;font-variant-numeric:tabular-nums}
+.f-pre small,.f-por small{margin-right:3px;color:var(--mut);font-size:11px;font-weight:800}
 .f-por{color:var(--cream)}
-.falta{color:var(--mut);font-style:italic;font-weight:700;font-size:12.5px}
-.f-abrir{justify-self:end;font-size:15px}
-.chip.borr{background:var(--yel);color:var(--ink)}
-.chip.edit{background:#5fc27a33;color:#bff0cb;border-color:var(--ok)}
+.falta{color:#ffffff4d;font-weight:700}
+.n-ing{color:var(--mut);font-size:11.5px;font-weight:700;flex-basis:100%}
+.f-est{justify-self:start}
+.f-abrir{justify-self:end;color:var(--mut);display:grid;transition:transform .2s}
+.fila.abierta .f-abrir{transform:rotate(180deg);color:var(--yel)}
+.est{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;white-space:nowrap}
+.est i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.est.borr{color:var(--yel)}.est.edit{color:#7fd894}
 
-.editor{display:grid;gap:10px;padding:4px 16px 16px;border-top:2px dashed var(--line)}
-.campo{display:grid;gap:4px;font-weight:800;font-size:13px;color:var(--mut)}
-.campo span{display:flex;justify-content:space-between}
-.campo .cont{font-size:11.5px}
-.campo input,.campo textarea,.pesos input,.unidad input,.ex td.n input{width:100%;background:var(--cream);color:var(--ink);border:3px solid var(--ink);border-radius:10px;padding:6px 10px;font-weight:800;font-size:15.5px}
-.campo textarea{resize:vertical;min-height:52px;font-weight:700;font-size:14px;line-height:1.35}
-.ed-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:12px;align-items:start}
-.precios{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.precios.uno{grid-template-columns:minmax(0,180px)}
-.precios label{display:grid;gap:3px}
-.precios label>span:first-child{color:var(--mut);font-size:11.5px;font-weight:900;text-transform:uppercase;letter-spacing:.4px}
-.bloque{display:grid;gap:6px}
-.bloque h4{margin:4px 0 0;font:400 18px/1.2 var(--hd);letter-spacing:.4px;color:var(--yel)}
-/* Ingredientes */
-.ing{width:100%;border-collapse:collapse;background:var(--card2);border:2px solid var(--ink);border-radius:12px;overflow:hidden}
-.ing th{text-align:left;color:var(--mut);font-size:11.5px;font-weight:900;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;border-bottom:2px solid var(--ink)}
-.ing th small{text-transform:none;font-weight:800}
-.ing td{padding:4px 10px;border-bottom:1px solid #ffffff14}
-.ing td.g,.ing th.g{width:130px}
-.ing td.n input{width:100%;background:transparent;color:var(--cream);border:2px solid transparent;border-radius:8px;padding:4px 6px;font-weight:800;font-size:14.5px}
-.ing td.n input:hover{border-color:var(--line)}
-.ing td.n input:focus{background:var(--cream);color:var(--ink);border-color:var(--ink)}
-.ing .unidad input{font-size:14.5px;padding-top:4px;padding-bottom:4px;border-width:2px}
-.ing tfoot th,.ing tfoot td{border-top:2px solid var(--ink);border-bottom:0;padding:8px 10px;color:var(--cream);font-size:13px;font-weight:900}
-.ing tfoot th{text-transform:uppercase}
-.ing .tot{color:var(--yel);font-size:15px;font-variant-numeric:tabular-nums}
-.n-ing{color:var(--mut);font-size:11.5px;font-weight:800;flex-basis:100%}
-.pesos,.unidad{position:relative;display:block;min-width:84px}
-.pesos i{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-style:normal;font-weight:900;color:var(--ink);pointer-events:none}
-.pesos input{padding-left:22px;font-variant-numeric:tabular-nums}
-.unidad i{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-style:normal;font-weight:900;color:#6b4a30;font-size:13px;pointer-events:none}
-.unidad input{padding-right:32px;font-variant-numeric:tabular-nums}
-.unidad input::placeholder{color:#9b7f66}
+/* ---- Editor de un plato ---- */
+.editor{display:grid;gap:16px;padding:4px 18px 18px}
+.ed-top{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px 28px;align-items:start}
+.ed-info{display:grid;gap:12px}
+.campo{display:grid;gap:5px;font-size:12px;font-weight:800;color:var(--mut)}
+.campo>span{display:flex;justify-content:space-between;align-items:baseline;text-transform:uppercase;letter-spacing:.4px}
+.campo .cont{text-transform:none;font-size:11px;letter-spacing:0}
+.fld{width:100%;padding:8px 11px;font-size:15px;font-weight:700}
+textarea.fld{resize:vertical;min-height:62px;font-size:14px;line-height:1.4}
+/* precios por tamaño: filas cortas */
+.tams{width:100%;max-width:420px;border-collapse:collapse}
+.tams:not(:has(th:nth-child(3))) thead{display:none}
+.tams thead th{padding:0 6px 4px 0;color:var(--mut);font-size:11px;font-weight:800;text-align:left;text-transform:none}
+.tams tbody th{padding:3px 10px 3px 0;color:var(--cream);font-size:13.5px;font-weight:800;text-align:left;white-space:nowrap;width:1%}
+.tams td{padding:3px 6px 3px 0}
+.pesos,.unidad{position:relative;display:block;min-width:0}
+.pesos i,.unidad i{position:absolute;top:50%;transform:translateY(-50%);font-style:normal;font-weight:800;color:var(--mut);font-size:13px;pointer-events:none}
+.pesos i{left:10px}.unidad i{right:10px}
+.pesos .fld{padding-left:21px;font-variant-numeric:tabular-nums}
+.unidad .fld{padding-right:30px;font-variant-numeric:tabular-nums}
+/* ingredientes: lista sin cuadrícula */
+.bloque{display:grid;gap:8px}
+.bloque h4{margin:0;font:900 14px/1.3 var(--bd);color:var(--cream)}
+.bloque h4 small{margin-left:6px;color:var(--mut);font-weight:700;font-size:12.5px}
+.ing{width:100%;max-width:720px;border-collapse:collapse}
+.ing th{padding:0 8px 4px;color:var(--mut);font-size:11px;font-weight:800;text-align:left;text-transform:uppercase;letter-spacing:.4px}
+.ing td{padding:2px 8px 2px 0}
+.ing td.g,.ing th.g{width:108px}
+.ing .unidad .fld{padding-top:6px;padding-bottom:6px;font-size:14px}
+/* nombre editable que se ve como texto hasta pasar el mouse */
+.fld-txt{background:transparent;border-color:transparent;padding:6px 8px;font-size:14px}
+.fld-txt:hover{border-color:#ffffff24}
+.ing tfoot th,.ing tfoot td{padding:10px 8px 0;border-top:1px solid #ffffff14;font-size:12.5px;font-weight:900;color:var(--mut);text-transform:uppercase;letter-spacing:.4px}
+.ing tfoot td{padding-left:0}
+.ing .tot{color:var(--yel);font-size:14px;text-transform:none;letter-spacing:0;font-variant-numeric:tabular-nums}
 .pie-ed{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
 .pie-ed:empty{display:none}
 .orig{margin:0;font-size:12.5px;color:var(--mut);font-weight:700}
-.orig b{color:var(--cream)}
-[aria-invalid="true"]{border-color:var(--red)!important;box-shadow:0 0 0 3px #e6331266}
+.btn-txt{background:none;border:0;padding:4px 0;color:var(--yel);font-weight:800;font-size:13px;text-decoration:underline;text-underline-offset:3px}
+[aria-invalid="true"]{border-color:#ff6b52!important;box-shadow:0 0 0 3px #e6331233!important}
 .err{margin:0;color:#ff8a72;font-weight:800;font-size:13px}
 .err:empty{display:none}
 
-/* Toppings y salsas: pestañas por plato + tabla compacta */
-.tabla-ex{background:var(--card2);border:2px solid var(--ink);border-radius:14px;overflow:hidden}
+/* ---- Toppings y salsas: tabla por plato ---- */
+.platos{margin:0 0 12px}
+.tabla-ex{overflow:hidden}
 .ex{width:100%;border-collapse:collapse}
-.ex th{text-align:left;color:var(--mut);font:900 12px/1.2 var(--bd);text-transform:uppercase;letter-spacing:.5px;padding:10px 8px;border-bottom:2px solid var(--ink);white-space:nowrap}
-.ex th small{text-transform:none;font-weight:800;font-size:11px}
-.ex td{padding:5px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
-.ex tbody tr:last-child td{border-bottom:0}
-.ex tr.cambiado td:first-child{box-shadow:inset 5px 0 0 var(--yel)}
+.ex th{text-align:left;color:var(--mut);font:800 11px/1.2 var(--bd);text-transform:uppercase;letter-spacing:.4px;padding:4px 8px 8px}
+.ex td{padding:3px 8px;border-top:1px solid #ffffff0a;vertical-align:middle}
+.ex tr.cambiado td:first-child{box-shadow:inset 3px 0 0 var(--yel)}
 .ex td.n{min-width:150px}
-.ex td.n input{font-size:14.5px;padding:5px 9px;background:transparent;color:var(--cream);border-color:transparent}
-.ex td.n input:hover{border-color:var(--line)}
-.ex td.n input:focus{background:var(--cream);color:var(--ink);border-color:var(--ink)}
-.ex .pesos,.ex .unidad{min-width:78px}
-.ex .pesos input,.ex .unidad input{font-size:14.5px;padding-top:5px;padding-bottom:5px}
-.ex th.e,.ex td.e{width:34px;text-align:center;padding-left:0;padding-right:4px}
-.mini{width:30px;height:30px;border-radius:50%;background:var(--cream);color:var(--ink);border:2px solid var(--ink);font-weight:900}
-.mini:hover{background:var(--yel)}
+.ex td.p,.ex td.g{width:118px}
+.ex .fld{padding-top:6px;padding-bottom:6px;font-size:14px}
+.ex th.e,.ex td.e{width:70px;text-align:right}
+.mini{background:none;border:0;padding:4px 0;color:var(--yel);font-weight:800;font-size:12px;text-decoration:underline;text-underline-offset:3px}
 
-/* Barra para guardar */
-.barra-guardar{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:35;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;width:min(620px,calc(100% - 24px));padding:9px 12px;background:var(--ink);color:var(--cream);border:3px solid var(--yel);border-radius:18px;box-shadow:0 6px 0 #000a;font-weight:800}
+/* ---- Barra para guardar ---- */
+.barra-guardar{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:35;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;width:min(560px,calc(100% - 24px));padding:9px 12px;background:var(--ink);color:var(--cream);border:2px solid var(--yel);border-radius:16px;box-shadow:0 8px 24px #000a;font-weight:800;font-size:14px}
 .barra-guardar[hidden]{display:none}
 body:has(#barra:not([hidden])) .toast{bottom:calc(110px + env(safe-area-inset-bottom,0px))}
-.barra-guardar.solo-pendiente{border-color:var(--mut)}
+.barra-guardar.solo-pendiente{border-color:#ffffff33}
 #barra-txt{flex:1 1 180px}
-.barra-guardar .btn{min-height:40px}
-main{padding-bottom:110px}
+.barra-guardar .btn{min-height:38px;border-width:2px;box-shadow:none}
 
-/* Celular */
+/* ---- Celular ---- */
 @media(max-width:760px){
   .lista-cab{display:none}
-  .f-cab{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"nom abrir" "pre pre" "por est";gap:6px 10px}
+  .f-cab{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"nom abrir" "pre est" "por por";gap:6px 10px;padding:12px 14px}
   .f-nom{grid-area:nom}.f-pre{grid-area:pre}.f-por{grid-area:por}.f-est{grid-area:est;justify-self:end}.f-abrir{grid-area:abrir}
-  .f-por::before{content:'Porción:';color:var(--mut);font-size:12px;font-weight:900}
+  .n-ing{flex-basis:auto}
+  .editor{padding:4px 14px 16px}
   .ed-top{grid-template-columns:1fr}
-  /* ingredientes como lista: nombre arriba y porciones debajo */
-  .ing,.ing tbody,.ing tfoot{display:block}
-  .ing thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-  .ing tr{display:grid;grid-template-columns:repeat(var(--c,1),minmax(0,1fr));gap:4px 8px;padding:8px 10px;border-bottom:1px solid #ffffff14}
-  .ing.tam3 tr{--c:3}
-  /* con tamaños: los nombres de tamaño van una sola vez arriba, no en cada ingrediente */
-  .ing.tam3 thead{position:static;width:auto;height:auto;overflow:visible;clip:auto;display:block}
-  .ing.tam3 thead tr{border-bottom:2px solid var(--ink);padding:6px 10px}
-  .ing.tam3 thead th{padding:0;border:0}
+  .ing td.g,.ing th.g{width:auto}
+  .ing.tam3 td.n{min-width:0}
+  .ing:not(.tam3) td.g{width:110px}
+  .ing.tam3 tbody tr,.ing.tam3 thead tr,.ing.tam3 tfoot tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 6px}
+  .ing.tam3 tbody tr{padding:4px 0 8px;border-bottom:1px solid #ffffff0a}
+  .ing.tam3 td{padding:0}
+  .ing.tam3 td.n{grid-column:1/-1}
+  .ing.tam3 thead th:first-child,.ing.tam3 tfoot th{grid-column:1/-1}
+  .ing.tam3 thead th{padding:0 0 4px}
+  .ing.tam3 tfoot th,.ing.tam3 tfoot td{padding:8px 0 0;border-top:0}
   .ing.tam3 thead th:first-child{display:none}
-  .ing.tam3 td.g[data-l]::before{content:none}
-  .ing td,.ing tfoot th,.ing tfoot td{display:grid;gap:2px;padding:0;border:0;width:auto!important}
-  .ing td.n,.ing tfoot th{grid-column:1/-1}
-  .ing td.g[data-l]::before,.ing .tot[data-l]::before{content:attr(data-l);color:var(--mut);font-size:10.5px;font-weight:900;text-transform:uppercase}
-  .ing:not(.tam3) td.g[data-l]::before{content:none}
-  .ing:not(.tam3) tr{grid-template-columns:minmax(0,1fr) 110px;align-items:center}
-  .ing:not(.tam3) td.n{grid-column:auto}
-  .ing:not(.tam3) tfoot th{grid-column:auto;align-self:center}
-  .ing tfoot tr{border-top:2px solid var(--ink)}
-  /* tabla de toppings como tarjetas de 2 columnas */
-  .tabla-ex{padding:0;background:none;border:0;box-shadow:none;border-radius:0}
+  /* toppings: tarjetas compactas */
   .ex thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .ex,.ex tbody{display:block}
-  .ex tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px;margin-bottom:10px;padding:10px 12px;background:var(--card);border:3px solid var(--ink);border-radius:16px;box-shadow:4px 4px 0 var(--ink)}
-  .ex.pizza tr{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .ex td{display:grid;gap:3px;padding:0;border:0}
+  .ex tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 8px;padding:8px 0 10px;border-top:1px solid #ffffff12}
+  .ex.pizza tr{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .ex td{display:grid;gap:3px;padding:0;border:0;width:auto!important}
   .ex td.n{grid-column:1/-2;min-width:0}
-  .ex td.e{grid-column:-2/-1;justify-self:end;align-self:center;width:auto}
-  .ex td.p{grid-column:1/-1}
-  .ex.pizza td.p{grid-column:1/-1}
-  .ex td[data-l]::before{content:attr(data-l);color:var(--mut);font-size:11.5px;font-weight:900;text-transform:uppercase;letter-spacing:.4px}
-  .ex td.n input{background:transparent;padding-left:0;font-size:16px}
-  .ex tr.cambiado{border-color:var(--yel)}
+  .ex td.e{grid-column:-2/-1;align-self:center}
+  .ex td[data-l]::before{content:attr(data-l);color:var(--mut);font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.3px}
+  .ex tr.cambiado{box-shadow:inset 3px 0 0 var(--yel);padding-left:8px}
   .ex tr.cambiado td:first-child{box-shadow:none}
 }
-@media(max-width:560px){.tab{font-size:15px;padding:3px 10px}.pesos,.unidad{min-width:0}.precios{gap:6px}.precios.uno{grid-template-columns:1fr}}

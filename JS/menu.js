@@ -48,7 +48,7 @@ const abiertos=new Set();
 
 /* ---- Formatos ---- */
 const porcion=(g,u)=>g==null||g===''?'—':`${g} ${u}`;
-const resumenPrecio=(it,s)=>Array.isArray(it.p)?it.p.map((p,i)=>`<span><small>${esc(corto(s.tamanos[i]))}</small> $${dinero(p)}</span>`).join(''):`<span>$${dinero(it.p)}</span>`;
+const resumenPrecio=(it,s)=>Array.isArray(it.p)?it.p.map((p,i)=>`<span><small>${esc(corto(s.tamanos[i]))}</small>$${dinero(p)}</span>`).join(''):`<span>$${dinero(it.p)}</span>`;
 /* Porción total de un plato = suma de sus ingredientes (j = tamaño en pizzas). null si no hay nada puesto */
 const total=(ing,j)=>{const xs=ing.map(x=>j==null?x.g:x.g[j]).filter(v=>Number.isFinite(v));return xs.length?Math.round(xs.reduce((a,b)=>a+b,0)*10)/10:null};
 const porTam=ing=>Array.isArray(ing[0]&&ing[0].g);
@@ -56,15 +56,16 @@ const resumenIng=(it,s)=>{
   const tot=porTam(it.ing)?s.tamanos.map((t,j)=>[t,total(it.ing,j)]):[[null,total(it.ing)]];
   const nIng=`<span class="n-ing">${it.ing.length} ingredientes</span>`;
   if(tot.every(([,v])=>v==null))return `<span class="falta">Sin porción</span>${nIng}`;
-  return tot.map(([t,v])=>`<span>${t?`<small>${esc(corto(t))}</small> `:''}${porcion(v,s.u)}</span>`).join('')+nIng;
+  return tot.map(([t,v])=>`<span>${t?`<small>${esc(corto(t))}</small>`:''}${porcion(v,s.u)}</span>`).join('')+nIng;
 };
 const resumenPorcion=(it,s)=>it.ing?resumenIng(it,s):Array.isArray(it.g)?(it.g.every(x=>x==null)?'<span class="falta">Sin porción</span>':it.g.map((g,i)=>`<span><small>${esc(corto(s.tamanos[i]))}</small> ${porcion(g,s.u)}</span>`).join('')):(it.g==null?'<span class="falta">Sin porción</span>':`<span>${porcion(it.g,s.u)}</span>`);
 const corto=t=>({'Personal (lata)':'Lata','Personal':'P','Medium':'M','Familiar':'F'})[t]||t;
-const chip=e=>e==='borr'?'<span class="chip borr">✏️ Sin guardar</span>':e==='edit'?'<span class="chip edit">✅ Modificado</span>':'';
+const chip=e=>e==='borr'?'<span class="est borr"><i></i>Sin guardar</span>':e==='edit'?'<span class="est edit"><i></i>Modificado</span>':'';
+const FLECHA='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
 
 /* ---- Campos ---- */
-const inPrecio=(id,v,i,lab)=>`<span class="pesos"><i aria-hidden="true">$</i><input type="number" inputmode="decimal" min="0" max="${LIM.p}" step="0.01" value="${Number.isFinite(v)?dinero(v):''}" data-id="${id}" data-campo="p"${i!=null?` data-i="${i}"`:''} aria-label="${esc(lab)}"></span>`;
-const inPorcion=(id,v,i,u,lab)=>`<span class="unidad"><input type="number" inputmode="decimal" min="0" max="${LIM.g}" step="1" value="${v==null?'':v}" placeholder="—" data-id="${id}" data-campo="g"${i!=null?` data-i="${i}"`:''} aria-label="${esc(lab)}"><i aria-hidden="true">${u}</i></span>`;
+const inPrecio=(id,v,i,lab)=>`<span class="pesos"><i aria-hidden="true">$</i><input class="fld" type="number" inputmode="decimal" min="0" max="${LIM.p}" step="0.01" value="${Number.isFinite(v)?dinero(v):''}" data-id="${id}" data-campo="p"${i!=null?` data-i="${i}"`:''} aria-label="${esc(lab)}"></span>`;
+const inPorcion=(id,v,i,u,lab)=>`<span class="unidad"><input class="fld" type="number" inputmode="decimal" min="0" max="${LIM.g}" step="1" value="${v==null?'':v}" placeholder="—" data-id="${id}" data-campo="g"${i!=null?` data-i="${i}"`:''} aria-label="${esc(lab)}"><i aria-hidden="true">${u}</i></span>`;
 
 /* ---- Fila de plato / borde / bebida ---- */
 function cabeza(id){
@@ -73,34 +74,35 @@ function cabeza(id){
     <span class="f-pre">${resumenPrecio(it,s)}</span>
     <span class="f-por">${resumenPorcion(it,s)}</span>
     <span class="f-est">${chip(estado(id))}</span>
-    <span class="f-abrir" aria-hidden="true">${abiertos.has(id)?'▲':'✏️'}</span>`;
+    <span class="f-abrir" aria-hidden="true">${FLECHA}</span>`;
 }
 /* campo de porción de un ingrediente */
-const inIng=(id,i,j,v,u,lab)=>`<span class="unidad"><input type="number" inputmode="decimal" min="0" max="${LIM.g}" step="1" value="${v==null?'':v}" placeholder="—" data-id="${id}" data-campo="ing" data-i="${i}" data-k="g"${j!=null?` data-j="${j}"`:''} aria-label="${esc(lab)}"><i aria-hidden="true">${u}</i></span>`;
+const inIng=(id,i,j,v,u,lab)=>`<span class="unidad"><input class="fld" type="number" inputmode="decimal" min="0" max="${LIM.g}" step="1" value="${v==null?'':v}" placeholder="—" data-id="${id}" data-campo="ing" data-i="${i}" data-k="g"${j!=null?` data-j="${j}"`:''} aria-label="${esc(lab)}"><i aria-hidden="true">${u}</i></span>`;
 function tablaIng(id,it,s){
   const tam=porTam(it.ing),T=tam?s.tamanos:[null];
-  return `<div class="bloque"><h4>🧾 Ingredientes y porción de cada uno</h4>
-  <table class="ing${tam?' tam3':''}"><thead><tr><th scope="col">Ingrediente</th>${T.map(t=>`<th scope="col" class="g">${t?esc(t):'Porción'} <small>${s.u}</small></th>`).join('')}</tr></thead>
-  <tbody>${it.ing.map((x,i)=>`<tr><td class="n"><input type="text" maxlength="${LIM.n}" value="${esc(x.n)}" data-id="${id}" data-campo="ing" data-i="${i}" data-k="n" aria-label="Ingrediente ${i+1}"></td>
+  return `<div class="bloque"><h4>Ingredientes <small>porción de cada uno en ${s.u}${tam?', por tamaño':''}</small></h4>
+  <table class="ing${tam?' tam3':''}"><thead><tr><th scope="col">Ingrediente</th>${T.map(t=>`<th scope="col" class="g">${t?esc(t):'Porción'}</th>`).join('')}</tr></thead>
+  <tbody>${it.ing.map((x,i)=>`<tr><td class="n"><input class="fld fld-txt" type="text" maxlength="${LIM.n}" value="${esc(x.n)}" data-id="${id}" data-campo="ing" data-i="${i}" data-k="n" aria-label="Ingrediente ${i+1}"></td>
     ${T.map((t,j)=>`<td class="g" data-l="${t?esc(t):'Porción'}">${inIng(id,i,tam?j:null,tam?x.g[j]:x.g,s.u,`${x.n}${t?' '+t:''}`)}</td>`).join('')}</tr>`).join('')}</tbody>
   <tfoot><tr><th scope="row">Porción total</th>${T.map((t,j)=>`<td class="g tot" data-l="${t?esc(t):'Total'}" data-total="${tam?j:''}">${porcion(total(it.ing,tam?j:null),s.u)}</td>`).join('')}</tr></tfoot></table></div>`;
 }
 function editor(id){
   const s=SEC[seccionDe(id)],it=val(id),o=BASE[id];
-  const precios=Array.isArray(o.p)
-    ?`<div class="precios">${s.tamanos.map((t,i)=>`<label><span>${esc(t)}</span>${inPrecio(id,it.p[i],i,`Precio ${t}`)}</label>`).join('')}</div>`
-    :`<div class="precios uno"><label><span>Precio</span>${inPrecio(id,it.p,null,'Precio')}</label></div>`;
-  const porc=it.g===undefined?'':Array.isArray(o.g)
-    ?`<div class="bloque"><h4>📏 Porción${s.id==='bordes'?' según el tamaño de la pizza':' por tamaño'}</h4><div class="precios">${s.tamanos.map((t,i)=>`<label><span>${esc(t)}</span>${inPorcion(id,it.g[i],i,s.u,`Porción ${t}`)}</label>`).join('')}</div></div>`
-    :`<div class="bloque"><h4>📏 Porción</h4><div class="precios uno"><label><span>Porción</span>${inPorcion(id,it.g,null,s.u,'Porción')}</label></div></div>`;
+  /* precios (y porción directa en bordes y bebidas) por tamaño, en filas cortas */
+  const T=Array.isArray(o.p)?s.tamanos:[null];
+  const conG=it.g!==undefined;
+  const precios=`<table class="tams"><thead><tr><th scope="col"><span class="sr">Tamaño</span></th><th scope="col">Precio</th>${conG?`<th scope="col">Porción</th>`:''}</tr></thead><tbody>
+    ${T.map((t,i)=>`<tr><th scope="row">${t?esc(t):'Precio'}</th><td>${inPrecio(id,t?it.p[i]:it.p,t?i:null,t?`Precio ${t}`:'Precio')}</td>${conG?`<td>${inPorcion(id,Array.isArray(o.g)?it.g[i]:it.g,Array.isArray(o.g)?i:null,s.u,t?`Porción ${t}`:'Porción')}</td>`:''}</tr>`).join('')}</tbody></table>`;
   return `<div class="editor">
     <div class="ed-top">
-      <label class="campo"><span>Nombre</span><input type="text" maxlength="${LIM.n}" value="${esc(it.n)}" data-id="${id}" data-campo="n"></label>
-      <div class="campo"><span>💲 Precio${Array.isArray(o.p)?' por tamaño':''}</span>${precios}</div>
+      <div class="ed-info">
+        <label class="campo"><span>Nombre</span><input class="fld" type="text" maxlength="${LIM.n}" value="${esc(it.n)}" data-id="${id}" data-campo="n"></label>
+        ${o.d!==undefined?`<label class="campo"><span>Descripción <small class="cont">${(it.d||'').length}/${LIM.d}</small></span><textarea class="fld" rows="3" maxlength="${LIM.d}" data-id="${id}" data-campo="d">${esc(it.d)}</textarea></label>`:''}
+      </div>
+      <div class="campo ed-precios"><span>${conG?'Precio y porción':'Precio'}${Array.isArray(o.p)?(s.id==='bordes'?' por tamaño de pizza':' por tamaño'):''}</span>${precios}</div>
     </div>
-    ${o.d!==undefined?`<label class="campo"><span>Descripción <small class="cont">${(it.d||'').length}/${LIM.d}</small></span><textarea rows="2" maxlength="${LIM.d}" data-id="${id}" data-campo="d">${esc(it.d)}</textarea></label>`:''}
-    ${it.ing?tablaIng(id,it,s):porc}
-    <div class="pie-ed">${estado(id)?`<p class="orig">Original: <b>${esc(o.n)}</b> · ${Array.isArray(o.p)?o.p.map(p=>'$'+dinero(p)).join(' / '):'$'+dinero(o.p)}</p><button class="btn sm" type="button" data-restaurar="${id}">↺ Volver al original</button>`:''}</div>
+    ${it.ing?tablaIng(id,it,s):''}
+    <div class="pie-ed">${estado(id)?`<p class="orig">Original: ${esc(o.n)} · ${Array.isArray(o.p)?o.p.map(p=>'$'+dinero(p)).join(' / '):'$'+dinero(o.p)}</p><button class="btn-txt" type="button" data-restaurar="${id}">Volver al original</button>`:''}</div>
     <p class="err" role="alert"></p>
   </div>`;
 }
@@ -116,18 +118,18 @@ const seccionDe=id=>M.secciones.find(s=>s.items.some(i=>i.id===id.split('@')[0])
 /* ---- Tabla de toppings / salsas por plato ---- */
 function tablaExtras(s){
   const pl=M.platos.find(p=>p.id===plato),esPizza=plato==='pizza',T=M.tamanosPizza;
-  const cab=esPizza?T.map(t=>`<th scope="col" class="g">${esc(t)} <small>${s.u}</small></th>`).join(''):`<th scope="col" class="g">Porción <small>${s.u}</small></th>`;
-  return `<div class="chips platos" role="tablist" aria-label="Plato">${M.platos.map(p=>`<button type="button" role="tab" class="pl${p.id===plato?' on':''}" aria-selected="${p.id===plato}" data-plato="${p.id}">${p.ico} ${esc(p.t)}${cuenta(s,p.id)}</button>`).join('')}</div>
-  <p class="sub">${pl.ico} ${s.id==='toppings'?'Toppings':'Salsas'} en <b>${esc(pl.t)}</b>: precio que se cobra y cuánto se le echa${esPizza?' según el tamaño de la pizza':''}. El nombre es el mismo en todos los platos.</p>
+  const cab=esPizza?T.map(t=>`<th scope="col" class="g">${esc(t)}</th>`).join(''):`<th scope="col" class="g">Porción</th>`;
+  return `<div class="chips platos" role="tablist" aria-label="Plato">${M.platos.map(p=>`<button type="button" role="tab" class="pl${p.id===plato?' on':''}" aria-selected="${p.id===plato}" data-plato="${p.id}">${esc(p.t)}${cuenta(s,p.id)}</button>`).join('')}</div>
+  <p class="sub">${s.id==='toppings'?'Toppings':'Salsas'} en <b>${esc(pl.t)}</b>: precio y cuánto se le echa${esPizza?' según el tamaño':''}. El nombre cambia en todos los platos.</p>
   <div class="tabla-ex"><table class="ex${esPizza?' pizza':''}">
     <thead><tr><th scope="col">${s.id==='toppings'?'Topping':'Salsa'}</th><th scope="col" class="p">Precio</th>${cab}<th scope="col" class="e"><span class="sr">Estado</span></th></tr></thead>
     <tbody>${s.items.map(it=>{
       const k=`${it.id}@${plato}`,v=val(k),n=val(it.id).n,e=estado(k)||estado(it.id);
       const gs=esPizza?T.map((t,i)=>`<td class="g" data-l="${esc(t)}">${inPorcion(k,v.g[i],i,s.u,`${n} ${t}`)}</td>`).join(''):`<td class="g" data-l="Porción">${inPorcion(k,v.g,null,s.u,`Porción de ${n}`)}</td>`;
       return `<tr class="${e==='borr'?'cambiado':''}" data-fila="${k}">
-        <td class="n"><input type="text" maxlength="${LIM.n}" value="${esc(n)}" data-id="${it.id}" data-campo="n" aria-label="Nombre"></td>
+        <td class="n"><input class="fld fld-txt" type="text" maxlength="${LIM.n}" value="${esc(n)}" data-id="${it.id}" data-campo="n" aria-label="Nombre"></td>
         <td class="p" data-l="Precio">${inPrecio(k,v.p,null,`Precio de ${n} en ${pl.t}`)}</td>${gs}
-        <td class="e">${e?`<button class="mini" type="button" data-restaurar="${it.id}|${k}" title="Volver al original" aria-label="Volver ${esc(n)} al original">↺</button>`:''}</td>
+        <td class="e">${e?`<button class="mini" type="button" data-restaurar="${it.id}|${k}" title="Volver al original" aria-label="Volver ${esc(n)} al original">Original</button>`:''}</td>
       </tr>`}).join('')}</tbody></table></div>`;
 }
 const cuenta=(s,pid)=>{const n=s.items.filter(it=>estado(`${it.id}@${pid}`)).length;return n?` <b class="n">${n}</b>`:''};
@@ -137,11 +139,11 @@ const COLOR={pizzas:'c-naranja',bordes:'c-crema',burger:'c-amarillo',perro:'c-na
 function pintar(){
   document.getElementById('secciones').innerHTML=M.secciones.map(s=>{
     const n=idsDe(s).filter(estado).length;
-    return `<button type="button" role="tab" class="tab${s.id===tab?' on':''}" aria-selected="${s.id===tab}" data-tab="${s.id}">${s.ico} ${esc(s.t)}${n?` <b class="n">${n}</b>`:''}</button>`}).join('');
+    return `<button type="button" role="tab" class="tab${s.id===tab?' on':''}" aria-selected="${s.id===tab}" data-tab="${s.id}">${esc(s.t)}${n?` <b class="n">${n}</b>`:''}</button>`}).join('');
   const s=SEC[tab];
   /* caja con banda de color, igual que en Cocina y Estadísticas (mismo color por categoría) */
   document.getElementById('menu').innerHTML=`<section class="caja sec ${COLOR[s.id]||'c-crema'}" aria-label="${esc(s.t)}">
-    <h2 class="banda"><span>${s.ico} ${esc(s.t)}${s.nota?` <small>${esc(s.nota)}</small>`:''}</span><b class="n">${s.items.length}</b></h2>
+    <h2 class="banda"><span>${esc(s.t)}${s.nota?` <small>${esc(s.nota)}</small>`:''}</span><b class="n">${s.items.length}</b></h2>
     ${s.extras?`<div class="cuerpo">${tablaExtras(s)}</div>`:`
       <div class="lista-cab" aria-hidden="true"><span>Nombre</span><span>Precio</span><span>Porción</span><span></span><span></span></div>
       <div class="lista">${s.items.map(i=>fila(i.id)).join('')}</div>`}
