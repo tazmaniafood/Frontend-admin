@@ -1,6 +1,7 @@
 /* Menú: la cocina cambia lo que YA existe en la tienda (no puede crear ni borrar):
-   - Platos, bordes y bebidas: nombre, descripción, precio y porción (g o ml); en pizzas y
-     bebidas el precio y la porción van por tamaño.
+   - Platos: nombre, descripción, precio y sus ingredientes, cada uno con su porción
+     (en pizzas, por tamaño); la porción total del plato es la suma de los ingredientes.
+   - Bordes y bebidas: nombre, precio y porción (bordes según el tamaño de la pizza, bebidas en ml).
    - Toppings y salsas: nombre (uno solo) y, por cada plato, su precio y su porción
      (en pizza la porción va por tamaño).
    Pantalla compacta: una pestaña por sección; cada plato es una fila que se abre para editar;
@@ -48,7 +49,16 @@ const abiertos=new Set();
 /* ---- Formatos ---- */
 const porcion=(g,u)=>g==null||g===''?'—':`${g} ${u}`;
 const resumenPrecio=(it,s)=>Array.isArray(it.p)?it.p.map((p,i)=>`<span><small>${esc(corto(s.tamanos[i]))}</small> $${dinero(p)}</span>`).join(''):`<span>$${dinero(it.p)}</span>`;
-const resumenPorcion=(it,s)=>Array.isArray(it.g)?(it.g.every(x=>x==null)?'<span class="falta">Sin porción</span>':it.g.map((g,i)=>`<span><small>${esc(corto(s.tamanos[i]))}</small> ${porcion(g,s.u)}</span>`).join('')):(it.g==null?'<span class="falta">Sin porción</span>':`<span>${porcion(it.g,s.u)}</span>`);
+/* Porción total de un plato = suma de sus ingredientes (j = tamaño en pizzas). null si no hay nada puesto */
+const total=(ing,j)=>{const xs=ing.map(x=>j==null?x.g:x.g[j]).filter(v=>Number.isFinite(v));return xs.length?Math.round(xs.reduce((a,b)=>a+b,0)*10)/10:null};
+const porTam=ing=>Array.isArray(ing[0]&&ing[0].g);
+const resumenIng=(it,s)=>{
+  const tot=porTam(it.ing)?s.tamanos.map((t,j)=>[t,total(it.ing,j)]):[[null,total(it.ing)]];
+  const nIng=`<span class="n-ing">${it.ing.length} ingredientes</span>`;
+  if(tot.every(([,v])=>v==null))return `<span class="falta">Sin porción</span>${nIng}`;
+  return tot.map(([t,v])=>`<span>${t?`<small>${esc(corto(t))}</small> `:''}${porcion(v,s.u)}</span>`).join('')+nIng;
+};
+const resumenPorcion=(it,s)=>it.ing?resumenIng(it,s):Array.isArray(it.g)?(it.g.every(x=>x==null)?'<span class="falta">Sin porción</span>':it.g.map((g,i)=>`<span><small>${esc(corto(s.tamanos[i]))}</small> ${porcion(g,s.u)}</span>`).join('')):(it.g==null?'<span class="falta">Sin porción</span>':`<span>${porcion(it.g,s.u)}</span>`);
 const corto=t=>({'Personal (lata)':'Lata','Personal':'P','Medium':'M','Familiar':'F'})[t]||t;
 const chip=e=>e==='borr'?'<span class="chip borr">✏️ Sin guardar</span>':e==='edit'?'<span class="chip edit">✅ Modificado</span>':'';
 
@@ -65,15 +75,31 @@ function cabeza(id){
     <span class="f-est">${chip(estado(id))}</span>
     <span class="f-abrir" aria-hidden="true">${abiertos.has(id)?'▲':'✏️'}</span>`;
 }
+/* campo de porción de un ingrediente */
+const inIng=(id,i,j,v,u,lab)=>`<span class="unidad"><input type="number" inputmode="decimal" min="0" max="${LIM.g}" step="1" value="${v==null?'':v}" placeholder="—" data-id="${id}" data-campo="ing" data-i="${i}" data-k="g"${j!=null?` data-j="${j}"`:''} aria-label="${esc(lab)}"><i aria-hidden="true">${u}</i></span>`;
+function tablaIng(id,it,s){
+  const tam=porTam(it.ing),T=tam?s.tamanos:[null];
+  return `<div class="bloque"><h4>🧾 Ingredientes y porción de cada uno</h4>
+  <table class="ing${tam?' tam3':''}"><thead><tr><th scope="col">Ingrediente</th>${T.map(t=>`<th scope="col" class="g">${t?esc(t):'Porción'} <small>${s.u}</small></th>`).join('')}</tr></thead>
+  <tbody>${it.ing.map((x,i)=>`<tr><td class="n"><input type="text" maxlength="${LIM.n}" value="${esc(x.n)}" data-id="${id}" data-campo="ing" data-i="${i}" data-k="n" aria-label="Ingrediente ${i+1}"></td>
+    ${T.map((t,j)=>`<td class="g" data-l="${t?esc(t):'Porción'}">${inIng(id,i,tam?j:null,tam?x.g[j]:x.g,s.u,`${x.n}${t?' '+t:''}`)}</td>`).join('')}</tr>`).join('')}</tbody>
+  <tfoot><tr><th scope="row">Porción total</th>${T.map((t,j)=>`<td class="g tot" data-l="${t?esc(t):'Total'}" data-total="${tam?j:''}">${porcion(total(it.ing,tam?j:null),s.u)}</td>`).join('')}</tr></tfoot></table></div>`;
+}
 function editor(id){
   const s=SEC[seccionDe(id)],it=val(id),o=BASE[id];
-  const filas=Array.isArray(o.p)
-    ?s.tamanos.map((t,i)=>`<tr><th scope="row">${esc(t)}</th><td>${inPrecio(id,it.p[i],i,`Precio ${t}`)}</td><td>${inPorcion(id,it.g[i],i,s.u,`Porción ${t}`)}</td></tr>`).join('')
-    :`<tr><th scope="row">Único</th><td>${inPrecio(id,it.p,null,'Precio')}</td><td>${inPorcion(id,it.g,null,s.u,'Porción')}</td></tr>`;
+  const precios=Array.isArray(o.p)
+    ?`<div class="precios">${s.tamanos.map((t,i)=>`<label><span>${esc(t)}</span>${inPrecio(id,it.p[i],i,`Precio ${t}`)}</label>`).join('')}</div>`
+    :`<div class="precios uno"><label><span>Precio</span>${inPrecio(id,it.p,null,'Precio')}</label></div>`;
+  const porc=it.g===undefined?'':Array.isArray(o.g)
+    ?`<div class="bloque"><h4>📏 Porción${s.id==='bordes'?' según el tamaño de la pizza':''}</h4><div class="precios">${s.tamanos.map((t,i)=>`<label><span>${esc(t)}</span>${inPorcion(id,it.g[i],i,s.u,`Porción ${t}`)}</label>`).join('')}</div></div>`
+    :`<div class="bloque"><h4>📏 Porción</h4><div class="precios uno"><label><span>Porción</span>${inPorcion(id,it.g,null,s.u,'Porción')}</label></div></div>`;
   return `<div class="editor">
-    <label class="campo"><span>Nombre</span><input type="text" maxlength="${LIM.n}" value="${esc(it.n)}" data-id="${id}" data-campo="n"></label>
+    <div class="ed-top">
+      <label class="campo"><span>Nombre</span><input type="text" maxlength="${LIM.n}" value="${esc(it.n)}" data-id="${id}" data-campo="n"></label>
+      <div class="campo"><span>💲 Precio${Array.isArray(o.p)?' por tamaño':''}</span>${precios}</div>
+    </div>
     ${o.d!==undefined?`<label class="campo"><span>Descripción <small class="cont">${(it.d||'').length}/${LIM.d}</small></span><textarea rows="2" maxlength="${LIM.d}" data-id="${id}" data-campo="d">${esc(it.d)}</textarea></label>`:''}
-    <table class="tam"><thead><tr><th scope="col">Tamaño</th><th scope="col">Precio</th><th scope="col">Porción (${s.u})</th></tr></thead><tbody>${filas}</tbody></table>
+    ${it.ing?tablaIng(id,it,s):porc}
     <div class="pie-ed">${estado(id)?`<p class="orig">Original: <b>${esc(o.n)}</b> · ${Array.isArray(o.p)?o.p.map(p=>'$'+dinero(p)).join(' / '):'$'+dinero(o.p)}</p><button class="btn sm" type="button" data-restaurar="${id}">↺ Volver al original</button>`:''}</div>
     <p class="err" role="alert"></p>
   </div>`;
@@ -137,7 +163,7 @@ function barra(){
 
 /* ---- Leer y validar un campo ---- */
 function leerCampo(el){
-  const k=el.dataset.campo,v=el.value;
+  const k=el.dataset.campo==='ing'?el.dataset.k:el.dataset.campo,v=el.value;
   if(k==='n'||k==='d')return v.replace(/\s+/g,' ').trim();
   if(k==='p'){const x=parseFloat(v);return v===''||isNaN(x)?NaN:Math.round(x*100)/100}
   if(k==='g'){if(v==='')return null;const x=parseFloat(v);return isNaN(x)?NaN:Math.round(x*10)/10}
@@ -148,22 +174,35 @@ function valido(k,x){
   if(k==='p')return Number.isFinite(x)&&x>=0&&x<=LIM.p;
   if(k==='g')return x===null||(Number.isFinite(x)&&x>=0&&x<=LIM.g);
 }
+/* valida un valor guardado en el borrador (los ingredientes son una lista de {n, g}) */
+function validoValor(k,x){
+  if(k==='ing')return x.every(r=>valido('n',r.n)&&(Array.isArray(r.g)?r.g.every(v=>valido('g',v)):valido('g',r.g)));
+  return Array.isArray(x)?x.every(y=>valido(k,y)):valido(k,x);
+}
 const MSG={n:'El nombre no puede quedar vacío.',p:`El precio debe estar entre $0 y $${LIM.p}.`,g:`La porción debe ser un número entre 0 y ${LIM.g} (o vacía).`};
 function marcarError(el,ok){
   el.setAttribute('aria-invalid',!ok);
   const cont=el.closest('.editor')||el.closest('tr');
-  if(cont&&cont.matches('.editor')){const malos=[...cont.querySelectorAll('[aria-invalid="true"]')].map(x=>MSG[x.dataset.campo]);cont.querySelector('.err').textContent=[...new Set(malos)].join(' ')}
+  if(cont&&cont.matches('.editor')){const malos=[...cont.querySelectorAll('[aria-invalid="true"]')].map(x=>MSG[x.dataset.campo==='ing'?x.dataset.k:x.dataset.campo]);cont.querySelector('.err').textContent=[...new Set(malos)].join(' ')}
 }
 document.addEventListener('input',e=>{
   const el=e.target;if(!el.dataset||!el.dataset.campo)return;
   const id=el.dataset.id,k=el.dataset.campo,i=el.dataset.i;
   if(k==='d'){const c=el.closest('.editor')?.querySelector('.cont');if(c)c.textContent=`${el.value.length}/${LIM.d}`}
-  const x=leerCampo(el);marcarError(el,valido(k,x));
+  const x=leerCampo(el);marcarError(el,valido(k==='ing'?el.dataset.k:k,x));
   let nuevo=x;
-  if(i!==undefined){nuevo=[...val(id)[k]];nuevo[+i]=x}
+  if(k==='ing'){ // ingrediente i: su nombre o su porción (j = tamaño)
+    nuevo=val(id).ing.map(r=>({n:r.n,g:Array.isArray(r.g)?[...r.g]:r.g}));
+    const r=nuevo[+i];
+    if(el.dataset.k==='n')r.n=x;else if(el.dataset.j!==undefined)r.g[+el.dataset.j]=x;else r.g=x;
+  }else if(i!==undefined){nuevo=[...val(id)[k]];nuevo[+i]=x}
   const b={...(borrador[id]||{})};
   if(iguales(nuevo,ref(id)[k]))delete b[k];else b[k]=nuevo;
   if(Object.keys(b).length)borrador[id]=b;else delete borrador[id];
+  if(k==='ing'){ // porción total en vivo
+    const ed=el.closest('.editor'),s=SEC[seccionDe(id)],ing=val(id).ing;
+    ed?.querySelectorAll('[data-total]').forEach(c=>c.textContent=porcion(total(ing,c.dataset.total===''?null:+c.dataset.total),s.u));
+  }
   /* el nombre de un topping aparece en las 5 tablas: se actualiza el estado de su fila */
   document.querySelectorAll(`[data-fila="${id}"],[data-fila^="${id}@"]`).forEach(f=>refrescarFila(f.dataset.fila));
   if(!document.querySelector(`[data-fila="${id}"]`))refrescarFila(id);
@@ -194,12 +233,12 @@ document.getElementById('descartar').addEventListener('click',()=>{
 document.getElementById('guardar').addEventListener('click',()=>{
   const ids=Object.keys(borrador);
   if(!ids.length)return enviar();
-  const malo=ids.find(id=>Object.entries(borrador[id]).some(([k,x])=>Array.isArray(x)?x.some(y=>!valido(k,y)):!valido(k,x)));
+  const malo=ids.find(id=>Object.entries(borrador[id]).some(([k,x])=>!validoValor(k,x)));
   if(malo){
     const s=seccionDe(malo);if(s!==tab){tab=s;pintar()}
     if(malo.includes('@')){plato=malo.split('@')[1];pintar()}
     else if(!abiertos.has(malo)){abiertos.add(malo);pintar()}
-    document.querySelectorAll('[data-campo]').forEach(el=>marcarError(el,valido(el.dataset.campo,leerCampo(el))));
+    document.querySelectorAll('[data-campo]').forEach(el=>marcarError(el,valido(el.dataset.campo==='ing'?el.dataset.k:el.dataset.campo,leerCampo(el))));
     const el=document.querySelector('[aria-invalid="true"]');if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.focus({preventScroll:true})}
     return TAZ.aviso('Revisa los campos marcados en rojo');
   }

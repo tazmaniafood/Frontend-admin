@@ -2,8 +2,10 @@
    descripciones y precios originales. La página Menú solo MODIFICA estos elementos:
    no se pueden crear ni borrar.
    - p: precio (lista con un precio por tamaño en pizzas y bebidas).
-   - g: porción, en la unidad de la sección (u: 'g' gramos o 'ml' mililitros).
-        null = todavía sin definir. En pizzas y bebidas va una porción por tamaño.
+   - ing: ingredientes del plato [{n, g}]: cada uno con su porción (en pizzas, una por tamaño).
+          La porción total del plato es la suma de sus ingredientes.
+   - g: porción directa (bebidas en ml y bordes por tamaño de pizza), en la unidad u.
+        null = todavía sin definir.
    - Toppings y salsas: el nombre es uno solo, pero el precio y la porción van POR PLATO
      (no se le echa lo mismo a una pizza que a un perro). En pizza la porción va por tamaño. */
 window.TAZ_MENU_BASE={
@@ -60,10 +62,47 @@ window.TAZ_MENU_BASE={
       19.0,
       24.0
      ],
-     "g": [
-      null,
-      null,
-      null
+     "ing": [
+      {
+       "n": "Masa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Piña",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Queso rayado",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Jamón",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Cerezas (opcional)",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      }
      ]
     },
     {
@@ -75,10 +114,39 @@ window.TAZ_MENU_BASE={
       19.0,
       24.0
      ],
-     "g": [
-      null,
-      null,
-      null
+     "ing": [
+      {
+       "n": "Masa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Pepperoni",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Queso",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Jamón",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      }
      ]
     },
     {
@@ -90,10 +158,63 @@ window.TAZ_MENU_BASE={
       22.0,
       26.0
      ],
-     "g": [
-      null,
-      null,
-      null
+     "ing": [
+      {
+       "n": "Masa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Piña",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Cereza",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Durazno",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Jamón",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Queso",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Salsa de la casa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      }
      ]
     },
     {
@@ -105,10 +226,55 @@ window.TAZ_MENU_BASE={
       22.0,
       28.0
      ],
-     "g": [
-      null,
-      null,
-      null
+     "ing": [
+      {
+       "n": "Masa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Pollo desmechado",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Champiñones",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Jamón",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Queso rayado",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Salsa de la casa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      }
      ]
     },
     {
@@ -120,10 +286,71 @@ window.TAZ_MENU_BASE={
       24.0,
       29.0
      ],
-     "g": [
-      null,
-      null,
-      null
+     "ing": [
+      {
+       "n": "Masa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Pollo desmechado",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Champiñones",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Camarones",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Jamón",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Pimentón rojo y verde",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Queso rayado",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Salsa de la casa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      }
      ]
     },
     {
@@ -135,10 +362,71 @@ window.TAZ_MENU_BASE={
       24.0,
       29.0
      ],
-     "g": [
-      null,
-      null,
-      null
+     "ing": [
+      {
+       "n": "Masa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Carne desmechada",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Jamón",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Queso rayado",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Pimentón",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Cebolla",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Salsa picosa de la casa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Tocineta",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      }
      ]
     },
     {
@@ -150,10 +438,55 @@ window.TAZ_MENU_BASE={
       26.0,
       32.0
      ],
-     "g": [
-      null,
-      null,
-      null
+     "ing": [
+      {
+       "n": "Masa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Camarones",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Jamón",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Queso rayado",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Pimentón",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Salsa de la casa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      }
      ]
     },
     {
@@ -165,10 +498,63 @@ window.TAZ_MENU_BASE={
       28.0,
       34.0
      ],
-     "g": [
-      null,
-      null,
-      null
+     "ing": [
+      {
+       "n": "Masa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Jamón",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Carne de res",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Pollo",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Chorizo",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Tocino",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Queso rayado",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      }
      ]
     },
     {
@@ -180,10 +566,71 @@ window.TAZ_MENU_BASE={
       22.0,
       28.0
      ],
-     "g": [
-      null,
-      null,
-      null
+     "ing": [
+      {
+       "n": "Masa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Carne molida",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Maíz",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Tocino",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Pimiento",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Jamón",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Queso",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Salsa de la casa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      }
      ]
     },
     {
@@ -195,10 +642,23 @@ window.TAZ_MENU_BASE={
       15.0,
       19.0
      ],
-     "g": [
-      null,
-      null,
-      null
+     "ing": [
+      {
+       "n": "Masa",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "n": "Queso",
+       "g": [
+        null,
+        null,
+        null
+       ]
+      }
      ]
     }
    ]
@@ -208,25 +668,42 @@ window.TAZ_MENU_BASE={
    "t": "Bordes",
    "ico": "🍞",
    "u": "g",
-   "nota": "Bordes de pizza",
+   "tamanos": [
+    "Personal",
+    "Medium",
+    "Familiar"
+   ],
+   "nota": "Bordes de pizza: el precio es uno solo y la porción va según el tamaño de la pizza",
    "items": [
     {
      "id": "borde-normal",
      "n": "Normal",
      "p": 0.0,
-     "g": null
+     "g": [
+      null,
+      null,
+      null
+     ]
     },
     {
      "id": "borde-bocadillo",
      "n": "Bocadillo",
      "p": 3.0,
-     "g": null
+     "g": [
+      null,
+      null,
+      null
+     ]
     },
     {
      "id": "borde-queso",
      "n": "Queso",
      "p": 3.0,
-     "g": null
+     "g": [
+      null,
+      null,
+      null
+     ]
     }
    ]
   },
@@ -241,21 +718,60 @@ window.TAZ_MENU_BASE={
      "n": "Gran Burguer",
      "d": "Carne, pollo apanado, tocineta",
      "p": 13.0,
-     "g": null
+     "ing": [
+      {
+       "n": "Pan",
+       "g": null
+      },
+      {
+       "n": "Carne",
+       "g": null
+      },
+      {
+       "n": "Pollo apanado",
+       "g": null
+      },
+      {
+       "n": "Tocineta",
+       "g": null
+      }
+     ]
     },
     {
      "id": "burger-de-carne",
      "n": "Burguer de carne",
      "d": "Carne y papas a la francesa",
      "p": 10.0,
-     "g": null
+     "ing": [
+      {
+       "n": "Pan",
+       "g": null
+      },
+      {
+       "n": "Carne",
+       "g": null
+      },
+      {
+       "n": "Papas a la francesa",
+       "g": null
+      }
+     ]
     },
     {
      "id": "burger-de-pollo",
      "n": "Burguer de pollo",
      "d": "Pollo apanado",
      "p": 10.0,
-     "g": null
+     "ing": [
+      {
+       "n": "Pan",
+       "g": null
+      },
+      {
+       "n": "Pollo apanado",
+       "g": null
+      }
+     ]
     }
    ]
   },
@@ -270,7 +786,52 @@ window.TAZ_MENU_BASE={
      "n": "Perro salvaje",
      "d": "Pan horneado, carne picada, pollo picado, salchicha tradicional, maíz, queso rayado, tocineta, cebolla grille o caramelizada, lechuga, salsa de la casa y chorizo",
      "p": 10.0,
-     "g": null
+     "ing": [
+      {
+       "n": "Pan horneado",
+       "g": null
+      },
+      {
+       "n": "Carne picada",
+       "g": null
+      },
+      {
+       "n": "Pollo picado",
+       "g": null
+      },
+      {
+       "n": "Salchicha tradicional",
+       "g": null
+      },
+      {
+       "n": "Maíz",
+       "g": null
+      },
+      {
+       "n": "Queso rayado",
+       "g": null
+      },
+      {
+       "n": "Tocineta",
+       "g": null
+      },
+      {
+       "n": "Cebolla grille o caramelizada",
+       "g": null
+      },
+      {
+       "n": "Lechuga",
+       "g": null
+      },
+      {
+       "n": "Salsa de la casa",
+       "g": null
+      },
+      {
+       "n": "Chorizo",
+       "g": null
+      }
+     ]
     }
    ]
   },
@@ -285,14 +846,96 @@ window.TAZ_MENU_BASE={
      "n": "Salchi Californiana",
      "d": "Papas, salchicha, pollo, carne, maíz, lechuga, queso, chorizo y salsa de la casa",
      "p": 16.0,
-     "g": null
+     "ing": [
+      {
+       "n": "Papas",
+       "g": null
+      },
+      {
+       "n": "Salchicha",
+       "g": null
+      },
+      {
+       "n": "Pollo",
+       "g": null
+      },
+      {
+       "n": "Carne",
+       "g": null
+      },
+      {
+       "n": "Maíz",
+       "g": null
+      },
+      {
+       "n": "Lechuga",
+       "g": null
+      },
+      {
+       "n": "Queso",
+       "g": null
+      },
+      {
+       "n": "Chorizo",
+       "g": null
+      },
+      {
+       "n": "Salsa de la casa",
+       "g": null
+      }
+     ]
     },
     {
      "id": "salchipapas-salchi-tazmania",
      "n": "Salchi Tazmania",
      "d": "Todo lo de la Californiana con camarones y tocineta",
      "p": 19.0,
-     "g": null
+     "ing": [
+      {
+       "n": "Papas",
+       "g": null
+      },
+      {
+       "n": "Salchicha",
+       "g": null
+      },
+      {
+       "n": "Pollo",
+       "g": null
+      },
+      {
+       "n": "Carne",
+       "g": null
+      },
+      {
+       "n": "Maíz",
+       "g": null
+      },
+      {
+       "n": "Lechuga",
+       "g": null
+      },
+      {
+       "n": "Queso",
+       "g": null
+      },
+      {
+       "n": "Chorizo",
+       "g": null
+      },
+      {
+       "n": "Salsa de la casa",
+       "g": null
+      },
+      {
+       "n": "Camarones",
+       "g": null
+      },
+      {
+       "n": "Tocineta",
+       "g": null
+      }
+     ]
     }
    ]
   },
@@ -307,7 +950,36 @@ window.TAZ_MENU_BASE={
      "n": "Mazorcada TAZ",
      "d": "Maíz, carne y pollo picado, lechuga, queso rayado, chorizo y salsa de la casa",
      "p": 16.0,
-     "g": null
+     "ing": [
+      {
+       "n": "Maíz",
+       "g": null
+      },
+      {
+       "n": "Carne picada",
+       "g": null
+      },
+      {
+       "n": "Pollo picado",
+       "g": null
+      },
+      {
+       "n": "Lechuga",
+       "g": null
+      },
+      {
+       "n": "Queso rayado",
+       "g": null
+      },
+      {
+       "n": "Chorizo",
+       "g": null
+      },
+      {
+       "n": "Salsa de la casa",
+       "g": null
+      }
+     ]
     }
    ]
   },

@@ -36,10 +36,27 @@
 .campo .cont{font-size:11.5px}
 .campo input,.campo textarea,.pesos input,.unidad input,.ex td.n input{width:100%;background:var(--cream);color:var(--ink);border:3px solid var(--ink);border-radius:10px;padding:6px 10px;font-weight:800;font-size:15.5px}
 .campo textarea{resize:vertical;min-height:52px;font-weight:700;font-size:14px;line-height:1.35}
-.tam{width:100%;max-width:560px;border-collapse:separate;border-spacing:0 6px}
-.tam th{text-align:left;color:var(--mut);font-size:12.5px;font-weight:900;padding:0 8px 0 0;white-space:nowrap}
-.tam thead th{font-size:11.5px;text-transform:uppercase;letter-spacing:.4px}
-.tam td{padding:0 8px 0 0}
+.ed-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:12px;align-items:start}
+.precios{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.precios.uno{grid-template-columns:minmax(0,180px)}
+.precios label{display:grid;gap:3px}
+.precios label>span{color:var(--mut);font-size:11.5px;font-weight:900;text-transform:uppercase;letter-spacing:.4px}
+.bloque{display:grid;gap:6px}
+.bloque h4{margin:4px 0 0;font:400 18px/1.2 var(--hd);letter-spacing:.4px;color:var(--yel)}
+/* Ingredientes */
+.ing{width:100%;border-collapse:collapse;background:var(--card2);border:2px solid var(--ink);border-radius:12px;overflow:hidden}
+.ing th{text-align:left;color:var(--mut);font-size:11.5px;font-weight:900;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;border-bottom:2px solid var(--ink)}
+.ing th small{text-transform:none;font-weight:800}
+.ing td{padding:4px 10px;border-bottom:1px solid #ffffff14}
+.ing td.g,.ing th.g{width:130px}
+.ing td.n input{width:100%;background:transparent;color:var(--cream);border:2px solid transparent;border-radius:8px;padding:4px 6px;font-weight:800;font-size:14.5px}
+.ing td.n input:hover{border-color:var(--line)}
+.ing td.n input:focus{background:var(--cream);color:var(--ink);border-color:var(--ink)}
+.ing .unidad input{font-size:14.5px;padding-top:4px;padding-bottom:4px;border-width:2px}
+.ing tfoot th,.ing tfoot td{border-top:2px solid var(--ink);border-bottom:0;padding:8px 10px;color:var(--cream);font-size:13px;font-weight:900}
+.ing tfoot th{text-transform:uppercase}
+.ing .tot{color:var(--yel);font-size:15px;font-variant-numeric:tabular-nums}
+.n-ing{color:var(--mut);font-size:11.5px;font-weight:800;flex-basis:100%}
 .pesos,.unidad{position:relative;display:block;min-width:84px}
 .pesos i{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-style:normal;font-weight:900;color:var(--ink);pointer-events:none}
 .pesos input{padding-left:22px;font-variant-numeric:tabular-nums}
@@ -89,7 +106,26 @@ main{padding-bottom:110px;max-width:1100px}
   .f-cab{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"nom abrir" "pre pre" "por est";gap:6px 10px}
   .f-nom{grid-area:nom}.f-pre{grid-area:pre}.f-por{grid-area:por}.f-est{grid-area:est;justify-self:end}.f-abrir{grid-area:abrir}
   .f-por::before{content:'Porción:';color:var(--mut);font-size:12px;font-weight:900}
-  .tam th:first-child{width:1%}
+  .ed-top{grid-template-columns:1fr}
+  /* ingredientes como lista: nombre arriba y porciones debajo */
+  .ing,.ing tbody,.ing tfoot{display:block}
+  .ing thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .ing tr{display:grid;grid-template-columns:repeat(var(--c,1),minmax(0,1fr));gap:4px 8px;padding:8px 10px;border-bottom:1px solid #ffffff14}
+  .ing.tam3 tr{--c:3}
+  /* con tamaños: los nombres de tamaño van una sola vez arriba, no en cada ingrediente */
+  .ing.tam3 thead{position:static;width:auto;height:auto;overflow:visible;clip:auto;display:block}
+  .ing.tam3 thead tr{border-bottom:2px solid var(--ink);padding:6px 10px}
+  .ing.tam3 thead th{padding:0;border:0}
+  .ing.tam3 thead th:first-child{display:none}
+  .ing.tam3 td.g[data-l]::before{content:none}
+  .ing td,.ing tfoot th,.ing tfoot td{display:grid;gap:2px;padding:0;border:0;width:auto!important}
+  .ing td.n,.ing tfoot th{grid-column:1/-1}
+  .ing td.g[data-l]::before,.ing .tot[data-l]::before{content:attr(data-l);color:var(--mut);font-size:10.5px;font-weight:900;text-transform:uppercase}
+  .ing:not(.tam3) td.g[data-l]::before{content:none}
+  .ing:not(.tam3) tr{grid-template-columns:minmax(0,1fr) 110px;align-items:center}
+  .ing:not(.tam3) td.n{grid-column:auto}
+  .ing:not(.tam3) tfoot th{grid-column:auto;align-self:center}
+  .ing tfoot tr{border-top:2px solid var(--ink)}
   /* tabla de toppings como tarjetas de 2 columnas */
   .tabla-ex{padding:0;background:none;border:0;box-shadow:none}
   .ex thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -106,4 +142,4 @@ main{padding-bottom:110px;max-width:1100px}
   .ex tr.cambiado{border-color:var(--yel)}
   .ex tr.cambiado td:first-child{box-shadow:none}
 }
-@media(max-width:560px){.tab{font-size:15px;padding:3px 10px}.pesos,.unidad{min-width:0}.tam td,.tam th{padding-right:6px}}
+@media(max-width:560px){.tab{font-size:15px;padding:3px 10px}.pesos,.unidad{min-width:0}.precios{gap:6px}.precios.uno{grid-template-columns:1fr}}
