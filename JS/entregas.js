@@ -1,5 +1,5 @@
 /* Entregas: todos los pedidos listos por entregar, a domicilio y para llevar.
-   Filtro arriba: Todos / Domicilio / Para llevar. Los de domicilio muestran la dirección.
+   Arriba se elige Domicilio o Para llevar. Los de domicilio muestran la dirección.
    1. El repartidor desliza el botón verde hasta el final.
    2. Se abre la cámara DENTRO del navegador (pide permiso la primera vez).
    3. Toma la foto, puede repetirla, y al "Enviar" se sube al servidor:
@@ -10,7 +10,7 @@
    Sin foto no se entrega. Con teclado: enfocar el botón y presionar Enter o Espacio. */
 (()=>{
 const API='/api'; // Nginx manda /api/ al backend (Server-TAZ)
-let d=TAZ.load(),filtro='todos';
+let d=TAZ.load(),filtro='domicilio';
 const tipo=o=>o.tipo||'domicilio';
 
 function tarjeta(o){
@@ -33,9 +33,9 @@ function pintar(){
   const listos=d.filter(o=>o.estado==='listo');
   document.querySelectorAll('.f').forEach(b=>{
     const on=b.dataset.f===filtro;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);
-    b.querySelector('b').textContent=b.dataset.f==='todos'?listos.length:listos.filter(o=>tipo(o)===b.dataset.f).length;
+    b.querySelector('b').textContent=listos.filter(o=>tipo(o)===b.dataset.f).length;
   });
-  const lista=listos.filter(o=>filtro==='todos'||tipo(o)===filtro).sort((a,b)=>a.creado-b.creado);
+  const lista=listos.filter(o=>tipo(o)===filtro).sort((a,b)=>a.creado-b.creado);
   const n=document.getElementById('n');
   if(n)n.textContent=lista.length===1?'1 pedido por entregar':`${lista.length} pedidos por entregar`;
   const p=document.getElementById('pend'),np=d.filter(o=>o.fotoPendiente).length;
