@@ -1,43 +1,56 @@
-/* ============ ESTADÍSTICAS ============ */
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
-.kpi{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"i t" "v v" "s s";gap:4px 10px;align-items:center;padding:14px 16px}
+/* ============ ESTADÍSTICAS DE LA SEMANA ============ */
+.pagehead p b{color:var(--cream)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+.kpi{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"i t" "v v" "s s";gap:4px 10px;align-items:center;padding:14px 16px;min-width:0}
 .kpi .i{grid-area:i;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--cream);border:3px solid var(--ink);font-size:20px}
 .kpi small{grid-area:t;font-weight:800;color:var(--mut);font-size:13.5px}
-.kpi b{grid-area:v;font:400 38px/1.1 var(--hd);color:var(--yel);letter-spacing:.5px;font-variant-numeric:tabular-nums}
+.kpi b{grid-area:v;font:400 34px/1.1 var(--hd);color:var(--yel);letter-spacing:.5px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .kpi em{grid-area:s;font-style:normal;font-size:12.5px;font-weight:800;color:var(--mut)}
 
-.graficas{display:grid;grid-template-columns:1.6fr 1fr;gap:18px;margin-bottom:18px}
-.graficas .panel{padding:16px 18px}
-.graficas h2{font-size:26px;color:var(--cream)}
-.sub{margin:2px 0 14px;color:var(--mut);font-size:13px;font-weight:700}
+.graficas{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;margin-bottom:26px}
+.graficas .panel{padding:16px 18px 34px;min-width:0}
+.graficas h2{font-size:24px;color:var(--cream)}
+.sub{margin:2px 0 12px;color:var(--mut);font-size:13px;font-weight:700}
 
-/* Ventas por hora: una serie, barras naranjas, la hora pico resaltada */
-.barras{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;align-items:end;height:240px;padding:0 2px;border-bottom:2px solid #ffffff33;background:repeating-linear-gradient(to top,#ffffff10 0 1px,transparent 1px 25%)}
+/* Barras verticales: una serie, naranja; el valor más alto en amarillo */
+.barras{display:grid;grid-template-columns:repeat(var(--n,12),1fr);gap:6px;align-items:end;height:200px;padding:0 2px;border-bottom:2px solid #ffffff33;background:repeating-linear-gradient(to top,#ffffff10 0 1px,transparent 1px 25%)}
+.barras.horas{height:120px;gap:4px}
 .b{position:relative;display:flex;flex-direction:column;justify-content:flex-end;height:100%;outline:none}
 .b i{position:relative;display:block;min-height:4px;background:var(--org);border-radius:4px 4px 0 0;transition:filter .15s}
 .b.pico i{background:var(--yel)}
 .b i em{position:absolute;left:50%;bottom:calc(100% + 4px);transform:translateX(-50%);font:400 14px/1 var(--hd);color:var(--cream);white-space:nowrap;font-style:normal}
+.barras.horas .b i em{font-size:12px}
 .b small{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:5px;font-size:11px;font-weight:800;color:var(--mut);white-space:nowrap}
+.barras.horas .b small{font-size:9.5px}
 .tip{font-style:normal;position:absolute;z-index:3;left:50%;bottom:calc(100% + 6px);font-family:var(--bd);transform:translateX(-50%);white-space:nowrap;background:var(--cream);color:var(--ink);border:2px solid var(--ink);border-radius:8px;padding:3px 8px;font-size:12.5px;font-weight:700;pointer-events:none;display:none}
 .b:hover .tip,.b:focus-visible .tip{display:block}
 .b:nth-child(-n+2) .tip{left:0;transform:none}.b:nth-last-child(-n+2) .tip{left:auto;right:0;transform:none}
 .b:hover i,.b:focus-visible i{filter:brightness(1.15)}
 .b:hover i em,.b:focus-visible i em{opacity:0}
-.g-horas{padding-bottom:36px!important}
+.barras.horas .b:nth-child(even) small{visibility:hidden}
 
 /* Lo más vendido */
-.top5{margin:0;padding:0;list-style:none;display:grid;gap:12px}
-.top5 li{display:grid;grid-template-columns:1fr auto;grid-template-areas:"nm q" "pista pista";gap:4px 10px;font-weight:800}
-.top5 .nm{grid-area:nm}
-.top5 b{grid-area:q;font:400 20px/1 var(--hd);color:var(--cream)}
-.pista{grid-area:pista;height:14px;background:#ffffff14;border-radius:99px;overflow:hidden}
-.pista i{display:block;height:100%;background:var(--org);border-radius:99px}
+.seccion{font-size:clamp(30px,4vw,40px);color:var(--yel);-webkit-text-stroke:5px var(--ink);paint-order:stroke fill;text-shadow:3px 3px 0 var(--ink);margin:0 0 14px}
+.ranking{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
+.rk{padding:16px 18px;min-width:0}
+.rk.ancho{grid-column:span 2}
+.rk.completo{grid-column:1/-1}
+.rk.completo .rank{grid-template-columns:repeat(3,1fr);column-gap:26px}
+.rk h3{font-size:22px;color:var(--cream)}
+.rank{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.rk.ancho .rank{grid-template-columns:repeat(2,1fr);column-gap:26px}
+.rank li{display:grid;grid-template-columns:22px 1fr auto;grid-template-areas:"pos nm q" "pos pista pc";gap:3px 10px;align-items:center;font-weight:800;font-size:14px}
+.rank .pos{grid-area:pos;align-self:start;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--card2);color:var(--mut);font-size:12px;font-weight:900}
+.rank li:first-child .pos{background:var(--yel);color:var(--ink)}
+.rank .nm{grid-area:nm;min-width:0}
+.rank .nm small{display:block;color:var(--mut);font-size:12px;font-weight:700}
+.rank b{grid-area:q;font:400 20px/1 var(--hd);color:var(--cream);font-variant-numeric:tabular-nums}
+.rank .pista{grid-area:pista;height:10px;background:#ffffff14;border-radius:99px;overflow:hidden}
+.rank .pista i{display:block;height:100%;background:var(--org);border-radius:99px}
+.rank .pista i.lider{background:var(--yel)}
+.rank .pc{grid-area:pc;color:var(--mut);font-size:12px;font-weight:800;text-align:right;min-width:34px}
 
-.tabla{padding:12px 18px}
-.tabla summary{cursor:pointer;font-weight:800;color:var(--mut)}
-.tabla table{width:100%;margin-top:10px;border-collapse:collapse;font-variant-numeric:tabular-nums}
-.tabla th,.tabla td{padding:6px 8px;text-align:left;border-bottom:1px solid #ffffff1c}
-.tabla th{color:var(--mut);font-size:13px}
-
+@media(max-width:1100px){.ranking{grid-template-columns:repeat(2,1fr)}.rk.completo .rank{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:1000px){.kpis{grid-template-columns:repeat(2,1fr)}.graficas{grid-template-columns:1fr}}
-@media(max-width:520px){.b:nth-child(even) small{visibility:hidden}.kpi b{font-size:30px}.barras{height:200px;gap:3px}.b small{font-size:9.5px}.b i em{font-size:12px}}
+@media(max-width:700px){.ranking{grid-template-columns:1fr}.rk.ancho{grid-column:auto}.rk.ancho .rank,.rk.completo .rank{grid-template-columns:1fr}}
+@media(max-width:520px){.kpi b{font-size:26px}.barras{height:170px;gap:3px}.barras.horas{height:110px;gap:2px}.b small{font-size:9.5px}.b i em{font-size:12px}.barras.dias .b small{font-size:9px}}

@@ -15,16 +15,28 @@ function evidencia(o){
   if(o.fotoEnviada)return `<button class="btn sm" type="button" data-ver="${o.id}">📷 Ver foto</button>`;
   return o.estado==='entregado'?'<span class="nada">Sin foto</span>':'<span class="nada">Aún no se entrega</span>';
 }
+/* Estado que se muestra al final de cada fila.
+   nuevo     -> En cocina   (está en el tablero de Cocina)
+   listo     -> En reparto  (cocina lo terminó y va a Entregas; para llevar: listo para recoger)
+   entregado -> Entregado
+   "Nuevo" queda para cuando el pedido llegue de la tienda y cocina aún no lo haya visto. */
+const STATUS={recibido:['nuevo','🆕 Nuevo'],nuevo:['cocina','👨‍🍳 En cocina'],listo:['reparto','🛵 En reparto'],entregado:['entregado','🏁 Entregado']};
+function status(o){
+  if(o.estado==='listo'&&o.tipo==='llevar')return '<span class="st reparto">🥡 Listo para recoger</span>';
+  const [c,t]=STATUS[o.estado]||['nuevo',o.estado];return `<span class="st ${c}">${t}</span>`;
+}
 function fila(o){
-  const E=TAZ.ESTADOS[o.estado]||{t:o.estado,ico:''};
   return `<tr>
-    <td data-l="N.º pedido"><div><b class="num">#${esc(o.id)}</b><small class="sub">${E.ico} ${esc(E.t)} · ${o.tipo==='llevar'?'🥡 Para llevar':'🛵 Domicilio'}</small></div></td>
+    <td data-l="N.º pedido"><div><b class="num">#${esc(o.id)}</b>${o.tipo==='llevar'
+      ?'<span class="dir llevar">🥡 Para llevar</span>'
+      :`<span class="dir"><span class="dir-t">🛵 Domicilio</span>${o.dir?`<a href="https://maps.google.com/?q=${encodeURIComponent(o.dir)}" target="_blank" rel="noopener">📍 ${esc(o.dir)}</a>`:''}</span>`}</div></td>
     <td data-l="Orden"><div><ul class="orden">${o.items.map(i=>`<li><b>${esc(i.q)}×</b> ${esc(i.n)}${i.d?` <small>${esc(i.d)}</small>`:''}</li>`).join('')}</ul><small class="sub total">${TAZ.fmt(o.total)}</small></div></td>
     <td data-l="Celular"><div><a href="tel:${esc(String(o.tel).replace(/\s/g,''))}">${esc(o.tel)}</a></div></td>
     <td data-l="Nombre"><div>${esc(o.cliente)}</div></td>
     <td data-l="Pago"><div>${o.pagado?'<span class="chip si">✅ Pagado</span>':'<span class="chip no">⏳ Sin pagar</span>'}</div></td>
     <td data-l="Medio de pago"><div>${esc(TAZ.MEDIOS[o.medio]||o.medio||'—')}</div></td>
     <td data-l="Evidencia"><div>${evidencia(o)}</div></td>
+    <td data-l="Estado"><div>${status(o)}</div></td>
   </tr>`;
 }
 function pintar(){
@@ -33,7 +45,7 @@ function pintar(){
     &&(!q||String(o.id).includes(q)||String(o.cliente).toLowerCase().includes(q)||String(o.tel).replace(/\s/g,'').includes(q.replace(/\s/g,''))))
     .sort((a,b)=>b.creado-a.creado);
   document.getElementById('n').textContent=lista.length===1?'1 pedido':`${lista.length} pedidos`;
-  document.getElementById('filas').innerHTML=lista.length?lista.map(fila).join(''):'<tr class="vacio"><td colspan="7"><p class="empty">No hay pedidos que coincidan</p></td></tr>';
+  document.getElementById('filas').innerHTML=lista.length?lista.map(fila).join(''):'<tr class="vacio"><td colspan="8"><p class="empty">No hay pedidos que coincidan</p></td></tr>';
 }
 
 /* ---- Visor de la foto ---- */

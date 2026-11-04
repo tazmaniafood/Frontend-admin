@@ -28,6 +28,14 @@
 .foto{display:block;width:64px;height:64px;padding:0;border:3px solid var(--cream);border-radius:12px;overflow:hidden;background:#000;box-shadow:2px 3px 0 var(--ink)}
 .foto img{display:block;width:100%;height:100%;object-fit:cover}
 .foto:hover{border-color:var(--yel)}
+.dir{display:grid;gap:2px;margin-top:6px;max-width:220px;font-size:12.5px;font-weight:800;color:var(--mut);line-height:1.35}
+.dir a{white-space:normal;color:var(--cream);font-weight:700}
+.dir.llevar{color:var(--yel)}
+.st{display:inline-flex;align-items:center;gap:5px;border:2px solid var(--ink);border-radius:99px;padding:2px 10px;font-size:12.5px;font-weight:900;white-space:nowrap;color:var(--ink)}
+.st.nuevo{background:#7fb2ee}
+.st.cocina{background:var(--org)}
+.st.reparto{background:var(--yel)}
+.st.entregado{background:var(--ok)}
 .nada{color:var(--mut);font-size:12.5px;font-weight:800}
 .vacio td{padding:18px}
 
