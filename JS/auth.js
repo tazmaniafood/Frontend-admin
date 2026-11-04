@@ -1,5 +1,5 @@
 /* Sesión del panel admin: un solo usuario (admin) que ve todo el panel:
-   Estadísticas, Cocina, Entregas y Todos los pedidos.
+   Estadísticas, Cocina, Entregas, Todos los pedidos y Menú.
    PROVISIONAL: usuario y contraseña fijos en el navegador, solo para pruebas.
    No es seguridad real (cualquiera puede leer este archivo). Cuando exista el
    backend, login() debe llamar a la API y la sesión debe validarse en el servidor.
@@ -7,9 +7,9 @@
 (()=>{
 const KEY='taz-admin-sesion';
 const USUARIOS={
-  admin:{clave:'Admin2026*', rol:'ADMIN', inicio:'estadisticas.html', paginas:['estadisticas.html','cocina.html','entregas.html','todos-pedidos.html']}
+  admin:{clave:'Admin2026*', rol:'ADMIN', inicio:'estadisticas.html', paginas:['estadisticas.html','cocina.html','entregas.html','todos-pedidos.html','menu.html']}
 };
-const TODAS=['estadisticas.html','cocina.html','entregas.html','todos-pedidos.html'];
+const TODAS=['estadisticas.html','cocina.html','entregas.html','todos-pedidos.html','menu.html'];
 const get=()=>{try{return JSON.parse(sessionStorage.getItem(KEY))}catch(e){return null}};
 const set=v=>{try{v?sessionStorage.setItem(KEY,JSON.stringify(v)):sessionStorage.removeItem(KEY)}catch(e){}};
 const enPages=/\/Pages\//i.test(location.pathname);
