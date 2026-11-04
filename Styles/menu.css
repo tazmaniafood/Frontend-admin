@@ -1,22 +1,17 @@
 /* ============ MENÚ (editar lo que ya existe), versión compacta ============ */
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-/* Pestañas de secciones */
-.secciones{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0 0 18px}
-.tab,.pl{display:inline-flex;align-items:center;gap:6px;background:var(--card);color:var(--cream);border:3px solid var(--ink);border-radius:99px;box-shadow:0 3px 0 var(--ink);padding:4px 13px;font:400 17px/1.4 var(--hd);letter-spacing:.4px;white-space:nowrap}
-.tab:hover,.pl:hover{background:var(--card2)}
-.tab.on,.pl.on{background:var(--yel);color:var(--ink)}
-.tab .n,.pl .n{min-width:20px;padding:0 6px;text-align:center;background:var(--red);color:var(--cream);border-radius:99px;font:900 12px/1.6 var(--bd)}
-.sub{margin:0 0 12px;color:var(--mut);font-size:13.5px;font-weight:700;text-align:center}
+.sec .sub{margin:2px 0 12px;color:var(--mut);font-size:13.5px;font-weight:700;text-align:center}
 .sub b{color:var(--cream)}
 
 /* Lista de platos: filas compactas que se abren */
 .lista-cab,.f-cab{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) auto 28px;gap:14px;align-items:center}
-.lista-cab{padding:0 18px 6px;color:var(--mut);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.5px}
-.lista{display:grid;gap:10px}
-.fila{padding:0;overflow:hidden;border-left:7px solid var(--line);transition:border-color .15s}
+.lista-cab{padding:10px 18px 8px;background:var(--card2);border-bottom:2px solid var(--ink);color:var(--mut);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.5px}
+.lista{display:grid}
+.fila{padding:0;border-left:6px solid transparent;border-bottom:2px solid var(--line);transition:border-color .15s,background .15s}
+.fila:last-child{border-bottom:0}
 .fila.cambiado{border-left-color:var(--yel)}
-.fila.abierta{border-left-color:var(--org)}
+.fila.abierta{border-left-color:var(--org);background:#ffffff06}
 .f-cab{width:100%;padding:11px 14px 11px 12px;background:none;border:0;color:var(--cream);text-align:left;font-weight:800}
 .f-cab:hover{background:#ffffff08}
 .f-nom{min-width:0}
@@ -72,12 +67,10 @@
 .err:empty{display:none}
 
 /* Toppings y salsas: pestañas por plato + tabla compacta */
-.platos{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:10px}
-.pl{font-size:15px;padding:3px 11px;box-shadow:0 2px 0 var(--ink)}
-.tabla-ex{padding:4px 6px;overflow:hidden}
+.tabla-ex{background:var(--card2);border:2px solid var(--ink);border-radius:14px;overflow:hidden}
 .ex{width:100%;border-collapse:collapse}
-.ex th{text-align:left;color:var(--yel);font:400 15px/1.2 var(--hd);letter-spacing:.4px;padding:10px 8px;border-bottom:3px solid var(--ink);white-space:nowrap}
-.ex th small{color:var(--mut);font-family:var(--bd);font-weight:800;font-size:11px}
+.ex th{text-align:left;color:var(--mut);font:900 12px/1.2 var(--bd);text-transform:uppercase;letter-spacing:.5px;padding:10px 8px;border-bottom:2px solid var(--ink);white-space:nowrap}
+.ex th small{text-transform:none;font-weight:800;font-size:11px}
 .ex td{padding:5px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
 .ex tbody tr:last-child td{border-bottom:0}
 .ex tr.cambiado td:first-child{box-shadow:inset 5px 0 0 var(--yel)}
@@ -98,7 +91,7 @@ body:has(#barra:not([hidden])) .toast{bottom:calc(110px + env(safe-area-inset-bo
 .barra-guardar.solo-pendiente{border-color:var(--mut)}
 #barra-txt{flex:1 1 180px}
 .barra-guardar .btn{min-height:40px}
-main{padding-bottom:110px;max-width:1100px}
+main{padding-bottom:110px}
 
 /* Celular */
 @media(max-width:760px){
@@ -127,7 +120,7 @@ main{padding-bottom:110px;max-width:1100px}
   .ing:not(.tam3) tfoot th{grid-column:auto;align-self:center}
   .ing tfoot tr{border-top:2px solid var(--ink)}
   /* tabla de toppings como tarjetas de 2 columnas */
-  .tabla-ex{padding:0;background:none;border:0;box-shadow:none}
+  .tabla-ex{padding:0;background:none;border:0;box-shadow:none;border-radius:0}
   .ex thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .ex,.ex tbody{display:block}
   .ex tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px;margin-bottom:10px;padding:10px 12px;background:var(--card);border:3px solid var(--ink);border-radius:16px;box-shadow:4px 4px 0 var(--ink)}

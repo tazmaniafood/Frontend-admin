@@ -1,6 +1,5 @@
 /* ============ COCINA: tablero de pedidos ============ */
 main{max-width:1000px}
-.pagehead{justify-content:center;text-align:center}
 .tablero{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:start}
 .col{background:var(--card);border:3px solid var(--ink);border-radius:18px;box-shadow:5px 5px 0 var(--ink);overflow:hidden}
 .col h2{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;font-size:24px;color:var(--ink);background:var(--c);border-bottom:3px solid var(--ink)}

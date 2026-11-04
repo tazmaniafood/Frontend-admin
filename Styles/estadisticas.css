@@ -1,15 +1,14 @@
 /* ============ ESTADÍSTICAS DE LA SEMANA ============ */
-.pagehead p b{color:var(--cream)}
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
-.kpi{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"i t" "v v" "s s";gap:4px 10px;align-items:center;padding:14px 16px;min-width:0}
-.kpi .i{grid-area:i;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--cream);border:3px solid var(--ink);font-size:20px}
-.kpi small{grid-area:t;font-weight:800;color:var(--mut);font-size:13.5px}
-.kpi b{grid-area:v;font:400 34px/1.1 var(--hd);color:var(--yel);letter-spacing:.5px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.kpi em{grid-area:s;font-style:normal;font-size:12.5px;font-weight:800;color:var(--mut)}
+/* KPIs como los tickets de Cocina: papel crema, borde negro */
+.kpi{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"i t" "v v" "s s";gap:4px 10px;align-items:center;padding:14px 16px;min-width:0;background:var(--cream);color:var(--ink);border:3px solid var(--ink);border-radius:16px;box-shadow:4px 5px 0 var(--ink)}
+.kpi .i{grid-area:i;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--yel);border:3px solid var(--ink);font-size:20px}
+.kpi small{grid-area:t;font-weight:900;color:#6b4a30;font-size:13.5px}
+.kpi b{grid-area:v;font:400 34px/1.1 var(--hd);color:var(--ink);letter-spacing:.5px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.kpi em{grid-area:s;font-style:normal;font-size:12.5px;font-weight:800;color:#6b4a30}
 
 .graficas{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;margin-bottom:26px}
-.graficas .panel{padding:16px 18px 34px;min-width:0}
-.graficas h2{font-size:24px;color:var(--cream)}
+.graficas .cuerpo{padding:16px 18px 34px}
 .sub{margin:2px 0 12px;color:var(--mut);font-size:13px;font-weight:700}
 
 /* Barras verticales: una serie, naranja; el valor más alto en amarillo */
@@ -30,13 +29,12 @@
 .barras.horas .b:nth-child(even) small{visibility:hidden}
 
 /* Lo más vendido */
-.seccion{font-size:clamp(30px,4vw,40px);color:var(--yel);-webkit-text-stroke:5px var(--ink);paint-order:stroke fill;text-shadow:3px 3px 0 var(--ink);margin:0 0 14px}
+.seccion{text-align:center;font-size:clamp(30px,4vw,40px);color:var(--yel);-webkit-text-stroke:5px var(--ink);paint-order:stroke fill;text-shadow:3px 3px 0 var(--ink);margin:0 0 14px}
 .ranking{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
-.rk{padding:16px 18px;min-width:0}
+.rk{min-width:0}
 .rk.ancho{grid-column:span 2}
 .rk.completo{grid-column:1/-1}
 .rk.completo .rank{grid-template-columns:repeat(3,1fr);column-gap:26px}
-.rk h3{font-size:22px;color:var(--cream)}
 .rank{margin:0;padding:0;list-style:none;display:grid;gap:10px}
 .rk.ancho .rank{grid-template-columns:repeat(2,1fr);column-gap:26px}
 .rank li{display:grid;grid-template-columns:22px 1fr auto;grid-template-areas:"pos nm q" "pos pista pc";gap:3px 10px;align-items:center;font-weight:800;font-size:14px}
@@ -53,4 +51,4 @@
 @media(max-width:1100px){.ranking{grid-template-columns:repeat(2,1fr)}.rk.completo .rank{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:1000px){.kpis{grid-template-columns:repeat(2,1fr)}.graficas{grid-template-columns:1fr}}
 @media(max-width:700px){.ranking{grid-template-columns:1fr}.rk.ancho{grid-column:auto}.rk.ancho .rank,.rk.completo .rank{grid-template-columns:1fr}}
-@media(max-width:520px){.kpi b{font-size:26px}.barras{height:170px;gap:3px}.barras.horas{height:110px;gap:2px}.b small{font-size:9.5px}.b i em{font-size:12px}.barras.dias .b small{font-size:9px}}
+@media(max-width:520px){.kpi{padding:12px}.kpi b{font-size:23px}.kpi .i{width:34px;height:34px;font-size:17px}.kpi small{font-size:12.5px}.barras{height:170px;gap:3px}.barras.horas{height:110px;gap:2px}.b small{font-size:9.5px}.b i em{font-size:12px}.barras.dias .b small{font-size:9px}}

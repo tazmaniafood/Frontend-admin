@@ -73,19 +73,20 @@ function lista(filas,total,unidad){ // filas: [nombre, cantidad, detalle opciona
     <span class="pista"><i style="width:${(q/max*100).toFixed(1)}%"${i===0?' class="lider"':''}></i></span><span class="pc">${pct(q,total)}</span></li>`).join('')}</ol>`;
 }
 const suma=a=>a.reduce((t,f)=>t+f[1],0);
-const tarjeta=(cls,ico,tit,sub,cuerpo)=>`<section class="panel rk ${cls}"><h3><span aria-hidden="true">${ico}</span> ${tit}</h3><p class="sub">${sub}</p>${cuerpo}</section>`;
+/* misma banda de color por categoría que en la página Menú */
+const tarjeta=(cls,ico,tit,sub,cuerpo,color='c-crema')=>`<section class="caja rk ${cls} ${color}"><h3 class="banda"><span><span aria-hidden="true">${ico}</span> ${tit}</span></h3><div class="cuerpo"><p class="sub">${sub}</p>${cuerpo}</div></section>`;
 const bebTot=BEBIDAS.map(([n,a,b,c])=>[n,a+b+c,`Lata ${a} · 1.5 L ${b} · 2 L ${c}`]);
 const tamBeb=[['Personal (lata)',BEBIDAS.reduce((t,b)=>t+b[1],0)],['1.5 L',BEBIDAS.reduce((t,b)=>t+b[2],0)],['2 L',BEBIDAS.reduce((t,b)=>t+b[3],0)]];
 
 document.getElementById('ranking').innerHTML=[
-  tarjeta('ancho','🍽️','Top 10 platos','Todos los platos del menú, en unidades',lista(PLATOS.slice(0,10).map(([n,q,e])=>[`${e} ${n}`,q]),suma(PLATOS),'unidades')),
-  tarjeta('','🍔','Burguers','Cuál burguer se vende más',lista(BURGUERS,suma(BURGUERS),'burguers')),
-  tarjeta('ancho','🍕','Pizzas','Cuál pizza se vende más',lista(PIZZAS,suma(PIZZAS),'pizzas')),
-  tarjeta('','🌭','Perros, salchipapas y mazorcada','Los demás platos',lista(OTROS,suma(OTROS),'unidades')),
-  tarjeta('','🥤','Bebidas','Por marca, con sus tamaños',lista(bebTot.sort((a,b)=>b[1]-a[1]),suma(bebTot),'bebidas')),
-  tarjeta('','🧃','Tamaños de bebida','Todas las marcas juntas',lista(tamBeb,suma(tamBeb),'bebidas')),
-  tarjeta('','🥫','Salsas','Veces que se pidió cada salsa extra',lista(SALSAS.map(([n,q,p])=>[n,q,`Más pedida en: ${p}`]),suma(SALSAS),'veces')),
-  tarjeta('completo','🧀','Toppings extra','Veces que se pidió cada topping y en qué plato se pide más',lista(TOPPINGS.map(([n,q,p])=>[n,q,`Más pedido en: ${p}`]),suma(TOPPINGS),'veces')),
+  tarjeta('ancho','🍽️','Top 10 platos','Todos los platos del menú, en unidades',lista(PLATOS.slice(0,10).map(([n,q,e])=>[`${e} ${n}`,q]),suma(PLATOS),'unidades'),'c-amarillo'),
+  tarjeta('','🍔','Burguers','Cuál burguer se vende más',lista(BURGUERS,suma(BURGUERS),'burguers'),'c-amarillo'),
+  tarjeta('ancho','🍕','Pizzas','Cuál pizza se vende más',lista(PIZZAS,suma(PIZZAS),'pizzas'),'c-naranja'),
+  tarjeta('','🌭','Perros, salchipapas y mazorcada','Los demás platos',lista(OTROS,suma(OTROS),'unidades'),'c-naranja'),
+  tarjeta('','🥤','Bebidas','Por marca, con sus tamaños',lista(bebTot.sort((a,b)=>b[1]-a[1]),suma(bebTot),'bebidas'),'c-azul'),
+  tarjeta('','🧃','Tamaños de bebida','Todas las marcas juntas',lista(tamBeb,suma(tamBeb),'bebidas'),'c-azul'),
+  tarjeta('','🥫','Salsas','Veces que se pidió cada salsa extra',lista(SALSAS.map(([n,q,p])=>[n,q,`Más pedida en: ${p}`]),suma(SALSAS),'veces'),'c-naranja'),
+  tarjeta('completo','🧀','Toppings extra','Veces que se pidió cada topping y en qué plato se pide más',lista(TOPPINGS.map(([n,q,p])=>[n,q,`Más pedido en: ${p}`]),suma(TOPPINGS),'veces'),'c-verde'),
   tarjeta('','📏','Tamaños de pizza','Personal, Medium o Familiar',lista(TAMANOS,suma(TAMANOS),'pizzas')),
   tarjeta('','🧀','Bordes de pizza','Normal, Queso o Bocadillo',lista(BORDES,suma(BORDES),'pizzas')),
   tarjeta('','💳','Medios de pago','Pedidos pagados con cada medio',lista(MEDIOS,suma(MEDIOS),'pedidos'))

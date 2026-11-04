@@ -106,7 +106,7 @@ function editor(id){
 }
 function fila(id){
   const ab=abiertos.has(id);
-  return `<article class="fila panel${estado(id)==='borr'?' cambiado':''}${ab?' abierta':''}" data-fila="${id}">
+  return `<article class="fila${estado(id)==='borr'?' cambiado':''}${ab?' abierta':''}" data-fila="${id}">
     <button class="f-cab" type="button" aria-expanded="${ab}" data-abrir="${id}">${cabeza(id)}</button>
     ${ab?editor(id):''}
   </article>`;
@@ -117,9 +117,9 @@ const seccionDe=id=>M.secciones.find(s=>s.items.some(i=>i.id===id.split('@')[0])
 function tablaExtras(s){
   const pl=M.platos.find(p=>p.id===plato),esPizza=plato==='pizza',T=M.tamanosPizza;
   const cab=esPizza?T.map(t=>`<th scope="col" class="g">${esc(t)} <small>${s.u}</small></th>`).join(''):`<th scope="col" class="g">Porción <small>${s.u}</small></th>`;
-  return `<div class="platos" role="tablist" aria-label="Plato">${M.platos.map(p=>`<button type="button" role="tab" class="pl${p.id===plato?' on':''}" aria-selected="${p.id===plato}" data-plato="${p.id}">${p.ico} ${esc(p.t)}${cuenta(s,p.id)}</button>`).join('')}</div>
+  return `<div class="chips platos" role="tablist" aria-label="Plato">${M.platos.map(p=>`<button type="button" role="tab" class="pl${p.id===plato?' on':''}" aria-selected="${p.id===plato}" data-plato="${p.id}">${p.ico} ${esc(p.t)}${cuenta(s,p.id)}</button>`).join('')}</div>
   <p class="sub">${pl.ico} ${s.id==='toppings'?'Toppings':'Salsas'} en <b>${esc(pl.t)}</b>: precio que se cobra y cuánto se le echa${esPizza?' según el tamaño de la pizza':''}. El nombre es el mismo en todos los platos.</p>
-  <div class="panel tabla-ex"><table class="ex${esPizza?' pizza':''}">
+  <div class="tabla-ex"><table class="ex${esPizza?' pizza':''}">
     <thead><tr><th scope="col">${s.id==='toppings'?'Topping':'Salsa'}</th><th scope="col" class="p">Precio</th>${cab}<th scope="col" class="e"><span class="sr">Estado</span></th></tr></thead>
     <tbody>${s.items.map(it=>{
       const k=`${it.id}@${plato}`,v=val(k),n=val(it.id).n,e=estado(k)||estado(it.id);
@@ -133,13 +133,16 @@ function tablaExtras(s){
 const cuenta=(s,pid)=>{const n=s.items.filter(it=>estado(`${it.id}@${pid}`)).length;return n?` <b class="n">${n}</b>`:''};
 
 /* ---- Pintar ---- */
+const COLOR={pizzas:'c-naranja',bordes:'c-crema',burger:'c-amarillo',perro:'c-naranja',salchipapas:'c-amarillo',mazorcada:'c-verde',bebidas:'c-azul',toppings:'c-verde',salsas:'c-naranja'};
 function pintar(){
   document.getElementById('secciones').innerHTML=M.secciones.map(s=>{
     const n=idsDe(s).filter(estado).length;
     return `<button type="button" role="tab" class="tab${s.id===tab?' on':''}" aria-selected="${s.id===tab}" data-tab="${s.id}">${s.ico} ${esc(s.t)}${n?` <b class="n">${n}</b>`:''}</button>`}).join('');
   const s=SEC[tab];
-  document.getElementById('menu').innerHTML=`<section class="sec" aria-label="${esc(s.t)}">
-    ${s.extras?tablaExtras(s):`${s.nota?`<p class="sub">${esc(s.nota)}</p>`:''}
+  /* caja con banda de color, igual que en Cocina y Estadísticas (mismo color por categoría) */
+  document.getElementById('menu').innerHTML=`<section class="caja sec ${COLOR[s.id]||'c-crema'}" aria-label="${esc(s.t)}">
+    <h2 class="banda"><span>${s.ico} ${esc(s.t)}${s.nota?` <small>${esc(s.nota)}</small>`:''}</span><b class="n">${s.items.length}</b></h2>
+    ${s.extras?`<div class="cuerpo">${tablaExtras(s)}</div>`:`
       <div class="lista-cab" aria-hidden="true"><span>Nombre</span><span>Precio</span><span>Porción</span><span></span><span></span></div>
       <div class="lista">${s.items.map(i=>fila(i.id)).join('')}</div>`}
   </section>`;

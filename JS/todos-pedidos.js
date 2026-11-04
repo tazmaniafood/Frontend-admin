@@ -44,7 +44,7 @@ function pintar(){
   const lista=d.filter(o=>(filtro==='todos'||(filtro==='pagado')===!!o.pagado)
     &&(!q||String(o.id).includes(q)||String(o.cliente).toLowerCase().includes(q)||String(o.tel).replace(/\s/g,'').includes(q.replace(/\s/g,''))))
     .sort((a,b)=>b.creado-a.creado);
-  document.getElementById('n').textContent=lista.length===1?'1 pedido':`${lista.length} pedidos`;
+  document.getElementById('n').textContent=lista.length;
   document.getElementById('filas').innerHTML=lista.length?lista.map(fila).join(''):'<tr class="vacio"><td colspan="8"><p class="empty">No hay pedidos que coincidan</p></td></tr>';
 }
 
