@@ -1,44 +1,109 @@
-/* ============ MENÚ (editar lo que ya existe) ============ */
-.secciones{position:sticky;top:96px;z-index:10;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0 0 22px;padding:10px;background:#1c0f0cee;border:3px solid var(--ink);border-radius:18px;box-shadow:4px 4px 0 var(--ink)}
-.secciones a{background:var(--card2);color:var(--cream);border:2px solid var(--ink);border-radius:99px;padding:3px 12px;font:400 16px/1.5 var(--hd);letter-spacing:.4px;text-decoration:none;white-space:nowrap}
-.secciones a:hover{background:var(--yel);color:var(--ink)}
-.sec{margin-bottom:30px;scroll-margin-top:180px}
-.sec h2{display:flex;align-items:center;gap:10px;font-size:clamp(28px,4vw,36px);color:var(--yel);-webkit-text-stroke:5px var(--ink);paint-order:stroke fill;text-shadow:3px 3px 0 var(--ink)}
-.sec h2 small{-webkit-text-stroke:0;text-shadow:none;background:var(--ink);color:var(--cream);border-radius:99px;padding:0 10px;font:800 14px/1.7 var(--bd)}
-.sec .sub{margin:4px 0 0;color:var(--mut);font-weight:700}
-.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:14px;align-items:start}
+/* ============ MENÚ (editar lo que ya existe), versión compacta ============ */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-.item{display:grid;gap:10px;padding:12px 14px 14px;border-left:8px solid var(--line);transition:border-color .15s}
-.item.cambiado{border-left-color:var(--yel)}
-.item-cab{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:26px}
-.item-cab:not(:has(.chip,button)){display:none}
+/* Pestañas de secciones */
+.secciones{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0 0 18px}
+.tab,.pl{display:inline-flex;align-items:center;gap:6px;background:var(--card);color:var(--cream);border:3px solid var(--ink);border-radius:99px;box-shadow:0 3px 0 var(--ink);padding:4px 13px;font:400 17px/1.4 var(--hd);letter-spacing:.4px;white-space:nowrap}
+.tab:hover,.pl:hover{background:var(--card2)}
+.tab.on,.pl.on{background:var(--yel);color:var(--ink)}
+.tab .n,.pl .n{min-width:20px;padding:0 6px;text-align:center;background:var(--red);color:var(--cream);border-radius:99px;font:900 12px/1.6 var(--bd)}
+.sub{margin:0 0 12px;color:var(--mut);font-size:13.5px;font-weight:700;text-align:center}
+.sub b{color:var(--cream)}
+
+/* Lista de platos: filas compactas que se abren */
+.lista-cab,.f-cab{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) auto 28px;gap:14px;align-items:center}
+.lista-cab{padding:0 18px 6px;color:var(--mut);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.5px}
+.lista{display:grid;gap:10px}
+.fila{padding:0;overflow:hidden;border-left:7px solid var(--line);transition:border-color .15s}
+.fila.cambiado{border-left-color:var(--yel)}
+.fila.abierta{border-left-color:var(--org)}
+.f-cab{width:100%;padding:11px 14px 11px 12px;background:none;border:0;color:var(--cream);text-align:left;font-weight:800}
+.f-cab:hover{background:#ffffff08}
+.f-nom{min-width:0}
+.f-nom b{display:block;font-size:15.5px}
+.f-nom small{display:block;color:var(--mut);font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.f-pre,.f-por{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:14px;font-variant-numeric:tabular-nums}
+.f-pre small,.f-por small{color:var(--mut);font-weight:900;font-size:11px}
+.f-por{color:var(--cream)}
+.falta{color:var(--mut);font-style:italic;font-weight:700;font-size:12.5px}
+.f-abrir{justify-self:end;font-size:15px}
 .chip.borr{background:var(--yel);color:var(--ink)}
 .chip.edit{background:#5fc27a33;color:#bff0cb;border-color:var(--ok)}
-.restaurar{margin-left:auto}
+
+.editor{display:grid;gap:10px;padding:4px 16px 16px;border-top:2px dashed var(--line)}
 .campo{display:grid;gap:4px;font-weight:800;font-size:13px;color:var(--mut)}
-.campo input,.campo textarea,.precio input{width:100%;background:var(--cream);color:var(--ink);border:3px solid var(--ink);border-radius:10px;padding:7px 10px;font-weight:800;font-size:16px}
-.campo textarea{resize:vertical;min-height:64px;font-weight:700;font-size:14.5px;line-height:1.35}
-.campo .cont{justify-self:end;font-size:11.5px;color:var(--mut)}
-[aria-invalid="true"]{border-color:var(--red)!important;box-shadow:0 0 0 3px #e6331255}
-.precios{display:grid;gap:10px}
-.precios.varios{grid-template-columns:repeat(3,1fr)}
-.precio{display:grid;gap:4px;font-weight:800;font-size:13px;color:var(--mut);min-width:0}
-.pesos{position:relative;display:block}
+.campo span{display:flex;justify-content:space-between}
+.campo .cont{font-size:11.5px}
+.campo input,.campo textarea,.pesos input,.unidad input,.ex td.n input{width:100%;background:var(--cream);color:var(--ink);border:3px solid var(--ink);border-radius:10px;padding:6px 10px;font-weight:800;font-size:15.5px}
+.campo textarea{resize:vertical;min-height:52px;font-weight:700;font-size:14px;line-height:1.35}
+.tam{width:100%;max-width:560px;border-collapse:separate;border-spacing:0 6px}
+.tam th{text-align:left;color:var(--mut);font-size:12.5px;font-weight:900;padding:0 8px 0 0;white-space:nowrap}
+.tam thead th{font-size:11.5px;text-transform:uppercase;letter-spacing:.4px}
+.tam td{padding:0 8px 0 0}
+.pesos,.unidad{position:relative;display:block;min-width:84px}
 .pesos i{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-style:normal;font-weight:900;color:var(--ink);pointer-events:none}
-.precio input{padding-left:22px;font-variant-numeric:tabular-nums}
-.orig{margin:0;font-size:12px;color:var(--mut);font-weight:700}
+.pesos input{padding-left:22px;font-variant-numeric:tabular-nums}
+.unidad i{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-style:normal;font-weight:900;color:#6b4a30;font-size:13px;pointer-events:none}
+.unidad input{padding-right:32px;font-variant-numeric:tabular-nums}
+.unidad input::placeholder{color:#9b7f66}
+.pie-ed{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.pie-ed:empty{display:none}
+.orig{margin:0;font-size:12.5px;color:var(--mut);font-weight:700}
 .orig b{color:var(--cream)}
+[aria-invalid="true"]{border-color:var(--red)!important;box-shadow:0 0 0 3px #e6331266}
 .err{margin:0;color:#ff8a72;font-weight:800;font-size:13px}
 .err:empty{display:none}
 
-/* Barra para guardar (abajo, fija) */
-.barra-guardar{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:35;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;width:min(760px,calc(100% - 24px));padding:10px 14px;background:var(--ink);color:var(--cream);border:3px solid var(--yel);border-radius:18px;box-shadow:0 6px 0 #000a;font-weight:800}
-.barra-guardar[hidden]{display:none}
-body:has(#barra:not([hidden])) .toast{bottom:calc(120px + env(safe-area-inset-bottom,0px))}
-.barra-guardar.solo-pendiente{border-color:var(--mut)}
-#barra-txt{flex:1 1 220px}
-.barra-guardar .btn{min-height:42px}
-main{padding-bottom:110px}
+/* Toppings y salsas: pestañas por plato + tabla compacta */
+.platos{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:10px}
+.pl{font-size:15px;padding:3px 11px;box-shadow:0 2px 0 var(--ink)}
+.tabla-ex{padding:4px 6px;overflow:hidden}
+.ex{width:100%;border-collapse:collapse}
+.ex th{text-align:left;color:var(--yel);font:400 15px/1.2 var(--hd);letter-spacing:.4px;padding:10px 8px;border-bottom:3px solid var(--ink);white-space:nowrap}
+.ex th small{color:var(--mut);font-family:var(--bd);font-weight:800;font-size:11px}
+.ex td{padding:5px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.ex tbody tr:last-child td{border-bottom:0}
+.ex tr.cambiado td:first-child{box-shadow:inset 5px 0 0 var(--yel)}
+.ex td.n{min-width:150px}
+.ex td.n input{font-size:14.5px;padding:5px 9px;background:transparent;color:var(--cream);border-color:transparent}
+.ex td.n input:hover{border-color:var(--line)}
+.ex td.n input:focus{background:var(--cream);color:var(--ink);border-color:var(--ink)}
+.ex .pesos,.ex .unidad{min-width:78px}
+.ex .pesos input,.ex .unidad input{font-size:14.5px;padding-top:5px;padding-bottom:5px}
+.ex th.e,.ex td.e{width:34px;text-align:center;padding-left:0;padding-right:4px}
+.mini{width:30px;height:30px;border-radius:50%;background:var(--cream);color:var(--ink);border:2px solid var(--ink);font-weight:900}
+.mini:hover{background:var(--yel)}
 
-@media(max-width:760px){.secciones{top:150px}.sec{scroll-margin-top:240px}}
-@media(max-width:560px){.secciones{position:static}.sec{scroll-margin-top:16px}.items{grid-template-columns:1fr}.precios.varios{gap:6px}.precio input{font-size:15px;padding-right:4px}}
+/* Barra para guardar */
+.barra-guardar{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:35;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;width:min(620px,calc(100% - 24px));padding:9px 12px;background:var(--ink);color:var(--cream);border:3px solid var(--yel);border-radius:18px;box-shadow:0 6px 0 #000a;font-weight:800}
+.barra-guardar[hidden]{display:none}
+body:has(#barra:not([hidden])) .toast{bottom:calc(110px + env(safe-area-inset-bottom,0px))}
+.barra-guardar.solo-pendiente{border-color:var(--mut)}
+#barra-txt{flex:1 1 180px}
+.barra-guardar .btn{min-height:40px}
+main{padding-bottom:110px;max-width:1100px}
+
+/* Celular */
+@media(max-width:760px){
+  .lista-cab{display:none}
+  .f-cab{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"nom abrir" "pre pre" "por est";gap:6px 10px}
+  .f-nom{grid-area:nom}.f-pre{grid-area:pre}.f-por{grid-area:por}.f-est{grid-area:est;justify-self:end}.f-abrir{grid-area:abrir}
+  .f-por::before{content:'Porción:';color:var(--mut);font-size:12px;font-weight:900}
+  .tam th:first-child{width:1%}
+  /* tabla de toppings como tarjetas de 2 columnas */
+  .tabla-ex{padding:0;background:none;border:0;box-shadow:none}
+  .ex thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .ex,.ex tbody{display:block}
+  .ex tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px;margin-bottom:10px;padding:10px 12px;background:var(--card);border:3px solid var(--ink);border-radius:16px;box-shadow:4px 4px 0 var(--ink)}
+  .ex.pizza tr{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ex td{display:grid;gap:3px;padding:0;border:0}
+  .ex td.n{grid-column:1/-2;min-width:0}
+  .ex td.e{grid-column:-2/-1;justify-self:end;align-self:center;width:auto}
+  .ex td.p{grid-column:1/-1}
+  .ex.pizza td.p{grid-column:1/-1}
+  .ex td[data-l]::before{content:attr(data-l);color:var(--mut);font-size:11.5px;font-weight:900;text-transform:uppercase;letter-spacing:.4px}
+  .ex td.n input{background:transparent;padding-left:0;font-size:16px}
+  .ex tr.cambiado{border-color:var(--yel)}
+  .ex tr.cambiado td:first-child{box-shadow:none}
+}
+@media(max-width:560px){.tab{font-size:15px;padding:3px 10px}.pesos,.unidad{min-width:0}.tam td,.tam th{padding-right:6px}}

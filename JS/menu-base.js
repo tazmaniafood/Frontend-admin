@@ -1,371 +1,1020 @@
-/* Menú base: los platos, bebidas, toppings y salsas que existen hoy en la tienda
-   (Frontend-consumidor), con sus nombres, descripciones y precios originales.
-   La página Menú solo puede MODIFICAR estos elementos: no se pueden crear ni borrar.
-   Cada elemento tiene un id fijo; lo que cambia la cocina se guarda aparte (por id).
-   Precio con tamaños (pizzas y bebidas): p es una lista, un precio por tamaño. */
-window.TAZ_MENU_BASE=[
- {
-  "id": "pizzas",
-  "t": "Pizzas",
-  "ico": "🍕",
-  "tamanos": [
-   "Personal",
-   "Medium",
-   "Familiar"
-  ],
-  "items": [
-   {
-    "id": "pizza-hawaiana",
-    "n": "Hawaiana",
-    "d": "Piña, queso rayado, jamón (opcional cerezas)",
-    "p": [
-     13.0,
-     19.0,
-     24.0
-    ]
-   },
-   {
-    "id": "pizza-pepperoni",
-    "n": "Pepperoni",
-    "d": "Pepperoni, queso y jamón",
-    "p": [
-     13.0,
-     19.0,
-     24.0
-    ]
-   },
-   {
-    "id": "pizza-tropical",
-    "n": "Tropical",
-    "d": "Piña, cereza, durazno, jamón, queso y salsa de la casa",
-    "p": [
-     15.0,
-     22.0,
-     26.0
-    ]
-   },
-   {
-    "id": "pizza-ay-dios-mio",
-    "n": "Ay Dios Mío",
-    "d": "Pollo desmechado, champiñones, jamón, queso rayado y salsa de la casa",
-    "p": [
-     15.0,
-     22.0,
-     28.0
-    ]
-   },
-   {
-    "id": "pizza-californiana",
-    "n": "Californiana",
-    "d": "Pollo desmechado, champiñones, camarones, jamón, pimentón rojo y verde, queso rayado y salsa de la casa",
-    "p": [
-     16.0,
-     24.0,
-     29.0
-    ]
-   },
-   {
-    "id": "pizza-mexicana",
-    "n": "Mexicana",
-    "d": "Carne desmechada, jamón, queso rayado, pimentón, cebolla, salsa picosa de la casa y tocineta",
-    "p": [
-     16.0,
-     24.0,
-     29.0
-    ]
-   },
-   {
-    "id": "pizza-camarones",
-    "n": "Camarones",
-    "d": "Camarones, jamón, queso rayado, pimentón y salsa de la casa",
-    "p": [
-     20.0,
-     26.0,
-     32.0
-    ]
-   },
-   {
-    "id": "pizza-la-4k",
-    "n": "La 4K",
-    "d": "Jamón, carne de res, pollo, chorizo, tocino y queso rayado",
-    "p": [
-     22.0,
-     28.0,
-     34.0
-    ]
-   },
-   {
-    "id": "pizza-legendaria",
-    "n": "Legendaria",
-    "d": "Carne molida, maíz, tocino, pimiento, jamón, queso y salsa de la casa",
-    "p": [
-     16.0,
-     22.0,
-     28.0
-    ]
-   },
-   {
-    "id": "pizza-pizza-a-tu-gusto",
-    "n": "Pizza a tu gusto",
-    "d": "Empieza con una pizza en blanco (masa y queso) y ponle todos los ingredientes que quieras.",
-    "p": [
-     10.0,
-     15.0,
-     19.0
-    ]
-   }
-  ]
- },
- {
-  "id": "bordes",
-  "t": "Bordes de pizza",
-  "ico": "🍞",
-  "items": [
-   {
-    "id": "borde-normal",
-    "n": "Normal",
-    "p": 0.0
-   },
-   {
-    "id": "borde-bocadillo",
-    "n": "Bocadillo",
-    "p": 3.0
-   },
-   {
-    "id": "borde-queso",
-    "n": "Queso",
-    "p": 3.0
-   }
-  ]
- },
- {
-  "id": "burger",
-  "t": "Burguers",
-  "ico": "🍔",
-  "items": [
-   {
-    "id": "burger-gran-burguer",
-    "n": "Gran Burguer",
-    "d": "Carne, pollo apanado, tocineta",
-    "p": 13.0
-   },
-   {
-    "id": "burger-de-carne",
-    "n": "Burguer de carne",
-    "d": "Carne y papas a la francesa",
-    "p": 10.0
-   },
-   {
-    "id": "burger-de-pollo",
-    "n": "Burguer de pollo",
-    "d": "Pollo apanado",
-    "p": 10.0
-   }
-  ]
- },
- {
-  "id": "perro",
-  "t": "Perros",
-  "ico": "🌭",
-  "items": [
-   {
-    "id": "perro-perro-salvaje",
-    "n": "Perro salvaje",
-    "d": "Pan horneado, carne picada, pollo picado, salchicha tradicional, maíz, queso rayado, tocineta, cebolla grille o caramelizada, lechuga, salsa de la casa y chorizo",
-    "p": 10.0
-   }
-  ]
- },
- {
-  "id": "salchipapas",
-  "t": "Salchipapas",
-  "ico": "🍟",
-  "items": [
-   {
-    "id": "salchipapas-salchi-californiana",
-    "n": "Salchi Californiana",
-    "d": "Papas, salchicha, pollo, carne, maíz, lechuga, queso, chorizo y salsa de la casa",
-    "p": 16.0
-   },
-   {
-    "id": "salchipapas-salchi-tazmania",
-    "n": "Salchi Tazmania",
-    "d": "Todo lo de la Californiana con camarones y tocineta",
-    "p": 19.0
-   }
-  ]
- },
- {
-  "id": "mazorcada",
-  "t": "Mazorcada",
-  "ico": "🌽",
-  "items": [
-   {
-    "id": "mazorcada-mazorcada-taz",
-    "n": "Mazorcada TAZ",
-    "d": "Maíz, carne y pollo picado, lechuga, queso rayado, chorizo y salsa de la casa",
-    "p": 16.0
-   }
-  ]
- },
- {
-  "id": "bebidas",
-  "t": "Bebidas",
-  "ico": "🥤",
-  "tamanos": [
-   "Personal (lata)",
-   "1.5 L",
-   "2 L"
-  ],
-  "items": [
-   {
-    "id": "bebida-sprite",
-    "n": "Sprite",
-    "p": [
-     2.5,
-     4.5,
-     5.5
-    ]
-   },
-   {
-    "id": "bebida-pepsi",
-    "n": "Pepsi",
-    "p": [
-     2.5,
-     4.5,
-     5.5
-    ]
-   },
-   {
-    "id": "bebida-coca-cola",
-    "n": "Coca-Cola",
-    "p": [
-     2.5,
-     4.5,
-     5.5
-    ]
-   }
-  ]
- },
- {
-  "id": "toppings",
-  "t": "Toppings extra",
-  "ico": "🧀",
-  "nota": "Se usan en todos los platos",
-  "items": [
-   {
-    "id": "topping-queso-extra",
-    "n": "Queso extra",
-    "p": 2.0
-   },
-   {
-    "id": "topping-jamon",
-    "n": "Jamón",
-    "p": 2.0
-   },
-   {
-    "id": "topping-tocineta",
-    "n": "Tocineta",
-    "p": 2.0
-   },
-   {
-    "id": "topping-pepperoni",
-    "n": "Pepperoni",
-    "p": 2.0
-   },
-   {
-    "id": "topping-pollo-desmechado",
-    "n": "Pollo desmechado",
-    "p": 2.5
-   },
-   {
-    "id": "topping-carne-desmechada",
-    "n": "Carne desmechada",
-    "p": 2.5
-   },
-   {
-    "id": "topping-carne-molida",
-    "n": "Carne molida",
-    "p": 2.5
-   },
-   {
-    "id": "topping-chorizo",
-    "n": "Chorizo",
-    "p": 2.0
-   },
-   {
-    "id": "topping-camarones",
-    "n": "Camarones",
-    "p": 3.5
-   },
-   {
-    "id": "topping-champinones",
-    "n": "Champiñones",
-    "p": 2.0
-   },
-   {
-    "id": "topping-pina",
-    "n": "Piña",
-    "p": 2.0
-   },
-   {
-    "id": "topping-maiz",
-    "n": "Maíz",
-    "p": 1.5
-   },
-   {
-    "id": "topping-cebolla",
-    "n": "Cebolla",
-    "p": 1.0
-   },
-   {
-    "id": "topping-pimenton",
-    "n": "Pimentón",
-    "p": 1.5
-   },
-   {
-    "id": "topping-tomate",
-    "n": "Tomate",
-    "p": 1.0
-   },
-   {
-    "id": "topping-jalapeno",
-    "n": "Jalapeño",
-    "p": 1.0
-   },
-   {
-    "id": "topping-durazno",
-    "n": "Durazno",
-    "p": 2.0
-   },
-   {
-    "id": "topping-cereza",
-    "n": "Cereza",
-    "p": 2.0
-   }
-  ]
- },
- {
-  "id": "salsas",
-  "t": "Salsas",
-  "ico": "🥫",
-  "nota": "Se usan en todos los platos",
-  "items": [
-   {
-    "id": "salsa-salsa-de-tomate",
-    "n": "Salsa de tomate",
-    "p": 0.5
-   },
-   {
-    "id": "salsa-salsa-rosada",
-    "n": "Salsa rosada",
-    "p": 0.5
-   },
-   {
-    "id": "salsa-salsa-verde",
-    "n": "Salsa verde",
-    "p": 0.5
-   }
-  ]
- }
-];
+/* Menú base: lo que existe hoy en la tienda (Frontend-consumidor) con sus nombres,
+   descripciones y precios originales. La página Menú solo MODIFICA estos elementos:
+   no se pueden crear ni borrar.
+   - p: precio (lista con un precio por tamaño en pizzas y bebidas).
+   - g: porción, en la unidad de la sección (u: 'g' gramos o 'ml' mililitros).
+        null = todavía sin definir. En pizzas y bebidas va una porción por tamaño.
+   - Toppings y salsas: el nombre es uno solo, pero el precio y la porción van POR PLATO
+     (no se le echa lo mismo a una pizza que a un perro). En pizza la porción va por tamaño. */
+window.TAZ_MENU_BASE={
+ "platos": [
+  {
+   "id": "pizza",
+   "t": "Pizza",
+   "ico": "🍕"
+  },
+  {
+   "id": "burger",
+   "t": "Burguer",
+   "ico": "🍔"
+  },
+  {
+   "id": "perro",
+   "t": "Perro",
+   "ico": "🌭"
+  },
+  {
+   "id": "salchipapas",
+   "t": "Salchipapas",
+   "ico": "🍟"
+  },
+  {
+   "id": "mazorcada",
+   "t": "Mazorcada",
+   "ico": "🌽"
+  }
+ ],
+ "tamanosPizza": [
+  "Personal",
+  "Medium",
+  "Familiar"
+ ],
+ "secciones": [
+  {
+   "id": "pizzas",
+   "t": "Pizzas",
+   "ico": "🍕",
+   "u": "g",
+   "tamanos": [
+    "Personal",
+    "Medium",
+    "Familiar"
+   ],
+   "items": [
+    {
+     "id": "pizza-hawaiana",
+     "n": "Hawaiana",
+     "d": "Piña, queso rayado, jamón (opcional cerezas)",
+     "p": [
+      13.0,
+      19.0,
+      24.0
+     ],
+     "g": [
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "id": "pizza-pepperoni",
+     "n": "Pepperoni",
+     "d": "Pepperoni, queso y jamón",
+     "p": [
+      13.0,
+      19.0,
+      24.0
+     ],
+     "g": [
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "id": "pizza-tropical",
+     "n": "Tropical",
+     "d": "Piña, cereza, durazno, jamón, queso y salsa de la casa",
+     "p": [
+      15.0,
+      22.0,
+      26.0
+     ],
+     "g": [
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "id": "pizza-ay-dios-mio",
+     "n": "Ay Dios Mío",
+     "d": "Pollo desmechado, champiñones, jamón, queso rayado y salsa de la casa",
+     "p": [
+      15.0,
+      22.0,
+      28.0
+     ],
+     "g": [
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "id": "pizza-californiana",
+     "n": "Californiana",
+     "d": "Pollo desmechado, champiñones, camarones, jamón, pimentón rojo y verde, queso rayado y salsa de la casa",
+     "p": [
+      16.0,
+      24.0,
+      29.0
+     ],
+     "g": [
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "id": "pizza-mexicana",
+     "n": "Mexicana",
+     "d": "Carne desmechada, jamón, queso rayado, pimentón, cebolla, salsa picosa de la casa y tocineta",
+     "p": [
+      16.0,
+      24.0,
+      29.0
+     ],
+     "g": [
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "id": "pizza-camarones",
+     "n": "Camarones",
+     "d": "Camarones, jamón, queso rayado, pimentón y salsa de la casa",
+     "p": [
+      20.0,
+      26.0,
+      32.0
+     ],
+     "g": [
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "id": "pizza-la-4k",
+     "n": "La 4K",
+     "d": "Jamón, carne de res, pollo, chorizo, tocino y queso rayado",
+     "p": [
+      22.0,
+      28.0,
+      34.0
+     ],
+     "g": [
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "id": "pizza-legendaria",
+     "n": "Legendaria",
+     "d": "Carne molida, maíz, tocino, pimiento, jamón, queso y salsa de la casa",
+     "p": [
+      16.0,
+      22.0,
+      28.0
+     ],
+     "g": [
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "id": "pizza-pizza-a-tu-gusto",
+     "n": "Pizza a tu gusto",
+     "d": "Empieza con una pizza en blanco (masa y queso) y ponle todos los ingredientes que quieras.",
+     "p": [
+      10.0,
+      15.0,
+      19.0
+     ],
+     "g": [
+      null,
+      null,
+      null
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bordes",
+   "t": "Bordes",
+   "ico": "🍞",
+   "u": "g",
+   "nota": "Bordes de pizza",
+   "items": [
+    {
+     "id": "borde-normal",
+     "n": "Normal",
+     "p": 0.0,
+     "g": null
+    },
+    {
+     "id": "borde-bocadillo",
+     "n": "Bocadillo",
+     "p": 3.0,
+     "g": null
+    },
+    {
+     "id": "borde-queso",
+     "n": "Queso",
+     "p": 3.0,
+     "g": null
+    }
+   ]
+  },
+  {
+   "id": "burger",
+   "t": "Burguers",
+   "ico": "🍔",
+   "u": "g",
+   "items": [
+    {
+     "id": "burger-gran-burguer",
+     "n": "Gran Burguer",
+     "d": "Carne, pollo apanado, tocineta",
+     "p": 13.0,
+     "g": null
+    },
+    {
+     "id": "burger-de-carne",
+     "n": "Burguer de carne",
+     "d": "Carne y papas a la francesa",
+     "p": 10.0,
+     "g": null
+    },
+    {
+     "id": "burger-de-pollo",
+     "n": "Burguer de pollo",
+     "d": "Pollo apanado",
+     "p": 10.0,
+     "g": null
+    }
+   ]
+  },
+  {
+   "id": "perro",
+   "t": "Perros",
+   "ico": "🌭",
+   "u": "g",
+   "items": [
+    {
+     "id": "perro-perro-salvaje",
+     "n": "Perro salvaje",
+     "d": "Pan horneado, carne picada, pollo picado, salchicha tradicional, maíz, queso rayado, tocineta, cebolla grille o caramelizada, lechuga, salsa de la casa y chorizo",
+     "p": 10.0,
+     "g": null
+    }
+   ]
+  },
+  {
+   "id": "salchipapas",
+   "t": "Salchipapas",
+   "ico": "🍟",
+   "u": "g",
+   "items": [
+    {
+     "id": "salchipapas-salchi-californiana",
+     "n": "Salchi Californiana",
+     "d": "Papas, salchicha, pollo, carne, maíz, lechuga, queso, chorizo y salsa de la casa",
+     "p": 16.0,
+     "g": null
+    },
+    {
+     "id": "salchipapas-salchi-tazmania",
+     "n": "Salchi Tazmania",
+     "d": "Todo lo de la Californiana con camarones y tocineta",
+     "p": 19.0,
+     "g": null
+    }
+   ]
+  },
+  {
+   "id": "mazorcada",
+   "t": "Mazorcada",
+   "ico": "🌽",
+   "u": "g",
+   "items": [
+    {
+     "id": "mazorcada-mazorcada-taz",
+     "n": "Mazorcada TAZ",
+     "d": "Maíz, carne y pollo picado, lechuga, queso rayado, chorizo y salsa de la casa",
+     "p": 16.0,
+     "g": null
+    }
+   ]
+  },
+  {
+   "id": "bebidas",
+   "t": "Bebidas",
+   "ico": "🥤",
+   "u": "ml",
+   "tamanos": [
+    "Personal (lata)",
+    "1.5 L",
+    "2 L"
+   ],
+   "items": [
+    {
+     "id": "bebida-sprite",
+     "n": "Sprite",
+     "p": [
+      2.5,
+      4.5,
+      5.5
+     ],
+     "g": [
+      355,
+      1500,
+      2000
+     ]
+    },
+    {
+     "id": "bebida-pepsi",
+     "n": "Pepsi",
+     "p": [
+      2.5,
+      4.5,
+      5.5
+     ],
+     "g": [
+      355,
+      1500,
+      2000
+     ]
+    },
+    {
+     "id": "bebida-coca-cola",
+     "n": "Coca-Cola",
+     "p": [
+      2.5,
+      4.5,
+      5.5
+     ],
+     "g": [
+      355,
+      1500,
+      2000
+     ]
+    }
+   ]
+  },
+  {
+   "id": "toppings",
+   "t": "Toppings",
+   "ico": "🧀",
+   "u": "g",
+   "extras": true,
+   "nota": "Precio y porción de cada topping según el plato",
+   "items": [
+    {
+     "id": "topping-queso-extra",
+     "n": "Queso extra",
+     "plato": {
+      "pizza": {
+       "p": 2.0,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 2.0,
+       "g": null
+      },
+      "perro": {
+       "p": 2.0,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 2.0,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 2.0,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-jamon",
+     "n": "Jamón",
+     "plato": {
+      "pizza": {
+       "p": 2.0,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 2.0,
+       "g": null
+      },
+      "perro": {
+       "p": 2.0,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 2.0,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 2.0,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-tocineta",
+     "n": "Tocineta",
+     "plato": {
+      "pizza": {
+       "p": 2.0,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 2.0,
+       "g": null
+      },
+      "perro": {
+       "p": 2.0,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 2.0,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 2.0,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-pepperoni",
+     "n": "Pepperoni",
+     "plato": {
+      "pizza": {
+       "p": 2.0,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 2.0,
+       "g": null
+      },
+      "perro": {
+       "p": 2.0,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 2.0,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 2.0,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-pollo-desmechado",
+     "n": "Pollo desmechado",
+     "plato": {
+      "pizza": {
+       "p": 2.5,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 2.5,
+       "g": null
+      },
+      "perro": {
+       "p": 2.5,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 2.5,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 2.5,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-carne-desmechada",
+     "n": "Carne desmechada",
+     "plato": {
+      "pizza": {
+       "p": 2.5,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 2.5,
+       "g": null
+      },
+      "perro": {
+       "p": 2.5,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 2.5,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 2.5,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-carne-molida",
+     "n": "Carne molida",
+     "plato": {
+      "pizza": {
+       "p": 2.5,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 2.5,
+       "g": null
+      },
+      "perro": {
+       "p": 2.5,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 2.5,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 2.5,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-chorizo",
+     "n": "Chorizo",
+     "plato": {
+      "pizza": {
+       "p": 2.0,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 2.0,
+       "g": null
+      },
+      "perro": {
+       "p": 2.0,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 2.0,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 2.0,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-camarones",
+     "n": "Camarones",
+     "plato": {
+      "pizza": {
+       "p": 3.5,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 3.5,
+       "g": null
+      },
+      "perro": {
+       "p": 3.5,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 3.5,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 3.5,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-champinones",
+     "n": "Champiñones",
+     "plato": {
+      "pizza": {
+       "p": 2.0,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 2.0,
+       "g": null
+      },
+      "perro": {
+       "p": 2.0,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 2.0,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 2.0,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-pina",
+     "n": "Piña",
+     "plato": {
+      "pizza": {
+       "p": 2.0,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 2.0,
+       "g": null
+      },
+      "perro": {
+       "p": 2.0,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 2.0,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 2.0,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-maiz",
+     "n": "Maíz",
+     "plato": {
+      "pizza": {
+       "p": 1.5,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 1.5,
+       "g": null
+      },
+      "perro": {
+       "p": 1.5,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 1.5,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 1.5,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-cebolla",
+     "n": "Cebolla",
+     "plato": {
+      "pizza": {
+       "p": 1.0,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 1.0,
+       "g": null
+      },
+      "perro": {
+       "p": 1.0,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 1.0,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 1.0,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-pimenton",
+     "n": "Pimentón",
+     "plato": {
+      "pizza": {
+       "p": 1.5,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 1.5,
+       "g": null
+      },
+      "perro": {
+       "p": 1.5,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 1.5,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 1.5,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-tomate",
+     "n": "Tomate",
+     "plato": {
+      "pizza": {
+       "p": 1.0,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 1.0,
+       "g": null
+      },
+      "perro": {
+       "p": 1.0,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 1.0,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 1.0,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-jalapeno",
+     "n": "Jalapeño",
+     "plato": {
+      "pizza": {
+       "p": 1.0,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 1.0,
+       "g": null
+      },
+      "perro": {
+       "p": 1.0,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 1.0,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 1.0,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-durazno",
+     "n": "Durazno",
+     "plato": {
+      "pizza": {
+       "p": 2.0,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 2.0,
+       "g": null
+      },
+      "perro": {
+       "p": 2.0,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 2.0,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 2.0,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "topping-cereza",
+     "n": "Cereza",
+     "plato": {
+      "pizza": {
+       "p": 2.0,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 2.0,
+       "g": null
+      },
+      "perro": {
+       "p": 2.0,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 2.0,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 2.0,
+       "g": null
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "salsas",
+   "t": "Salsas",
+   "ico": "🥫",
+   "u": "g",
+   "extras": true,
+   "nota": "Precio y porción de cada salsa según el plato",
+   "items": [
+    {
+     "id": "salsa-salsa-de-tomate",
+     "n": "Salsa de tomate",
+     "plato": {
+      "pizza": {
+       "p": 0.5,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 0.5,
+       "g": null
+      },
+      "perro": {
+       "p": 0.5,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 0.5,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 0.5,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "salsa-salsa-rosada",
+     "n": "Salsa rosada",
+     "plato": {
+      "pizza": {
+       "p": 0.5,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 0.5,
+       "g": null
+      },
+      "perro": {
+       "p": 0.5,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 0.5,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 0.5,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "salsa-salsa-verde",
+     "n": "Salsa verde",
+     "plato": {
+      "pizza": {
+       "p": 0.5,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 0.5,
+       "g": null
+      },
+      "perro": {
+       "p": 0.5,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 0.5,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 0.5,
+       "g": null
+      }
+     }
+    }
+   ]
+  }
+ ]
+};
