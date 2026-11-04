@@ -12,9 +12,10 @@ const ESTADOS={
 /* Tipo de pedido: 'domicilio' (lo lleva el repartidor) o 'llevar' (el cliente lo recoge en el local) */
 const LLEVAR=[1040,1036,1034];
 /* Medio de pago y si el pago ya está confirmado (mismos valores que la tabla pedidos del servidor) */
-const MEDIOS={efectivo:'💵 Efectivo',tarjeta:'💳 Tarjeta',transferencia:'🏦 Transferencia',nequi:'📱 Nequi',daviplata:'📱 Daviplata'};
-const PAGOS={1041:['tarjeta',true],1040:['efectivo',false],1039:['nequi',true],1038:['tarjeta',true],1037:['transferencia',false],
-             1036:['efectivo',false],1035:['daviplata',true],1034:['efectivo',true],1033:['tarjeta',true]};
+/* Solo dos medios de pago: Stripe (en línea, con tarjeta) y efectivo */
+const MEDIOS={stripe:'Stripe',efectivo:'Efectivo'};
+const PAGOS={1041:['stripe',true],1040:['efectivo',false],1039:['stripe',true],1038:['stripe',true],1037:['efectivo',false],
+             1036:['efectivo',false],1035:['stripe',true],1034:['efectivo',true],1033:['stripe',true]};
 const pago=id=>PAGOS[id]||['efectivo',false];
 function seed(){
   const now=Date.now();
@@ -36,7 +37,9 @@ function load(){
     /* Estados que ya no existen: "En preparación" vuelve a Nuevos y "En camino" a Listos */
     const MAPA={prep:'nuevo',camino:'listo'};let cambio=false;d.forEach(o=>{if(MAPA[o.estado]){o.estado=MAPA[o.estado];cambio=true}
       if(!o.tipo){o.tipo=LLEVAR.includes(o.id)?'llevar':'domicilio';cambio=true}
-      if(o.medio===undefined){[o.medio,o.pagado]=pago(o.id);cambio=true}});if(cambio)save(d);return d}}catch(e){}
+      if(o.medio===undefined){[o.medio,o.pagado]=pago(o.id);cambio=true}
+      /* medios que ya no existen (tarjeta, nequi, ...) pasan a Stripe */
+      if(!MEDIOS[o.medio]){o.medio='stripe';cambio=true}});if(cambio)save(d);return d}}catch(e){}
   const d=seed();save(d);return d;
 }
 function save(d){try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}

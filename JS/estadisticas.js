@@ -35,7 +35,7 @@ const TOPPINGS=[['Queso extra',96,'Pizza'],['Tocineta',71,'Burguer'],['Jalapeño
 const SALSAS=[['Salsa rosada',142,'Salchipapas'],['Salsa de tomate',118,'Perro'],['Salsa verde',67,'Burguer']];
 const TAMANOS=[['Familiar',138],['Medium',112],['Personal',71]];
 const BORDES=[['Normal',176],['Queso',89],['Bocadillo',56]];
-const MEDIOS=[['Tarjeta',196],['Efectivo',121],['Nequi',63],['Transferencia',47],['Daviplata',47]];
+const MEDIOS=[['Stripe',353],['Efectivo',121]];
 const TIPO=[['Domicilio',318],['Para llevar',156]];
 const PLATOS=[...PIZZAS.map(([n,q])=>[n.startsWith('Pizza')?n:'Pizza '+n,q]),...BURGUERS,...OTROS].sort((a,b)=>b[1]-a[1]);
 const suma=a=>a.reduce((t,f)=>t+f[1],0);

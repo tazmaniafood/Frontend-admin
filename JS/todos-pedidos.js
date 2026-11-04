@@ -9,7 +9,7 @@ const API='/api';
 let d=TAZ.load(),filtro='todos',texto='';
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 
-const MEDIO={efectivo:'Efectivo',tarjeta:'Tarjeta',transferencia:'Transferencia',nequi:'Nequi',daviplata:'Daviplata'};
+const MEDIO=TAZ.MEDIOS;
 function evidencia(o){
   const mini=o.miniatura||o.foto;
   if(mini)return `<button class="foto" type="button" data-ver="${o.id}" aria-label="Ver foto de entrega del pedido #${o.id}"><img src="${mini}" alt=""></button>${o.fotoPendiente?'<small class="sub">Sin enviar</small>':''}`;
@@ -30,7 +30,7 @@ function fila(o){
   const dir=o.tipo==='llevar'?'<span class="tag">Para llevar</span>'
     :`<span class="tag dom">Domicilio</span>${o.dir?` <a class="dir" href="https://maps.google.com/?q=${encodeURIComponent(o.dir)}" target="_blank" rel="noopener">${esc(o.dir)}</a>`:''}`;
   return `<tr>
-    <td data-l="Pedido"><div><b class="num">#${esc(o.id)}</b><small class="sub">${TAZ.hace(o.creado)}</small></div></td>
+    <td data-l="Pedido"><div><b class="num">#${esc(o.id)}</b></div></td>
     <td data-l="Cliente"><div><span class="cli">${esc(o.cliente)}</span><a class="tel" href="tel:${esc(String(o.tel).replace(/\s/g,''))}">${esc(o.tel)}</a><span class="lugar">${dir}</span></div></td>
     <td data-l="Orden"><div><ul class="orden">${o.items.map(i=>`<li><b>${esc(i.q)}×</b> ${esc(i.n)}${i.d?`<small>${esc(i.d)}</small>`:''}</li>`).join('')}</ul></div></td>
     <td data-l="Pago" class="c-pago"><div><b class="total">${TAZ.fmt(o.total)}</b><span class="pago ${o.pagado?'si':'no'}"><i aria-hidden="true"></i>${o.pagado?'Pagado':'Sin pagar'}</span><small class="sub">${esc(MEDIO[o.medio]||o.medio||'—')}</small></div></td>
