@@ -319,3 +319,5 @@ body:has(#barra:not([hidden])) .toast{bottom:calc(110px + env(safe-area-inset-bo
 
 /* al pasar el mouse, solo las pizzas se inclinan */
 .sec:not([data-sec=pizzas]) .plato:hover .p-foto img{transform:scale(1.06)}
+/* productos que no son pizza: completos y rectos dentro del círculo */
+.dlg-foto:not(.gira) img{width:66%;height:78%;transform:none;animation:none}
