@@ -143,21 +143,29 @@ dlg.addEventListener('click',e=>{if(e.target===dlg||e.target.closest('[data-cerr
 const seccionDe=id=>M.secciones.find(s=>s.items.some(i=>i.id===id.split('@')[0])).id;
 
 /* ---- Tabla de toppings / salsas por plato ---- */
+/* ---- Toppings y salsas: tarjetas por plato ---- */
+const ICO_EX=[['queso','🧀'],['jamón','🍖'],['tocineta','🥓'],['pepperoni','🍕'],['pollo','🍗'],['carne','🥩'],['chorizo','🌭'],['camaron','🦐'],
+  ['champiñon','🍄'],['piña','🍍'],['maíz','🌽'],['cebolla','🧅'],['pimentón','🫑'],['tomate','🍅'],['jalapeño','🌶️'],['durazno','🍑'],['cereza','🍒'],['salsa','🥫']];
+const icoEx=n=>(ICO_EX.find(([k])=>n.toLowerCase().includes(k))||[,'✨'])[1];
+const ICO_PL={pizza:'🍕',burger:'🍔',perro:'🌭',salchipapas:'🍟',mazorcada:'🌽'};
 function tablaExtras(s){
   const pl=M.platos.find(p=>p.id===plato),esPizza=plato==='pizza',T=M.tamanosPizza;
-  const cab=esPizza?T.map(t=>`<th scope="col" class="g">${esc(t)}</th>`).join(''):`<th scope="col" class="g">Porción</th>`;
-  return `<div class="chips platos" role="tablist" aria-label="Plato">${M.platos.map(p=>`<button type="button" role="tab" class="pl${p.id===plato?' on':''}" aria-selected="${p.id===plato}" data-plato="${p.id}">${esc(p.t)}${cuenta(s,p.id)}</button>`).join('')}</div>
-  <p class="sub">${s.id==='toppings'?'Toppings':'Salsas'} en <b>${esc(pl.t)}</b>: precio y cuánto se le echa${esPizza?' según el tamaño':''}. El nombre cambia en todos los platos.</p>
-  <div class="tabla-ex"><table class="ex${esPizza?' pizza':''}">
-    <thead><tr><th scope="col">${s.id==='toppings'?'Topping':'Salsa'}</th><th scope="col" class="p">Precio</th>${cab}<th scope="col" class="e"><span class="sr">Estado</span></th></tr></thead>
-    <tbody>${s.items.map(it=>{
-      const k=`${it.id}@${plato}`,v=val(k),n=val(it.id).n,e=estado(k)||estado(it.id);
-      const gs=esPizza?T.map((t,i)=>`<td class="g" data-l="${esc(t)}">${inPorcion(k,v.g[i],i,s.u,`${n} ${t}`)}</td>`).join(''):`<td class="g" data-l="Porción">${inPorcion(k,v.g,null,s.u,`Porción de ${n}`)}</td>`;
-      return `<tr class="${e==='borr'?'cambiado':''}" data-fila="${k}">
-        <td class="n"><span class="n-cel">${FOTOS[it.id]?`<img class="mini-foto" src="../IMG/${FOTOS[it.id]}" alt="">`:''}<input class="fld fld-txt" type="text" maxlength="${LIM.n}" value="${esc(n)}" data-id="${it.id}" data-campo="n" aria-label="Nombre"></span></td>
-        <td class="p" data-l="Precio">${inPrecio(k,v.p,null,`Precio de ${n} en ${pl.t}`)}</td>${gs}
-        <td class="e">${e?`<button class="mini" type="button" data-restaurar="${it.id}|${k}" title="Volver al original" aria-label="Volver ${esc(n)} al original">Original</button>`:''}</td>
-      </tr>`}).join('')}</tbody></table></div>`;
+  const tarjeta=it=>{
+    const k=`${it.id}@${plato}`,v=val(k),base=val(it.id),n=base.n,e=estado(k)||estado(it.id);
+    const ico=FOTOS[it.id]?`<img src="../IMG/${FOTOS[it.id]}" alt="">`:`<i aria-hidden="true">${icoEx(BASE[it.id].n)}</i>`;
+    const porciones=esPizza
+      ?`<div class="ex-g tres">${T.map((t,i)=>`<label><span>${esc(t[0])}<em>${esc(t)}</em></span>${inPorcion(k,v.g[i],i,s.u,`${n} ${t}`)}</label>`).join('')}</div>`
+      :`<div class="ex-g"><label><span>Porción</span>${inPorcion(k,v.g,null,s.u,`Porción de ${n}`)}</label></div>`;
+    return `<article class="extra${e?' '+e:''}${e==='borr'?' cambiado':''}" data-fila="${k}">
+      <div class="ex-cab"><span class="ex-ico">${ico}</span>
+        <input class="fld fld-txt ex-nom" type="text" maxlength="${LIM.n}" value="${esc(n)}" data-id="${it.id}" data-campo="n" aria-label="Nombre">
+        ${e?`<button class="ex-orig" type="button" data-restaurar="${it.id}|${k}" title="Volver al original" aria-label="Volver ${esc(n)} al original">↺</button>`:''}</div>
+      <div class="ex-cuerpo"><label class="ex-p"><span>Precio</span>${inPrecio(k,v.p,null,`Precio de ${n} en ${pl.t}`)}</label>${porciones}</div>
+    </article>`;
+  };
+  return `<div class="chips platos" role="tablist" aria-label="Plato">${M.platos.map(p=>`<button type="button" role="tab" class="pl${p.id===plato?' on':''}" aria-selected="${p.id===plato}" data-plato="${p.id}"><span aria-hidden="true">${ICO_PL[p.id]||''}</span> ${esc(p.t)}${cuenta(s,p.id)}</button>`).join('')}</div>
+  <p class="sub">${s.id==='toppings'?'Toppings':'Salsas'} en <b>${ICO_PL[plato]||''} ${esc(pl.t)}</b>: precio y cuánto se le echa${esPizza?' según el tamaño (P · M · F)':''}. El nombre cambia en todos los platos.</p>
+  <div class="extras-grid${esPizza?' pizza':''}">${s.items.map(tarjeta).join('')}</div>`;
 }
 const cuenta=(s,pid)=>{const n=s.items.filter(it=>estado(`${it.id}@${pid}`)).length;return n?` <b class="n">${n}</b>`:''};
 
@@ -186,7 +194,8 @@ function pintar(){
 function refrescarFila(id){ // actualiza el resumen sin tocar los campos que se están escribiendo
   const f=document.querySelector(`[data-fila="${id}"]`);if(!f)return;
   if(f.classList.contains('plato')){f.innerHTML=cabeza(id);f.classList.remove('borr','edit');if(estado(id))f.classList.add(estado(id))}
-  f.classList.toggle('cambiado',f.tagName==='TR'&&(estado(id)==='borr'||estado(id.split('@')[0])==='borr'));
+  if(f.classList.contains('extra')){const e=estado(id)||estado(id.split('@')[0]);f.classList.remove('borr','edit');if(e)f.classList.add(e)}
+  f.classList.toggle('cambiado',f.classList.contains('extra')&&(estado(id)==='borr'||estado(id.split('@')[0])==='borr'));
   if(actual===id){const t=dlg.querySelector('#ed-tit');if(t)t.textContent=val(id).n}
   const tabs=document.getElementById('secciones');
   tabs.querySelectorAll('.tab').forEach(t=>{const s=SEC[t.dataset.tab],n=idsDe(s).filter(estado).length;const b=t.querySelector('.n');if(n){if(b)b.textContent=n;else t.insertAdjacentHTML('beforeend',` <b class="n">${n}</b>`)}else if(b)b.remove()});
