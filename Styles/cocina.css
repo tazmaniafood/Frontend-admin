@@ -1,10 +1,10 @@
 /* ============ COCINA: tablero de pedidos que se arrastran ============ */
-main{max-width:1240px}
-.tablero{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
+main{max-width:1000px}
+.tablero{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
 .col{background:var(--card);border:3px solid var(--ink);border-radius:18px;box-shadow:5px 5px 0 var(--ink);overflow:hidden;transition:transform .12s,box-shadow .12s}
 .col h2{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;font-size:24px;color:var(--ink);background:var(--c);border-bottom:3px solid var(--ink)}
 /* mismos colores de estado que en todo el panel */
-.col[data-estado="nuevo"]{--c:var(--e-nuevo)}.col[data-estado="cocina"]{--c:var(--e-cocina)}.col[data-estado="listo"]{--c:var(--e-reparto)}
+.col[data-estado="nuevo"]{--c:var(--e-nuevo)}.col[data-estado="listo"]{--c:var(--e-reparto)}
 .col h2 .n{min-width:34px;padding:0 8px;text-align:center;background:var(--ink);color:var(--cream);border-radius:99px;font:400 20px/1.5 var(--hd)}
 .lista{display:grid;gap:12px;padding:14px;min-height:140px}
 /* la columna sobre la que se va a soltar */
@@ -39,5 +39,4 @@ body.arrastrando{cursor:grabbing}
 body.arrastrando .cancelar{transform:translate(-50%,0);pointer-events:auto}
 .cancelar.sobre{background:var(--e-cancelado);border-style:solid;transform:translate(-50%,0) scale(1.06)}
 
-@media(max-width:1000px){.tablero{grid-template-columns:repeat(2,minmax(0,1fr))}.col[data-estado="listo"]{grid-column:1/-1}}
-@media(max-width:640px){.tablero{grid-template-columns:1fr}.col[data-estado="listo"]{grid-column:auto}}
+@media(max-width:640px){.tablero{grid-template-columns:1fr}}

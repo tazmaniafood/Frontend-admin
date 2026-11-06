@@ -36,6 +36,10 @@ const TAMANOS=[['Familiar',138],['Medium',112],['Personal',71]];
 const BORDES=[['Normal',176],['Queso',89],['Bocadillo',56]];
 const MEDIOS=[['Stripe',353],['Efectivo',121]];
 const TIPO=[['Domicilio',318],['Para llevar',156]];
+/* Gastos de la semana (ejemplo): por categoría y por día (mismos días que SEMANA) */
+const GASTOS=[['Ingredientes e insumos',3650],['Nómina',1820],['Arriendo',560],['Servicios (luz, gas, agua)',310],['Empaques',240],['Comisiones de Stripe',230],['Domicilios (gasolina)',120],['Publicidad',50]];
+const GASTOS_DIA=[820,860,950,1060,1320,1240,730];
+const GASTOS_ANTERIOR=6610;
 const PLATOS=[...PIZZAS.map(([n,q])=>[n.startsWith('Pizza')?n:'Pizza '+n,q]),...BURGUERS,...OTROS].sort((a,b)=>b[1]-a[1]);
 const suma=a=>a.reduce((t,f)=>t+f[1],0);
 const bebTot=BEBIDAS.map(([n,a,b,c])=>[n,a+b+c,`Lata ${a} · 1.5 L ${b} · 2 L ${c}`]).sort((a,b)=>b[1]-a[1]);
@@ -43,6 +47,8 @@ const tamBeb=[['Lata',BEBIDAS.reduce((t,b)=>t+b[1],0)],['1.5 L',BEBIDAS.reduce((
 
 /* ---------- Números clave ---------- */
 const vs=(a,b)=>{const v=Math.round((a-b)/b*100);return `<span class="${v>=0?'sube':'baja'}">${v>=0?'+':''}${v}%</span> vs. semana anterior`};
+/* en gastos, subir es malo: rojo si suben, verde si bajan */
+const vsGasto=(a,b)=>{const v=Math.round((a-b)/b*100);return `<span class="${v>0?'baja':'sube'}">${v>=0?'+':''}${v}%</span> vs. semana anterior`};
 /* Calificación de Google (ejemplo). Cuando se conecte, sale de Google Business Profile / Places API */
 const GOOGLE={nota:4.8,resenas:312,nuevas:14,dist:[[5,251],[4,41],[3,11],[2,4],[1,5]]};
 function estrellas(n){ // 5 estrellas con relleno parcial
@@ -72,7 +78,7 @@ function lista(filas,unidad,dos){ // filas: [nombre, cantidad, detalle opcional]
   return `<ol class="rank${dos?' dos':''}">${filas.map(([n,q,det],i)=>`<li title="${esc(n)}: ${q} ${unidad} (${pct(q,total)})">
     <span class="pos">${i+1}</span><span class="nm">${esc(n)}${det?`<small>${esc(det)}</small>`:''}</span>
     <span class="pista"><i style="width:${(q/max*100).toFixed(1)}%"${i===0?' class="lider"':''}></i></span>
-    <b>${num(q)}</b><span class="pc">${pct(q,total)}</span></li>`).join('')}</ol>`;
+    <b>${unidad==='dólares'?fmt0(q):num(q)}</b><span class="pc">${pct(q,total)}</span></li>`).join('')}</ol>`;
 }
 const bloque=(tit,sub,html,col='naranja')=>`<div class="bloque-est col-${col}"><h3>${tit}${sub?` <small>${sub}</small>`:''}</h3>${html}</div>`;
 const dato=(et,v)=>`<div class="dato"><small>${et}</small><b>${v}</b></div>`;
@@ -96,6 +102,19 @@ const VISTAS={
     </div>
     <div class="datos">${dato('Hora pico',hora(HORAS.reduce((m,h)=>h[2]>m[2]?h:m)[0]))}${dato('Plato estrella',PLATOS[0][0])}${dato('Ticket promedio',fmt(ingresos/pedidos))}${dato('Pedidos por día',Math.round(pedidos/7))}</div>`,
   productos:()=>`<div class="chips sub-tabs" role="tablist" aria-label="Parte del menú">${Object.entries(PROD).map(([k,[t]])=>`<button class="pl${k===prod?' on':''}" type="button" role="tab" aria-selected="${k===prod}" data-prod="${k}">${t}</button>`).join('')}</div>${PROD[prod][1]()}`,
+  gastos:()=>{
+    const gastos=suma(GASTOS),ganancia=ingresos-gastos,margen=Math.round(ganancia/ingresos*100);
+    const gan=SEMANA.map(([p,v],i)=>{const f=fechas[i],g=v-GASTOS_DIA[i];return [`${DIAS[f.getDay()]} ${f.getDate()}`,g,`${DIAS_L[f.getDay()]} · ingresos <b>${fmt0(v)}</b> · gastos <b>${fmt0(GASTOS_DIA[i])}</b> · ganancia <b>${fmt0(g)}</b>`]});
+    return `<div class="resumen-gastos">
+        <div class="rg rg-gasto"><small>Gastos de la semana</small><b>${fmt0(gastos)}</b><em>${vsGasto(gastos,GASTOS_ANTERIOR)}</em></div>
+        <div class="rg rg-gan"><small>Ganancia</small><b>${fmt0(ganancia)}</b><em>ingresos ${fmt0(ingresos)} − gastos</em></div>
+        <div class="rg rg-margen"><small>Margen</small><b>${margen}%</b><em>de cada $100 vendidos quedan $${margen}</em></div>
+        <div class="rg rg-mayor"><small>Mayor gasto</small><b>${GASTOS[0][0].split(' ')[0]}</b><em>${pct(GASTOS[0][1],gastos)} de los gastos</em></div>
+      </div>
+      <div class="dos-col graf">
+        ${bloque('Ganancia por día','ingresos menos gastos',barras(gan,'dias verde'),'verde')}
+        ${bloque('Gastos por categoría',`${fmt0(gastos)} en total`,lista(GASTOS.map(([n,v])=>[n,v]),'dólares'),'rojo')}
+      </div>`},
   pagos:()=>`<div class="dos-col">${bloque('Medios de pago',`${suma(MEDIOS)} pedidos`,lista(MEDIOS,'pedidos'),'morado')}${bloque('Domicilio o para llevar',`${suma(TIPO)} pedidos`,lista(TIPO,'pedidos'),'azul')}</div>`
 };
 function pintar(){

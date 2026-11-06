@@ -4,7 +4,7 @@ main{max-width:1180px}
 /* Barra de herramientas dentro de la tarjeta */
 .herramientas{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:14px 16px;border-bottom:1px solid #ffffff14;background:linear-gradient(90deg,#f7941d1f,#ffc93312 55%,#5fc27a14)}
 /* cada filtro con el color de su estado */
-.f-cocina.on{background:var(--e-cocina)}.f-reparto.on{background:var(--e-reparto)}
+.f-nuevo.on{background:var(--e-nuevo)}.f-reparto.on{background:var(--e-reparto)}
 .pedidos tbody tr{box-shadow:inset 4px 0 0 var(--fila,transparent)}
 .pedidos tbody tr:has(.estado){--fila:var(--e)}
 .pedidos tbody tr:has(.e-nuevo){--fila:var(--e-nuevo)}.pedidos tbody tr:has(.e-cocina){--fila:var(--e-cocina)}.pedidos tbody tr:has(.e-reparto){--fila:var(--e-reparto)}.pedidos tbody tr:has(.e-llevar){--fila:var(--e-llevar)}.pedidos tbody tr:has(.e-cancelado){--fila:var(--e-cancelado)}.pedidos tbody tr:has(.e-entregado){--fila:var(--e-entregado)}

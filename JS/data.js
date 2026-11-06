@@ -4,11 +4,11 @@
 (()=>{
 const KEY='taz-admin',MIN=60000;
 /* Estados del pedido (los mismos colores en todo el panel; ver --e-* en base.css):
-   nuevo -> cocina -> listo -> entregado, o cancelado en cualquier momento.
+   nuevo -> listo -> entregado, o cancelado en cualquier momento.
+   (Cocina trabaja con dos columnas: Nuevos y Listos.)
    Un pedido "listo" se muestra como "En reparto" si es a domicilio y "Para llevar" si se recoge. */
 const ESTADOS={
   nuevo:{t:'Nuevo',c:'#7fb2ee'},
-  cocina:{t:'En cocina',c:'#f7941d'},
   listo:{t:'Listo',c:'#ffc933'},
   entregado:{t:'Entregado',c:'#5fc27a'},
   cancelado:{t:'Cancelado',c:'#ff6b52'}
@@ -34,8 +34,8 @@ function seed(){
   return [
     o(1041,2,'nuevo','Laura M.','+1 408 555 0141','1180 Lincoln Ave, San Jose',[{q:1,n:'Pizza Hawaiana',d:'Familiar · Borde de bocadillo'},{q:2,n:'Coca-Cola'}],32),
     o(1040,6,'nuevo','Jorge P.','+1 669 555 0177','455 Park Ave, San Jose',[{q:1,n:'Salchi Tazmania',d:'Extra: Huevo'}],20.5),
-    o(1039,11,'cocina','Ana R.','+1 408 555 0102','77 Race St, San Jose',[{q:1,n:'Pizza a tu gusto',d:'Medium · Pollo, Champiñones, Maíz'},{q:1,n:'Perro salvaje'}],32),
-    o(1038,17,'cocina','Miguel S.','+1 650 555 0190','2010 The Alameda, San Jose',[{q:2,n:'Gran Burguer',d:'Extra: Tocineta'},{q:2,n:'Pepsi'}],35),
+    o(1039,11,'nuevo','Ana R.','+1 408 555 0102','77 Race St, San Jose',[{q:1,n:'Pizza a tu gusto',d:'Medium · Pollo, Champiñones, Maíz'},{q:1,n:'Perro salvaje'}],32),
+    o(1038,17,'nuevo','Miguel S.','+1 650 555 0190','2010 The Alameda, San Jose',[{q:2,n:'Gran Burguer',d:'Extra: Tocineta'},{q:2,n:'Pepsi'}],35),
     o(1037,24,'listo','Valentina C.','+1 408 555 0133','63 N Keeble Ave, San Jose',[{q:1,n:'Pizza La 4K',d:'Personal'}],22),
     o(1036,31,'listo','Pedro G.','+1 669 555 0118','300 Meridian Ave, San Jose',[{q:1,n:'Mazorcada TAZ',d:'Extra: Queso extra'},{q:1,n:'Sprite'}],20),
     o(1035,38,'listo','Sofía L.','+1 408 555 0165','901 Bird Ave, San Jose',[{q:1,n:'Pizza Mexicana',d:'Familiar'}],29,'Carlos'),
@@ -47,7 +47,7 @@ function seed(){
 function load(){
   try{const d=JSON.parse(localStorage.getItem(KEY));if(Array.isArray(d)&&d.length){
     /* Estados de versiones anteriores: "En preparación" es En cocina y "En camino" es Listo */
-    const MAPA={prep:'cocina',camino:'listo'};let cambio=false;d.forEach(o=>{if(MAPA[o.estado]){o.estado=MAPA[o.estado];cambio=true}
+    const MAPA={prep:'nuevo',cocina:'nuevo',camino:'listo'};let cambio=false;d.forEach(o=>{if(MAPA[o.estado]){o.estado=MAPA[o.estado];cambio=true}
       if(!o.tipo){o.tipo=LLEVAR.includes(o.id)?'llevar':'domicilio';cambio=true}
       if(o.medio===undefined){[o.medio,o.pagado]=pago(o.id);cambio=true}
       /* medios que ya no existen (tarjeta, nequi, ...) pasan a Stripe */

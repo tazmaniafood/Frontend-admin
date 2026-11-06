@@ -1,4 +1,4 @@
-/* Cocina: tablero de 3 columnas (Nuevos → En cocina → Listos).
+/* Cocina: tablero de 2 columnas (Nuevos → Listos).
    Los tickets se mueven ARRASTRÁNDOLOS de una columna a otra. Con mouse se arrastra directo;
    con el dedo se mantiene presionado un momento (así deslizar sigue moviendo la página).
    Mientras se arrastra aparece abajo una zona para cancelar el pedido.
@@ -6,7 +6,7 @@
    Al quedar listo pasa a Entregas (En reparto si es a domicilio, Para llevar si se recoge). */
 (()=>{
 let d=TAZ.load();
-const ORDEN=['nuevo','cocina','listo'];
+const ORDEN=['nuevo','listo'];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 
 function ticket(o){

@@ -46,6 +46,10 @@ const idsDe=s=>s.extras?s.items.flatMap(it=>[it.id,...M.platos.map(pl=>`${it.id}
 let tab=(location.hash.slice(1)||M.secciones[0].id),plato=M.platos[0].id;
 if(!SEC[tab])tab=M.secciones[0].id;
 let actual=null; // plato abierto en la ventana de edición
+/* Fotos de la tienda (miniaturas en IMG/Menu). Los platos que aún no tienen foto muestran su dibujo. */
+const FOTOS={"pizza-hawaiana": "Menu/pizza-hawaiana.webp", "pizza-tropical": "Menu/pizza-tropical.webp", "pizza-ay-dios-mio": "Menu/pizza-ay-dios-mio.webp", "pizza-californiana": "Menu/pizza-californiana.webp", "pizza-mexicana": "Menu/pizza-mexicana.webp", "pizza-camarones": "Menu/pizza-camarones.webp", "pizza-la-4k": "Menu/pizza-la-4k.webp", "pizza-pizza-a-tu-gusto": "Menu/pizza-pizza-a-tu-gusto.webp", "bebida-coca-cola": "Menu/bebida-coca-cola.webp", "bebida-pepsi": "Menu/bebida-pepsi.webp", "bebida-sprite": "Menu/bebida-sprite.webp", "salsa-salsa-de-tomate": "Menu/salsa-salsa-de-tomate.svg", "salsa-salsa-rosada": "Menu/salsa-salsa-rosada.svg", "salsa-salsa-verde": "Menu/salsa-salsa-verde.svg", "topping-chorizo": "Menu/topping-chorizo.webp"};
+const DIBUJO={pizzas:'🍕',bordes:'🧀',burger:'🍔',perro:'🌭',salchipapas:'🍟',mazorcada:'🌽',bebidas:'🥤',toppings:'🧀',salsas:'🥫'};
+const foto=(id,sec,cls='')=>FOTOS[id]?`<img class="${cls}" src="../IMG/${FOTOS[id]}" alt="" loading="lazy">`:`<i class="dibujo ${cls}" aria-hidden="true">${DIBUJO[sec]||'🍽️'}</i>`;
 
 /* ---- Formatos ---- */
 const porcion=(g,u)=>g==null||g===''?'—':`${g} ${u}`;
@@ -74,9 +78,10 @@ const precioCorto=(it,s)=>Array.isArray(it.p)?it.p.map((p,i)=>`<span><small>${es
 function cabeza(id){ // contenido de la tarjeta: solo lo necesario para reconocer el plato
   const s=SEC[seccionDe(id)],it=val(id),e=estado(id);
   const extra=it.ing?`${it.ing.length} ingredientes`:it.g!==undefined?(Array.isArray(it.g)?(it.g.some(x=>x!=null)?'Con porción':'Sin porción'):(it.g==null?'Sin porción':porcion(it.g,s.u))):'';
-  return `<span class="p-top"><b>${esc(it.n)}</b>${e?`<i class="p-dot ${e}" title="${e==='borr'?'Sin guardar':'Modificado'}"></i>`:''}</span>
+  return `<span class="p-foto">${foto(id,s.id)}${e?`<i class="p-dot ${e}" title="${e==='borr'?'Sin guardar':'Modificado'}"></i>`:''}</span>
+    <span class="p-cuerpo"><span class="p-top"><b>${esc(it.n)}</b></span>
     <span class="p-pre">${precioCorto(it,s)}</span>
-    ${extra?`<span class="p-meta">${extra}</span>`:''}`;
+    ${extra?`<span class="p-meta">${extra}</span>`:''}</span>`;
 }
 /* campo de porción de un ingrediente */
 const inIng=(id,i,j,v,u,lab)=>`<span class="unidad"><input class="fld" type="number" inputmode="decimal" min="0" max="${LIM.g}" step="1" value="${v==null?'':v}" placeholder="—" data-id="${id}" data-campo="ing" data-i="${i}" data-k="g"${j!=null?` data-j="${j}"`:''} aria-label="${esc(lab)}"><i aria-hidden="true">${u}</i></span>`;
@@ -121,7 +126,7 @@ function pintarDlg(){
   if(!actual)return;
   const s=SEC[seccionDe(actual)];
   dlg.className=`editor-dlg ${COLOR[s.id]||'c-crema'}`;
-  dlg.innerHTML=`<div class="dlg-top"><span><small>${esc(s.t)}</small><b id="ed-tit">${esc(val(actual).n)}</b></span><button class="dlg-x" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+  dlg.innerHTML=`<div class="dlg-top"><span class="dlg-foto">${foto(actual,s.id)}</span><span class="dlg-nom"><small>${esc(s.t)}</small><b id="ed-tit">${esc(val(actual).n)}</b></span><button class="dlg-x" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
     <div class="dlg-cuerpo">${editor(actual)}</div>
     <div class="dlg-pie"><span class="sub">Los cambios se guardan con el botón de abajo.</span><button class="btn ok" type="button" data-cerrar>Listo</button></div>`;
 }
@@ -142,7 +147,7 @@ function tablaExtras(s){
       const k=`${it.id}@${plato}`,v=val(k),n=val(it.id).n,e=estado(k)||estado(it.id);
       const gs=esPizza?T.map((t,i)=>`<td class="g" data-l="${esc(t)}">${inPorcion(k,v.g[i],i,s.u,`${n} ${t}`)}</td>`).join(''):`<td class="g" data-l="Porción">${inPorcion(k,v.g,null,s.u,`Porción de ${n}`)}</td>`;
       return `<tr class="${e==='borr'?'cambiado':''}" data-fila="${k}">
-        <td class="n"><input class="fld fld-txt" type="text" maxlength="${LIM.n}" value="${esc(n)}" data-id="${it.id}" data-campo="n" aria-label="Nombre"></td>
+        <td class="n"><span class="n-cel">${FOTOS[it.id]?`<img class="mini-foto" src="../IMG/${FOTOS[it.id]}" alt="">`:''}<input class="fld fld-txt" type="text" maxlength="${LIM.n}" value="${esc(n)}" data-id="${it.id}" data-campo="n" aria-label="Nombre"></span></td>
         <td class="p" data-l="Precio">${inPrecio(k,v.p,null,`Precio de ${n} en ${pl.t}`)}</td>${gs}
         <td class="e">${e?`<button class="mini" type="button" data-restaurar="${it.id}|${k}" title="Volver al original" aria-label="Volver ${esc(n)} al original">Original</button>`:''}</td>
       </tr>`}).join('')}</tbody></table></div>`;
@@ -161,7 +166,7 @@ function cambiarIng(id,ing){
 function pintar(){
   document.getElementById('secciones').innerHTML=M.secciones.map(s=>{
     const n=idsDe(s).filter(estado).length;
-    return `<button type="button" role="tab" class="tab${s.id===tab?' on':''}" aria-selected="${s.id===tab}" data-tab="${s.id}">${esc(s.t)}${n?` <b class="n">${n}</b>`:''}</button>`}).join('');
+    return `<button type="button" role="tab" class="tab ${COLOR[s.id]||''}${s.id===tab?' on':''}" aria-selected="${s.id===tab}" data-tab="${s.id}">${esc(s.t)}${n?` <b class="n">${n}</b>`:''}</button>`}).join('');
   const s=SEC[tab];
   /* caja con banda de color, igual que en Cocina y Estadísticas (mismo color por categoría) */
   document.getElementById('menu').innerHTML=`<section class="caja sec ${COLOR[s.id]||'c-crema'}" aria-label="${esc(s.t)}">
