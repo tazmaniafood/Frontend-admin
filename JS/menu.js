@@ -133,7 +133,7 @@ function pintarDlg(){
   const s=SEC[seccionDe(actual)];
   dlg.className=`editor-dlg ${COLOR[s.id]||'c-crema'}`;
   const v=val(actual);
-  dlg.innerHTML=`<div class="dlg-top"><span class="dlg-foto">${foto(actual,s.id)}</span><span class="dlg-nom"><small>${esc(s.t)}</small><b id="ed-tit">${esc(v.n)}</b>${v.d?`<em id="ed-desc">${esc(v.d)}</em>`:''}<span class="dlg-precios" id="ed-precios">${precioCorto(v,s)}</span></span><button class="dlg-x" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+  dlg.innerHTML=`<div class="dlg-top"><span class="dlg-foto${s.id==='pizzas'?' gira':''}">${foto(actual,s.id)}</span><span class="dlg-nom"><small>${esc(s.t)}</small><b id="ed-tit">${esc(v.n)}</b>${v.d?`<em id="ed-desc">${esc(v.d)}</em>`:''}<span class="dlg-precios" id="ed-precios">${precioCorto(v,s)}</span></span><button class="dlg-x" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
     <div class="dlg-cuerpo">${editor(actual)}</div>
     <div class="dlg-pie"><span class="sub">Los cambios se guardan con el botón de abajo.</span><button class="btn ok" type="button" data-cerrar>Listo</button></div>`;
 }
@@ -184,7 +184,7 @@ function pintar(){
     return `<button type="button" role="tab" class="tab ${COLOR[s.id]||''}${s.id===tab?' on':''}" aria-selected="${s.id===tab}" data-tab="${s.id}">${esc(s.t)}${n?` <b class="n">${n}</b>`:''}</button>`}).join('');
   const s=SEC[tab];
   /* caja con banda de color, igual que en Cocina y Estadísticas (mismo color por categoría) */
-  document.getElementById('menu').innerHTML=`<section class="caja sec ${COLOR[s.id]||'c-crema'}" aria-label="${esc(s.t)}">
+  document.getElementById('menu').innerHTML=`<section class="caja sec ${COLOR[s.id]||'c-crema'}" data-sec="${s.id}" aria-label="${esc(s.t)}">
     <h2 class="banda"><span>${esc(s.t)}${s.nota?` <small>${esc(s.nota)}</small>`:''}</span><b class="n">${s.items.length}</b></h2>
     ${s.extras?`<div class="cuerpo">${tablaExtras(s)}</div>`:`<div class="platos-grid">${s.items.map(i=>fila(i.id)).join('')}</div>`}
   </section>`;
