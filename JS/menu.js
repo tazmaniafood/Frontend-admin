@@ -1,5 +1,6 @@
 /* Menú: la cocina cambia lo que YA existe en la tienda (no puede crear ni borrar):
-   - Platos: nombre, descripción, precio y sus ingredientes, cada uno con su porción
+   - Platos: nombre, descripción, precio y sus ingredientes, cada uno con su porción; se pueden
+     AÑADIR ingredientes (y quitar los añadidos; los que trae la tienda solo se renombran)
      (en pizzas, por tamaño); la porción total del plato es la suma de los ingredientes.
    - Bordes y bebidas: nombre, precio y porción por tamaño (bordes según el tamaño de la pizza, bebidas en ml).
    - Toppings y salsas: nombre (uno solo) y, por cada plato, su precio y su porción
@@ -83,9 +84,10 @@ function tablaIng(id,it,s){
   const tam=porTam(it.ing),T=tam?s.tamanos:[null];
   return `<div class="bloque"><h4>Ingredientes <small>porción de cada uno en ${s.u}${tam?', por tamaño':''}</small></h4>
   <table class="ing${tam?' tam3':''}"><thead><tr><th scope="col">Ingrediente</th>${T.map(t=>`<th scope="col" class="g">${t?esc(t):'Porción'}</th>`).join('')}</tr></thead>
-  <tbody>${it.ing.map((x,i)=>`<tr><td class="n"><input class="fld fld-txt" type="text" maxlength="${LIM.n}" value="${esc(x.n)}" data-id="${id}" data-campo="ing" data-i="${i}" data-k="n" aria-label="Ingrediente ${i+1}"></td>
+  <tbody>${it.ing.map((x,i)=>`<tr${i>=BASE[id].ing.length?' class="nuevo-ing"':''}><td class="n"><span class="n-cel"><input class="fld fld-txt" type="text" maxlength="${LIM.n}" value="${esc(x.n)}" placeholder="Nombre del ingrediente" data-id="${id}" data-campo="ing" data-i="${i}" data-k="n" aria-label="Ingrediente ${i+1}">${i>=BASE[id].ing.length?`<button class="quitar" type="button" data-quitar="${id}|${i}" title="Quitar este ingrediente" aria-label="Quitar ${esc(x.n||'ingrediente')}">✕</button>`:''}</span></td>
     ${T.map((t,j)=>`<td class="g" data-l="${t?esc(t):'Porción'}">${inIng(id,i,tam?j:null,tam?x.g[j]:x.g,s.u,`${x.n}${t?' '+t:''}`)}</td>`).join('')}</tr>`).join('')}</tbody>
-  <tfoot><tr><th scope="row">Porción total</th>${T.map((t,j)=>`<td class="g tot" data-l="${t?esc(t):'Total'}" data-total="${tam?j:''}">${porcion(total(it.ing,tam?j:null),s.u)}</td>`).join('')}</tr></tfoot></table></div>`;
+  <tfoot><tr><th scope="row">Porción total</th>${T.map((t,j)=>`<td class="g tot" data-l="${t?esc(t):'Total'}" data-total="${tam?j:''}">${porcion(total(it.ing,tam?j:null),s.u)}</td>`).join('')}</tr></tfoot></table>
+  <button class="anadir" type="button" data-anadir="${id}">+ Añadir ingrediente</button></div>`;
 }
 function editor(id){
   const s=SEC[seccionDe(id)],it=val(id),o=BASE[id];
@@ -149,6 +151,13 @@ const cuenta=(s,pid)=>{const n=s.items.filter(it=>estado(`${it.id}@${pid}`)).len
 
 /* ---- Pintar ---- */
 const COLOR={pizzas:'c-naranja',bordes:'c-amarillo',burger:'c-amarillo',perro:'c-rojo',salchipapas:'c-naranja',mazorcada:'c-verde',bebidas:'c-azul',toppings:'c-verde',salsas:'c-rojo'};
+/* guarda en el borrador una lista nueva de ingredientes */
+function cambiarIng(id,ing){
+  const b={...(borrador[id]||{})};
+  if(iguales(ing,ref(id).ing))delete b.ing;else b.ing=ing;
+  if(Object.keys(b).length)borrador[id]=b;else delete borrador[id];
+  refrescarFila(id);
+}
 function pintar(){
   document.getElementById('secciones').innerHTML=M.secciones.map(s=>{
     const n=idsDe(s).filter(estado).length;
@@ -235,6 +244,14 @@ document.addEventListener('click',e=>{
   if(p){plato=p.dataset.plato;pintar();return}
   const a=e.target.closest('[data-abrir]');
   if(a){abrir(a.dataset.abrir);return}
+  const an=e.target.closest('[data-anadir]');
+  if(an){const id=an.dataset.anadir,ing=val(id).ing.map(r=>({n:r.n,g:Array.isArray(r.g)?[...r.g]:r.g}));
+    ing.push({n:'',g:porTam(ing)?ing[0].g.map(()=>null):null});
+    cambiarIng(id,ing);pintarDlg();
+    const ins=dlg.querySelectorAll('[data-k="n"]');ins[ins.length-1]?.focus();return}
+  const qu=e.target.closest('[data-quitar]');
+  if(qu){const [id,i]=qu.dataset.quitar.split('|'),ing=val(id).ing.map(r=>({n:r.n,g:Array.isArray(r.g)?[...r.g]:r.g}));
+    ing.splice(+i,1);cambiarIng(id,ing);pintarDlg();refrescarFila(id);return}
   const r=e.target.closest('[data-restaurar]');
   if(r){const ids=r.dataset.restaurar.split('|'),o=BASE[ids[0]];
     if(!confirm(`¿Volver "${val(ids[0]).n}" a como está en la tienda${ids[1]?` (en ${M.platos.find(x=>ids[1].endsWith('@'+x.id)).t})`:''}?`))return;

@@ -1,13 +1,12 @@
 /* ============ ENTREGAS (domicilio y para llevar) ============ */
-.cab .tipo{font-size:12px}
-.cab .tipo.llevar{background:var(--yel);color:var(--ink)}
-.cab .tipo.domicilio{background:var(--cream);color:var(--ink)}
-.entregas{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(330px,100%),400px));justify-content:center;gap:18px}
+/* tarjetas que llenan todo el ancho disponible (3, 4 o más por fila según la pantalla) */
+.entregas{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:18px}
+main{max-width:1480px}
 .entrega{display:grid;gap:10px;padding:14px 16px;border-left:10px solid var(--c);animation:entra .25s ease-out}
 @keyframes entra{from{opacity:0;transform:translateY(6px)}}
 .cab{display:flex;flex-wrap:nowrap;align-items:center;gap:6px 10px;min-width:0}
 .cab .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cab .tipo,.cab .total{flex:none}
+.cab .estado,.cab .total{flex:none}
 .cab>b:first-child{font:400 26px/1 var(--hd);color:var(--yel)}
 .cab .estado{background:var(--cream);color:var(--ink)}
 .cab .t{font-size:12.5px;color:var(--mut);font-weight:800}

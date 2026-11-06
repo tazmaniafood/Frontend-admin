@@ -75,6 +75,12 @@ textarea.fld{resize:vertical;min-height:62px;font-size:14px;line-height:1.4}
 .ing tfoot th,.ing tfoot td{padding:10px 8px 0;border-top:1px solid #ffffff14;font-size:12.5px;font-weight:900;color:var(--mut);text-transform:uppercase;letter-spacing:.4px}
 .ing tfoot td{padding-left:0}
 .ing .tot{color:var(--yel);font-size:14px;text-transform:none;letter-spacing:0;font-variant-numeric:tabular-nums}
+.n-cel{display:flex;align-items:center;gap:4px}
+.nuevo-ing .fld-txt{background:#ffffff0d;border-color:#ffffff24}
+.quitar{flex:none;width:26px;height:26px;border:0;border-radius:50%;background:#ff6b5226;color:#ff8a72;font-weight:900;font-size:12px}
+.quitar:hover{background:#ff6b5244}
+.anadir{justify-self:start;margin-top:2px;padding:7px 14px;border:2px dashed color-mix(in srgb,var(--c,var(--yel)) 70%,transparent);border-radius:10px;background:color-mix(in srgb,var(--c,var(--yel)) 10%,transparent);color:var(--cream);font-weight:900;font-size:13.5px}
+.anadir:hover{background:color-mix(in srgb,var(--c,var(--yel)) 22%,transparent)}
 .pie-ed{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
 .pie-ed:empty{display:none}
 .orig{margin:0;font-size:12.5px;color:var(--mut);font-weight:700}

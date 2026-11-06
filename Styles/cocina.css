@@ -1,28 +1,43 @@
-/* ============ COCINA: tablero de pedidos ============ */
-main{max-width:1000px}
-.tablero{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-items:start}
-.col{background:var(--card);border:3px solid var(--ink);border-radius:18px;box-shadow:5px 5px 0 var(--ink);overflow:hidden}
+/* ============ COCINA: tablero de pedidos que se arrastran ============ */
+main{max-width:1240px}
+.tablero{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
+.col{background:var(--card);border:3px solid var(--ink);border-radius:18px;box-shadow:5px 5px 0 var(--ink);overflow:hidden;transition:transform .12s,box-shadow .12s}
 .col h2{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;font-size:24px;color:var(--ink);background:var(--c);border-bottom:3px solid var(--ink)}
-.col[data-estado="nuevo"]{--c:#7fb2ee}.col[data-estado="listo"]{--c:#5fc27a}
+/* mismos colores de estado que en todo el panel */
+.col[data-estado="nuevo"]{--c:var(--e-nuevo)}.col[data-estado="cocina"]{--c:var(--e-cocina)}.col[data-estado="listo"]{--c:var(--e-reparto)}
 .col h2 .n{min-width:34px;padding:0 8px;text-align:center;background:var(--ink);color:var(--cream);border-radius:99px;font:400 20px/1.5 var(--hd)}
-.lista{display:grid;gap:12px;padding:14px}
+.lista{display:grid;gap:12px;padding:14px;min-height:140px}
+/* la columna sobre la que se va a soltar */
+.col.sobre{transform:translateY(-3px);box-shadow:5px 8px 0 var(--ink),0 0 0 4px var(--c)}
+.col.sobre .lista{background:color-mix(in srgb,var(--c) 14%,transparent)}
 
 /* Ticket de pedido: papel crema con borde dentado arriba */
-.ticket{position:relative;background:var(--cream);color:var(--ink);border:3px solid var(--ink);border-radius:6px 6px 14px 14px;box-shadow:3px 4px 0 var(--ink);padding:12px 14px 12px;animation:entra .25s ease-out}
+.ticket{position:relative;background:var(--cream);color:var(--ink);border:3px solid var(--ink);border-radius:6px 6px 14px 14px;box-shadow:3px 4px 0 var(--ink);padding:12px 14px 14px;animation:entra .25s ease-out;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.ticket.agarrado{transform:scale(1.03);box-shadow:5px 8px 0 var(--ink)}
 .ticket::before{content:"";position:absolute;left:-3px;right:-3px;top:-9px;height:9px;background:radial-gradient(circle at 6px 9px,var(--cream) 5px,var(--ink) 5px 7px,transparent 7.5px) 0 0/12px 9px repeat-x}
+.ticket:focus-visible{outline:3px solid var(--yel);outline-offset:3px}
 @keyframes entra{from{opacity:0;transform:translateY(6px)}}
-.ticket header{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding-bottom:6px;border-bottom:2px dashed #12030340}
+.ticket header{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding-bottom:6px;border-bottom:2px dashed #12030340}
 .ticket header b{font:400 24px/1 var(--hd);letter-spacing:.5px}
-.ticket .t{font-size:12.5px;font-weight:800;color:#6b4a30}
-.ticket ul{margin:8px 0;padding:0;list-style:none;display:grid;gap:5px}
+.ticket header .estado{border:2px solid var(--ink);padding:1px 9px;font-size:11.5px}
+.ticket .t{margin-left:auto;font-size:12.5px;font-weight:800;color:#6b4a30}
+.ticket ul{margin:8px 0 0;padding:0;list-style:none;display:grid;gap:5px}
 .ticket li{font-weight:800;line-height:1.3}
 .ticket li small{display:block;font-size:12.5px;font-weight:700;color:#6b4a30}
-.ticket .pie-t{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding-top:8px;border-top:2px dashed #12030340;font-size:13px;font-weight:800}
+/* agarradera: tres rayitas abajo para indicar que se puede arrastrar */
+.agarre{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);display:grid;gap:2px}
+.agarre i{display:block;width:22px;height:2px;border-radius:2px;background:#12030333}
 .ticket.tarde{background:#ffe1d6;box-shadow:3px 4px 0 var(--ink),inset 0 0 0 3px var(--red)}
 .ticket.tarde::before{background-image:radial-gradient(circle at 6px 9px,#ffe1d6 5px,var(--ink) 5px 7px,transparent 7.5px)}
 .ticket.tarde .t{color:var(--red)}
-.chip.espera{background:#5fc27a40}
 .col .empty{border-color:#ffffff22}
+/* mientras se arrastra */
+.ticket.levantado{opacity:.35}
+.fantasma{position:fixed;left:0;top:0;z-index:60;margin:0;pointer-events:none;cursor:grabbing;box-shadow:10px 14px 0 #0008;animation:none}
+body.arrastrando{cursor:grabbing}
+.cancelar{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:70;transform:translate(-50%,160%);padding:14px 26px;border:3px dashed var(--cream);border-radius:16px;background:#e6331299;color:var(--cream);font-weight:900;box-shadow:0 8px 24px #000a;transition:transform .2s,background .15s;pointer-events:none}
+body.arrastrando .cancelar{transform:translate(-50%,0);pointer-events:auto}
+.cancelar.sobre{background:var(--e-cancelado);border-style:solid;transform:translate(-50%,0) scale(1.06)}
 
-.chip.llevar{vertical-align:middle;margin-left:6px;background:var(--yel);color:var(--ink);font:800 12px/1.5 var(--bd);letter-spacing:0}
-@media(max-width:900px){.tablero{grid-template-columns:1fr}}
+@media(max-width:1000px){.tablero{grid-template-columns:repeat(2,minmax(0,1fr))}.col[data-estado="listo"]{grid-column:1/-1}}
+@media(max-width:640px){.tablero{grid-template-columns:1fr}.col[data-estado="listo"]{grid-column:auto}}

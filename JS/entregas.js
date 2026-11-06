@@ -14,8 +14,8 @@ let d=TAZ.load(),filtro='domicilio';
 const tipo=o=>o.tipo||'domicilio';
 
 function tarjeta(o){
-  return `<article class="entrega panel" data-id="${o.id}" style="--c:${TAZ.ESTADOS[o.estado].c}">
-    <div class="cab"><b>#${o.id}</b>${tipo(o)==='llevar'?'<span class="chip tipo llevar">🥡 Para llevar</span>':'<span class="chip tipo domicilio">🛵 Domicilio</span>'}<span class="t">${TAZ.hace(o.creado)}</span><b class="total">${TAZ.fmt(o.total)}</b></div>
+  return `<article class="entrega panel" data-id="${o.id}" style="--c:${TAZ.vis(o).c}">
+    <div class="cab"><b>#${o.id}</b>${TAZ.pastilla(o)}<span class="t">${TAZ.hace(o.creado)}</span><b class="total">${TAZ.fmt(o.total)}</b></div>
     <div class="cliente">
       <p class="nom">${o.cliente}</p>
       ${tipo(o)==='domicilio'&&o.dir?`<p>📍 <a href="https://maps.google.com/?q=${encodeURIComponent(o.dir)}" target="_blank" rel="noopener">${o.dir}</a></p>`:''}

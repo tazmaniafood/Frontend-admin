@@ -6,9 +6,10 @@
        (si el servidor no responde, se muestra la miniatura guardada). */
 (()=>{
 const API='/api';
-/* Filtro por estado: por defecto solo los ACTIVOS (en cocina o en reparto), no los ya entregados */
+/* Filtro por estado: por defecto solo los ACTIVOS (nuevo, en cocina, en reparto o para llevar) */
 let d=TAZ.load(),filtro='activos',texto='';
-const pasa=(o,f)=>f==='activos'?o.estado!=='entregado':o.estado===f;
+/* activos: todo lo que no está entregado ni cancelado */
+const pasa=(o,f)=>f==='todos'?true:f==='activos'?!['entregado','cancelado'].includes(o.estado):o.estado===f;
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 
 const MEDIO=TAZ.MEDIOS;
@@ -18,16 +19,8 @@ function evidencia(o){
   if(o.fotoEnviada)return `<button class="ver" type="button" data-ver="${o.id}">Ver foto</button>`;
   return '<span class="nada">—</span>';
 }
-/* Estado del pedido:
-   nuevo     -> En cocina   (está en el tablero de Cocina)
-   listo     -> En reparto  (cocina lo terminó y va a Entregas; para llevar: listo para recoger)
-   entregado -> Entregado
-   "Nuevo" queda para cuando el pedido llegue de la tienda y cocina aún no lo haya visto. */
-const STATUS={recibido:['nuevo','Nuevo'],nuevo:['cocina','En cocina'],listo:['reparto','En reparto'],entregado:['entregado','Entregado']};
-function status(o){
-  const [c,t]=o.estado==='listo'&&o.tipo==='llevar'?['reparto','Listo para recoger']:(STATUS[o.estado]||['nuevo',o.estado]);
-  return `<span class="st ${c}">${t}</span>`;
-}
+/* Estado del pedido: la pastilla común (mismos colores que Cocina y Entregas) */
+const status=o=>TAZ.pastilla(o);
 function fila(o){
   const dir=o.tipo==='llevar'?'<span class="tag llevar">Para llevar</span>'
     :`<span class="tag dom">Domicilio</span>${o.dir?` <a class="dir" href="https://maps.google.com/?q=${encodeURIComponent(o.dir)}" target="_blank" rel="noopener">${esc(o.dir)}</a>`:''}`;

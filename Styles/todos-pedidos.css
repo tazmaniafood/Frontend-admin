@@ -4,9 +4,10 @@ main{max-width:1180px}
 /* Barra de herramientas dentro de la tarjeta */
 .herramientas{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:14px 16px;border-bottom:1px solid #ffffff14;background:linear-gradient(90deg,#f7941d1f,#ffc93312 55%,#5fc27a14)}
 /* cada filtro con el color de su estado */
-.f-cocina.on{background:var(--org)}.f-reparto.on{background:var(--yel)}.f-entregado.on{background:var(--ok)}
+.f-cocina.on{background:var(--e-cocina)}.f-reparto.on{background:var(--e-reparto)}
 .pedidos tbody tr{box-shadow:inset 4px 0 0 var(--fila,transparent)}
-.pedidos tbody tr:has(.st.cocina){--fila:var(--org)}.pedidos tbody tr:has(.st.reparto){--fila:var(--yel)}.pedidos tbody tr:has(.st.entregado){--fila:var(--ok)}
+.pedidos tbody tr:has(.estado){--fila:var(--e)}
+.pedidos tbody tr:has(.e-nuevo){--fila:var(--e-nuevo)}.pedidos tbody tr:has(.e-cocina){--fila:var(--e-cocina)}.pedidos tbody tr:has(.e-reparto){--fila:var(--e-reparto)}.pedidos tbody tr:has(.e-llevar){--fila:var(--e-llevar)}.pedidos tbody tr:has(.e-cancelado){--fila:var(--e-cancelado)}.pedidos tbody tr:has(.e-entregado){--fila:var(--e-entregado)}
 .herramientas .chips{margin:0}
 .total-ped{margin-left:auto;color:var(--mut);font-size:13px;font-weight:800;white-space:nowrap}
 .total-ped b{color:var(--cream)}
@@ -31,11 +32,10 @@ main{max-width:1180px}
 .orden small{display:block;color:var(--mut);font-size:12px;font-weight:700}
 .total{color:var(--cream);font-weight:900}
 /* Estados y pago: pastillas de color */
-.pago,.st{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:99px;font-size:12.5px;font-weight:900;white-space:nowrap;color:var(--ink)}
-.st.nuevo{background:#7fb2ee}.st.cocina{background:var(--org)}.st.reparto{background:var(--yel)}.st.entregado{background:var(--ok)}
+.pago{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:99px;font-size:12.5px;font-weight:900;white-space:nowrap}
 .pago.si{background:#5fc27a2e;color:#8fe3a3;box-shadow:inset 0 0 0 1.5px #5fc27a80}
 .pago.no{background:#ffc9331f;color:var(--yel);box-shadow:inset 0 0 0 1.5px #ffc93380}
-.tag{display:inline-block;padding:1px 8px;border-radius:6px;font-weight:900;font-size:11.5px;background:#ffc93326;color:var(--yel)}
+.tag{display:inline-block;padding:1px 8px;border-radius:6px;font-weight:900;font-size:11.5px;background:#c49bff2b;color:var(--e-llevar)}
 .tag.dom{background:#7fb2ee2b;color:#9cc4f2}
 .c-foto{width:76px}
 .foto{display:block;width:52px;height:52px;padding:0;border:2px solid #ffffff2a;border-radius:10px;overflow:hidden;background:#000}

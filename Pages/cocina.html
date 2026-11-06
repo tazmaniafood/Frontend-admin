@@ -4,17 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<link rel="icon" href="../IMG/Logo-taz.png?v=34" type="image/png">
+<link rel="icon" href="../IMG/Logo-taz.png?v=36" type="image/png">
 <title>Cocina · Admin TAZ</title>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../Styles/base.css?v=34">
-<link rel="stylesheet" href="../Styles/cocina.css?v=34">
-<link rel="stylesheet" href="../Styles/login.css?v=34">
-<script src="../JS/auth.js?v=34"></script>
+<link rel="stylesheet" href="../Styles/base.css?v=36">
+<link rel="stylesheet" href="../Styles/cocina.css?v=36">
+<link rel="stylesheet" href="../Styles/login.css?v=36">
+<script src="../JS/auth.js?v=36"></script>
 </head>
 <body>
 <header class="top">
-  <a class="brand" href="#" role="button" aria-haspopup="menu" aria-expanded="false" aria-label="Menú de la cuenta" title="Cuenta"><img src="../IMG/Logo-taz-trans.png?v=34" alt="TAZ Fast Food"></a>
+  <a class="brand" href="#" role="button" aria-haspopup="menu" aria-expanded="false" aria-label="Menú de la cuenta" title="Cuenta"><img src="../IMG/Logo-taz-trans.png?v=36" alt="TAZ Fast Food"></a>
   <nav aria-label="Secciones del panel">
     <a href="estadisticas.html">📊 Estadísticas</a>
     <a href="cocina.html" class="on" aria-current="page">👨‍🍳 Cocina</a>
@@ -25,12 +25,14 @@
 </header>
 <main>
   <div class="pagehead">
-    <div><h1>👨‍🍳 Cocina</h1><p>Toca un pedido para avanzarlo. Los que llevan más de 15 minutos se marcan en rojo.</p></div>
+    <h1>👨‍🍳 Cocina</h1><p>Arrastra cada pedido a su columna. Los que llevan más de 15 minutos se marcan en rojo.</p>
   </div>
   <div class="tablero">
-    <section class="col" data-estado="nuevo"><h2><span>🆕 Nuevos</span><b class="n"></b></h2><div class="lista"></div></section>
-    <section class="col" data-estado="listo"><h2><span>✅ Listos</span><b class="n"></b></h2><div class="lista"></div></section>
+    <section class="col" data-estado="nuevo"><h2><span>Nuevos</span><b class="n"></b></h2><div class="lista"></div></section>
+    <section class="col" data-estado="cocina"><h2><span>En cocina</span><b class="n"></b></h2><div class="lista"></div></section>
+    <section class="col" data-estado="listo"><h2><span>Listos</span><b class="n"></b></h2><div class="lista"></div></section>
   </div>
+  <div class="cancelar" id="cancelar" aria-hidden="true">Suelta aquí para cancelar el pedido</div>
 </main>
 <footer>
   <span class="stick">Panel de administración</span>
@@ -38,7 +40,7 @@
   <p>Hecho en Colombia · Servido en San José, California</p>
 </footer>
 <div class="toast" id="toast" role="status"></div>
-<script src="../JS/data.js?v=34"></script>
-<script src="../JS/cocina.js?v=34"></script>
+<script src="../JS/data.js?v=36"></script>
+<script src="../JS/cocina.js?v=36"></script>
 </body>
 </html>
