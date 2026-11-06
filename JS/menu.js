@@ -4,8 +4,8 @@
    - Bordes y bebidas: nombre, precio y porción por tamaño (bordes según el tamaño de la pizza, bebidas en ml).
    - Toppings y salsas: nombre (uno solo) y, por cada plato, su precio y su porción
      (en pizza la porción va por tamaño).
-   Pantalla compacta: una pestaña por sección; cada plato es una fila que se abre para editar;
-   toppings y salsas son una tabla por plato.
+   Pantalla compacta: una pestaña por sección; cada plato es una tarjeta pequeña (nombre y precios)
+   que abre el editor en una ventana; toppings y salsas son una tabla por plato.
 
    Guardado: por id en este navegador (localStorage 'taz-menu') y se envía al servidor
        PUT /api/menu   { cambios: { "<id>": { n?, d?, p?, g? } }, actualizado }
@@ -44,7 +44,7 @@ const idsDe=s=>s.extras?s.items.flatMap(it=>[it.id,...M.platos.map(pl=>`${it.id}
 
 let tab=(location.hash.slice(1)||M.secciones[0].id),plato=M.platos[0].id;
 if(!SEC[tab])tab=M.secciones[0].id;
-const abiertos=new Set();
+let actual=null; // plato abierto en la ventana de edición
 
 /* ---- Formatos ---- */
 const porcion=(g,u)=>g==null||g===''?'—':`${g} ${u}`;
@@ -61,20 +61,21 @@ const resumenIng=(it,s)=>{
 const resumenPorcion=(it,s)=>it.ing?resumenIng(it,s):Array.isArray(it.g)?(it.g.every(x=>x==null)?'<span class="falta">Sin porción</span>':it.g.map((g,i)=>`<span><small>${esc(corto(s.tamanos[i]))}</small> ${porcion(g,s.u)}</span>`).join('')):(it.g==null?'<span class="falta">Sin porción</span>':`<span>${porcion(it.g,s.u)}</span>`);
 const corto=t=>({'Personal (lata)':'Lata','Personal':'P','Medium':'M','Familiar':'F'})[t]||t;
 const chip=e=>e==='borr'?'<span class="est borr"><i></i>Sin guardar</span>':e==='edit'?'<span class="est edit"><i></i>Modificado</span>':'';
-const FLECHA='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
 
 /* ---- Campos ---- */
 const inPrecio=(id,v,i,lab)=>`<span class="pesos"><i aria-hidden="true">$</i><input class="fld" type="number" inputmode="decimal" min="0" max="${LIM.p}" step="0.01" value="${Number.isFinite(v)?dinero(v):''}" data-id="${id}" data-campo="p"${i!=null?` data-i="${i}"`:''} aria-label="${esc(lab)}"></span>`;
 const inPorcion=(id,v,i,u,lab)=>`<span class="unidad"><input class="fld" type="number" inputmode="decimal" min="0" max="${LIM.g}" step="1" value="${v==null?'':v}" placeholder="—" data-id="${id}" data-campo="g"${i!=null?` data-i="${i}"`:''} aria-label="${esc(lab)}"><i aria-hidden="true">${u}</i></span>`;
 
 /* ---- Fila de plato / borde / bebida ---- */
-function cabeza(id){
-  const s=SEC[seccionDe(id)],it=val(id);
-  return `<span class="f-nom"><b>${esc(it.n)}</b>${it.d!==undefined?`<small>${esc(it.d)}</small>`:''}</span>
-    <span class="f-pre">${resumenPrecio(it,s)}</span>
-    <span class="f-por">${resumenPorcion(it,s)}</span>
-    <span class="f-est">${chip(estado(id))}</span>
-    <span class="f-abrir" aria-hidden="true">${FLECHA}</span>`;
+/* precios en una línea: "P $13 · M $19 · F $24" (sin centavos si son .00) */
+const corto$=n=>'$'+(Number.isInteger(Math.round(n*100)/100)?String(Math.round(n)):dinero(n));
+const precioCorto=(it,s)=>Array.isArray(it.p)?it.p.map((p,i)=>`<span><small>${esc(corto(s.tamanos[i]))}</small>${corto$(p)}</span>`).join('<i>·</i>'):`<span>${corto$(it.p)}</span>`;
+function cabeza(id){ // contenido de la tarjeta: solo lo necesario para reconocer el plato
+  const s=SEC[seccionDe(id)],it=val(id),e=estado(id);
+  const extra=it.ing?`${it.ing.length} ingredientes`:it.g!==undefined?(Array.isArray(it.g)?(it.g.some(x=>x!=null)?'Con porción':'Sin porción'):(it.g==null?'Sin porción':porcion(it.g,s.u))):'';
+  return `<span class="p-top"><b>${esc(it.n)}</b>${e?`<i class="p-dot ${e}" title="${e==='borr'?'Sin guardar':'Modificado'}"></i>`:''}</span>
+    <span class="p-pre">${precioCorto(it,s)}</span>
+    ${extra?`<span class="p-meta">${extra}</span>`:''}`;
 }
 /* campo de porción de un ingrediente */
 const inIng=(id,i,j,v,u,lab)=>`<span class="unidad"><input class="fld" type="number" inputmode="decimal" min="0" max="${LIM.g}" step="1" value="${v==null?'':v}" placeholder="—" data-id="${id}" data-campo="ing" data-i="${i}" data-k="g"${j!=null?` data-j="${j}"`:''} aria-label="${esc(lab)}"><i aria-hidden="true">${u}</i></span>`;
@@ -107,12 +108,24 @@ function editor(id){
   </div>`;
 }
 function fila(id){
-  const ab=abiertos.has(id);
-  return `<article class="fila${estado(id)==='borr'?' cambiado':''}${ab?' abierta':''}" data-fila="${id}">
-    <button class="f-cab" type="button" aria-expanded="${ab}" data-abrir="${id}">${cabeza(id)}</button>
-    ${ab?editor(id):''}
-  </article>`;
+  const e=estado(id);
+  return `<button class="plato${e?' '+e:''}" type="button" data-abrir="${id}" data-fila="${id}" aria-haspopup="dialog">${cabeza(id)}</button>`;
 }
+/* ---- Ventana de edición ---- */
+const dlg=document.createElement('dialog');
+dlg.className='editor-dlg';dlg.setAttribute('aria-labelledby','ed-tit');
+document.body.appendChild(dlg);
+function pintarDlg(){
+  if(!actual)return;
+  const s=SEC[seccionDe(actual)];
+  dlg.className=`editor-dlg ${COLOR[s.id]||'c-crema'}`;
+  dlg.innerHTML=`<div class="dlg-top"><span><small>${esc(s.t)}</small><b id="ed-tit">${esc(val(actual).n)}</b></span><button class="dlg-x" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+    <div class="dlg-cuerpo">${editor(actual)}</div>
+    <div class="dlg-pie"><span class="sub">Los cambios se guardan con el botón de abajo.</span><button class="btn ok" type="button" data-cerrar>Listo</button></div>`;
+}
+function abrir(id){actual=id;pintarDlg();if(!dlg.open)dlg.showModal();dlg.querySelector('[data-campo="n"]')?.focus({preventScroll:true})}
+dlg.addEventListener('close',()=>{actual=null;pintar()});
+dlg.addEventListener('click',e=>{if(e.target===dlg||e.target.closest('[data-cerrar]'))dlg.close()});
 const seccionDe=id=>M.secciones.find(s=>s.items.some(i=>i.id===id.split('@')[0])).id;
 
 /* ---- Tabla de toppings / salsas por plato ---- */
@@ -135,7 +148,7 @@ function tablaExtras(s){
 const cuenta=(s,pid)=>{const n=s.items.filter(it=>estado(`${it.id}@${pid}`)).length;return n?` <b class="n">${n}</b>`:''};
 
 /* ---- Pintar ---- */
-const COLOR={pizzas:'c-naranja',bordes:'c-crema',burger:'c-amarillo',perro:'c-naranja',salchipapas:'c-amarillo',mazorcada:'c-verde',bebidas:'c-azul',toppings:'c-verde',salsas:'c-naranja'};
+const COLOR={pizzas:'c-naranja',bordes:'c-amarillo',burger:'c-amarillo',perro:'c-rojo',salchipapas:'c-naranja',mazorcada:'c-verde',bebidas:'c-azul',toppings:'c-verde',salsas:'c-rojo'};
 function pintar(){
   document.getElementById('secciones').innerHTML=M.secciones.map(s=>{
     const n=idsDe(s).filter(estado).length;
@@ -144,16 +157,16 @@ function pintar(){
   /* caja con banda de color, igual que en Cocina y Estadísticas (mismo color por categoría) */
   document.getElementById('menu').innerHTML=`<section class="caja sec ${COLOR[s.id]||'c-crema'}" aria-label="${esc(s.t)}">
     <h2 class="banda"><span>${esc(s.t)}${s.nota?` <small>${esc(s.nota)}</small>`:''}</span><b class="n">${s.items.length}</b></h2>
-    ${s.extras?`<div class="cuerpo">${tablaExtras(s)}</div>`:`
-      <div class="lista-cab" aria-hidden="true"><span>Nombre</span><span>Precio</span><span>Porción</span><span></span><span></span></div>
-      <div class="lista">${s.items.map(i=>fila(i.id)).join('')}</div>`}
+    ${s.extras?`<div class="cuerpo">${tablaExtras(s)}</div>`:`<div class="platos-grid">${s.items.map(i=>fila(i.id)).join('')}</div>`}
   </section>`;
+  if(actual&&dlg.open)pintarDlg();
   barra();
 }
 function refrescarFila(id){ // actualiza el resumen sin tocar los campos que se están escribiendo
   const f=document.querySelector(`[data-fila="${id}"]`);if(!f)return;
-  const c=f.querySelector('.f-cab');if(c)c.innerHTML=cabeza(id);
-  f.classList.toggle('cambiado',estado(id)==='borr'||(f.tagName==='TR'&&estado(id.split('@')[0])==='borr'));
+  if(f.classList.contains('plato')){f.innerHTML=cabeza(id);f.classList.remove('borr','edit');if(estado(id))f.classList.add(estado(id))}
+  f.classList.toggle('cambiado',f.tagName==='TR'&&(estado(id)==='borr'||estado(id.split('@')[0])==='borr'));
+  if(actual===id){const t=dlg.querySelector('#ed-tit');if(t)t.textContent=val(id).n}
   const tabs=document.getElementById('secciones');
   tabs.querySelectorAll('.tab').forEach(t=>{const s=SEC[t.dataset.tab],n=idsDe(s).filter(estado).length;const b=t.querySelector('.n');if(n){if(b)b.textContent=n;else t.insertAdjacentHTML('beforeend',` <b class="n">${n}</b>`)}else if(b)b.remove()});
   barra();
@@ -211,6 +224,7 @@ document.addEventListener('input',e=>{
   /* el nombre de un topping aparece en las 5 tablas: se actualiza el estado de su fila */
   document.querySelectorAll(`[data-fila="${id}"],[data-fila^="${id}@"]`).forEach(f=>refrescarFila(f.dataset.fila));
   if(!document.querySelector(`[data-fila="${id}"]`))refrescarFila(id);
+  if(actual===id){const t=dlg.querySelector('#ed-tit');if(t)t.textContent=val(id).n}
 });
 document.addEventListener('change',e=>{const el=e.target;if(el.dataset&&el.dataset.campo==='p'&&el.value!==''&&!isNaN(parseFloat(el.value)))el.value=dinero(parseFloat(el.value))});
 
@@ -220,10 +234,7 @@ document.addEventListener('click',e=>{
   const p=e.target.closest('[data-plato]');
   if(p){plato=p.dataset.plato;pintar();return}
   const a=e.target.closest('[data-abrir]');
-  if(a){const id=a.dataset.abrir;abiertos.has(id)?abiertos.delete(id):abiertos.add(id);
-    const f=a.closest('.fila');f.outerHTML=fila(id);
-    if(abiertos.has(id))document.querySelector(`[data-fila="${id}"] [data-campo="n"]`)?.focus({preventScroll:true});
-    return}
+  if(a){abrir(a.dataset.abrir);return}
   const r=e.target.closest('[data-restaurar]');
   if(r){const ids=r.dataset.restaurar.split('|'),o=BASE[ids[0]];
     if(!confirm(`¿Volver "${val(ids[0]).n}" a como está en la tienda${ids[1]?` (en ${M.platos.find(x=>ids[1].endsWith('@'+x.id)).t})`:''}?`))return;
@@ -242,7 +253,7 @@ document.getElementById('guardar').addEventListener('click',()=>{
   if(malo){
     const s=seccionDe(malo);if(s!==tab){tab=s;pintar()}
     if(malo.includes('@')){plato=malo.split('@')[1];pintar()}
-    else if(!abiertos.has(malo)){abiertos.add(malo);pintar()}
+    else abrir(malo);
     document.querySelectorAll('[data-campo]').forEach(el=>marcarError(el,valido(el.dataset.campo==='ing'?el.dataset.k:el.dataset.campo,leerCampo(el))));
     const el=document.querySelector('[aria-invalid="true"]');if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.focus({preventScroll:true})}
     return TAZ.aviso('Revisa los campos marcados en rojo');

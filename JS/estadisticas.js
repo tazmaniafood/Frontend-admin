@@ -1,5 +1,5 @@
 /* Estadísticas de la semana, en una página corta:
-   - 4 números clave arriba (ingresos, pedidos, ticket promedio, mejor día).
+   - Arriba: ingresos, la calificación de Google (al centro, más grande) y pedidos.
    - Una tarjeta con pestañas: Ventas (por día y por hora), Productos (lo más vendido de cada
      parte del menú de la tienda) y Pagos y entregas.
    Son DATOS DE EJEMPLO fijos hasta que el servidor guarde los pedidos reales. */
@@ -18,7 +18,6 @@ const fechas=SEMANA.map((_,i)=>{const f=new Date(hoy);f.setDate(hoy.getDate()-(6
 const fCorta=f=>f.toLocaleDateString('es-CO',{day:'numeric',month:'short'}).replace('.','');
 document.getElementById('rango').textContent=`${fCorta(fechas[0])} – ${fCorta(fechas[6])}`;
 const ingresos=SEMANA.reduce((t,d)=>t+d[1],0),pedidos=SEMANA.reduce((t,d)=>t+d[0],0);
-const mejor=SEMANA.reduce((m,d,i)=>d[1]>SEMANA[m][1]?i:m,0);
 /* [hora, pedidos, ventas] promedio por día */
 const HORAS=[[11,3,52],[12,6,118],[13,8,161],[14,5,96],[15,3,61],[16,4,79],[17,7,142],[18,10,214],[19,12,251],[20,9,193],[21,5,104],[22,2,40]];
 const hora=h=>(h%12||12)+(h<12?' am':' pm');
@@ -44,13 +43,23 @@ const tamBeb=[['Lata',BEBIDAS.reduce((t,b)=>t+b[1],0)],['1.5 L',BEBIDAS.reduce((
 
 /* ---------- Números clave ---------- */
 const vs=(a,b)=>{const v=Math.round((a-b)/b*100);return `<span class="${v>=0?'sube':'baja'}">${v>=0?'+':''}${v}%</span> vs. semana anterior`};
-const KPI=[
-  ['Ingresos',fmt(ingresos),vs(ingresos,ANTERIOR.ingresos)],
-  ['Pedidos',num(pedidos),vs(pedidos,ANTERIOR.pedidos)],
-  ['Ticket promedio',fmt(ingresos/pedidos),'por pedido'],
-  ['Mejor día',DIAS_L[fechas[mejor].getDay()],`${fmt0(SEMANA[mejor][1])} · ${SEMANA[mejor][0]} pedidos`]
-];
-document.getElementById('kpis').innerHTML=KPI.map(([t,v,s])=>`<div class="kpi"><small>${t}</small><b>${v}</b><em>${s}</em></div>`).join('');
+/* Calificación de Google (ejemplo). Cuando se conecte, sale de Google Business Profile / Places API */
+const GOOGLE={nota:4.8,resenas:312,nuevas:14,dist:[[5,251],[4,41],[3,11],[2,4],[1,5]]};
+function estrellas(n){ // 5 estrellas con relleno parcial
+  return `<span class="estrellas" role="img" aria-label="${n} de 5 estrellas">${[0,1,2,3,4].map(i=>{
+    const f=Math.max(0,Math.min(1,n-i))*100;
+    return `<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><defs><linearGradient id="e${i}"><stop offset="${f}%" stop-color="#ffc933"/><stop offset="${f}%" stop-color="#ffffff26"/></linearGradient></defs><path fill="url(#e${i})" d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg>`}).join('')}</span>`;
+}
+const maxG=Math.max(...GOOGLE.dist.map(d=>d[1]));
+document.getElementById('kpis').innerHTML=`
+  <div class="kpi k-ing"><small>Ingresos de la semana</small><b>${fmt(ingresos)}</b><em>${vs(ingresos,ANTERIOR.ingresos)}</em></div>
+  <div class="kpi k-google">
+    <div class="g-nota"><small><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.2H12v4.2h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2.1-1.9 3.3-4.7 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.4-1 7.2-2.7l-3.5-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.2v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.3V7.1H2.2a11 11 0 0 0 0 9.9z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.1-3.1A11 11 0 0 0 2.2 7.1l3.6 2.8C6.7 7.3 9.1 5.4 12 5.4z"/></svg> Calificación en Google</small>
+      <div class="g-fila"><b>${GOOGLE.nota.toFixed(1)}</b>${estrellas(GOOGLE.nota)}</div>
+      <em>${num(GOOGLE.resenas)} reseñas · <span class="sube">+${GOOGLE.nuevas}</span> esta semana</em></div>
+    <ol class="g-dist" aria-label="Reseñas por estrellas">${GOOGLE.dist.map(([e,c])=>`<li><span>${e}★</span><i><b style="width:${(c/maxG*100).toFixed(1)}%"></b></i><span>${c}</span></li>`).join('')}</ol>
+  </div>
+  <div class="kpi k-ped"><small>Pedidos de la semana</small><b>${num(pedidos)}</b><em>${vs(pedidos,ANTERIOR.pedidos)}</em></div>`;
 
 /* ---------- Piezas ---------- */
 function barras(datos,cls){ // una sola serie: [etiqueta, valor, texto del tooltip]
@@ -65,19 +74,19 @@ function lista(filas,unidad,dos){ // filas: [nombre, cantidad, detalle opcional]
     <span class="pista"><i style="width:${(q/max*100).toFixed(1)}%"${i===0?' class="lider"':''}></i></span>
     <b>${num(q)}</b><span class="pc">${pct(q,total)}</span></li>`).join('')}</ol>`;
 }
-const bloque=(tit,sub,html)=>`<div class="bloque-est"><h3>${tit}${sub?` <small>${sub}</small>`:''}</h3>${html}</div>`;
+const bloque=(tit,sub,html,col='naranja')=>`<div class="bloque-est col-${col}"><h3>${tit}${sub?` <small>${sub}</small>`:''}</h3>${html}</div>`;
 const dato=(et,v)=>`<div class="dato"><small>${et}</small><b>${v}</b></div>`;
 
 /* ---------- Vistas ---------- */
 const PROD={
   top:['Top 10',()=>bloque('Los 10 platos más vendidos','unidades de la semana',lista(PLATOS.slice(0,10),'unidades',true))],
-  pizzas:['Pizzas',()=>bloque('Pizzas',`${suma(PIZZAS)} vendidas`,lista(PIZZAS,'pizzas',true))],
-  burguers:['Burguers',()=>bloque('Burguers',`${suma(BURGUERS)} vendidas`,lista(BURGUERS,'burguers'))],
-  otros:['Perros, salchipapas y mazorcada',()=>bloque('Perros, salchipapas y mazorcada',`${suma(OTROS)} vendidos`,lista(OTROS,'unidades'))],
-  bebidas:['Bebidas',()=>`<div class="dos-col">${bloque('Por marca',`${suma(bebTot)} bebidas`,lista(bebTot,'bebidas'))}${bloque('Por tamaño','todas las marcas',lista(tamBeb,'bebidas'))}</div>`],
-  toppings:['Toppings',()=>bloque('Toppings extra','veces pedido y plato donde más se pide',lista(TOPPINGS.map(([n,q,p])=>[n,q,'Más en '+p]),'veces',true))],
-  salsas:['Salsas',()=>bloque('Salsas extra','veces pedida y plato donde más se pide',lista(SALSAS.map(([n,q,p])=>[n,q,'Más en '+p]),'veces'))],
-  pizza:['Tamaño y borde',()=>`<div class="dos-col">${bloque('Tamaño de pizza','',lista(TAMANOS,'pizzas'))}${bloque('Borde de pizza','',lista(BORDES,'pizzas'))}</div>`]
+  pizzas:['Pizzas',()=>bloque('Pizzas',`${suma(PIZZAS)} vendidas`,lista(PIZZAS,'pizzas',true),'naranja')],
+  burguers:['Burguers',()=>bloque('Burguers',`${suma(BURGUERS)} vendidas`,lista(BURGUERS,'burguers'),'amarillo')],
+  otros:['Perros, salchipapas y mazorcada',()=>bloque('Perros, salchipapas y mazorcada',`${suma(OTROS)} vendidos`,lista(OTROS,'unidades'),'rojo')],
+  bebidas:['Bebidas',()=>`<div class="dos-col">${bloque('Por marca',`${suma(bebTot)} bebidas`,lista(bebTot,'bebidas'),'azul')}${bloque('Por tamaño','todas las marcas',lista(tamBeb,'bebidas'),'azul')}</div>`],
+  toppings:['Toppings',()=>bloque('Toppings extra','veces pedido y plato donde más se pide',lista(TOPPINGS.map(([n,q,p])=>[n,q,'Más en '+p]),'veces',true),'verde')],
+  salsas:['Salsas',()=>bloque('Salsas extra','veces pedida y plato donde más se pide',lista(SALSAS.map(([n,q,p])=>[n,q,'Más en '+p]),'veces'),'rojo')],
+  pizza:['Tamaño y borde',()=>`<div class="dos-col">${bloque('Tamaño de pizza','',lista(TAMANOS,'pizzas'),'naranja')}${bloque('Borde de pizza','',lista(BORDES,'pizzas'),'amarillo')}</div>`]
 };
 let vista='ventas',prod='top';
 const VISTAS={
@@ -85,9 +94,9 @@ const VISTAS={
       ${bloque('Ingresos por día',`total ${fmt0(ingresos)}`,barras(SEMANA.map(([p,v],i)=>{const f=fechas[i];return [`${DIAS[f.getDay()]} ${f.getDate()}`,v,`${DIAS_L[f.getDay()]} ${fCorta(f)} · <b>${fmt(v)}</b> · ${p} pedidos`]}),'dias'))}
       ${bloque('Ventas por hora','promedio diario',barras(HORAS.map(([h,p,v])=>[hora(h).replace(' ',''),v,`${hora(h)} · <b>${fmt(v)}</b> · ${p} pedidos`]),'horas'))}
     </div>
-    <div class="datos">${dato('Hora pico',hora(HORAS.reduce((m,h)=>h[2]>m[2]?h:m)[0]))}${dato('Plato estrella',PLATOS[0][0])}${dato('Pedidos por día',Math.round(pedidos/7))}${dato('Ingreso por día',fmt0(ingresos/7))}</div>`,
+    <div class="datos">${dato('Hora pico',hora(HORAS.reduce((m,h)=>h[2]>m[2]?h:m)[0]))}${dato('Plato estrella',PLATOS[0][0])}${dato('Ticket promedio',fmt(ingresos/pedidos))}${dato('Pedidos por día',Math.round(pedidos/7))}</div>`,
   productos:()=>`<div class="chips sub-tabs" role="tablist" aria-label="Parte del menú">${Object.entries(PROD).map(([k,[t]])=>`<button class="pl${k===prod?' on':''}" type="button" role="tab" aria-selected="${k===prod}" data-prod="${k}">${t}</button>`).join('')}</div>${PROD[prod][1]()}`,
-  pagos:()=>`<div class="dos-col">${bloque('Medios de pago',`${suma(MEDIOS)} pedidos`,lista(MEDIOS,'pedidos'))}${bloque('Domicilio o para llevar',`${suma(TIPO)} pedidos`,lista(TIPO,'pedidos'))}</div>`
+  pagos:()=>`<div class="dos-col">${bloque('Medios de pago',`${suma(MEDIOS)} pedidos`,lista(MEDIOS,'pedidos'),'morado')}${bloque('Domicilio o para llevar',`${suma(TIPO)} pedidos`,lista(TIPO,'pedidos'),'azul')}</div>`
 };
 function pintar(){
   document.querySelectorAll('[data-vista]').forEach(b=>{const on=b.dataset.vista===vista;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});

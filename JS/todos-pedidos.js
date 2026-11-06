@@ -6,7 +6,9 @@
        (si el servidor no responde, se muestra la miniatura guardada). */
 (()=>{
 const API='/api';
-let d=TAZ.load(),filtro='todos',texto='';
+/* Filtro por estado: por defecto solo los ACTIVOS (en cocina o en reparto), no los ya entregados */
+let d=TAZ.load(),filtro='activos',texto='';
+const pasa=(o,f)=>f==='activos'?o.estado!=='entregado':o.estado===f;
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 
 const MEDIO=TAZ.MEDIOS;
@@ -24,27 +26,28 @@ function evidencia(o){
 const STATUS={recibido:['nuevo','Nuevo'],nuevo:['cocina','En cocina'],listo:['reparto','En reparto'],entregado:['entregado','Entregado']};
 function status(o){
   const [c,t]=o.estado==='listo'&&o.tipo==='llevar'?['reparto','Listo para recoger']:(STATUS[o.estado]||['nuevo',o.estado]);
-  return `<span class="st ${c}"><i aria-hidden="true"></i>${t}</span>`;
+  return `<span class="st ${c}">${t}</span>`;
 }
 function fila(o){
-  const dir=o.tipo==='llevar'?'<span class="tag">Para llevar</span>'
+  const dir=o.tipo==='llevar'?'<span class="tag llevar">Para llevar</span>'
     :`<span class="tag dom">Domicilio</span>${o.dir?` <a class="dir" href="https://maps.google.com/?q=${encodeURIComponent(o.dir)}" target="_blank" rel="noopener">${esc(o.dir)}</a>`:''}`;
   return `<tr>
     <td data-l="Pedido"><div><b class="num">#${esc(o.id)}</b></div></td>
     <td data-l="Cliente"><div><span class="cli">${esc(o.cliente)}</span><a class="tel" href="tel:${esc(String(o.tel).replace(/\s/g,''))}">${esc(o.tel)}</a><span class="lugar">${dir}</span></div></td>
     <td data-l="Orden"><div><ul class="orden">${o.items.map(i=>`<li><b>${esc(i.q)}×</b> ${esc(i.n)}${i.d?`<small>${esc(i.d)}</small>`:''}</li>`).join('')}</ul></div></td>
-    <td data-l="Pago" class="c-pago"><div><b class="total">${TAZ.fmt(o.total)}</b><span class="pago ${o.pagado?'si':'no'}"><i aria-hidden="true"></i>${o.pagado?'Pagado':'Sin pagar'}</span><small class="sub">${esc(MEDIO[o.medio]||o.medio||'—')}</small></div></td>
+    <td data-l="Pago" class="c-pago"><div><b class="total">${TAZ.fmt(o.total)}</b><span class="pago ${o.pagado?'si':'no'}">${o.pagado?'Pagado':'Sin pagar'}</span><small class="sub">${esc(MEDIO[o.medio]||o.medio||'—')}</small></div></td>
     <td data-l="Estado"><div>${status(o)}</div></td>
     <td data-l="Foto" class="c-foto"><div>${evidencia(o)}</div></td>
   </tr>`;
 }
 function pintar(){
   const q=texto.trim().toLowerCase();
-  const lista=d.filter(o=>(filtro==='todos'||(filtro==='pagado')===!!o.pagado)
+  document.querySelectorAll('.f').forEach(b=>{const n=b.querySelector('b');if(n)n.textContent=d.filter(o=>pasa(o,b.dataset.f)).length});
+  const lista=d.filter(o=>pasa(o,filtro)
     &&(!q||String(o.id).includes(q)||String(o.cliente).toLowerCase().includes(q)||String(o.tel).replace(/\s/g,'').includes(q.replace(/\s/g,''))))
     .sort((a,b)=>b.creado-a.creado);
   document.getElementById('n').textContent=lista.length;
-  document.getElementById('filas').innerHTML=lista.length?lista.map(fila).join(''):'<tr class="vacio"><td colspan="6"><p class="empty">No hay pedidos que coincidan</p></td></tr>';
+  document.getElementById('filas').innerHTML=lista.length?lista.map(fila).join(''):'<tr class="vacio"><td colspan="6"><p class="empty">No hay pedidos en esta vista</p></td></tr>';
 }
 
 /* ---- Visor de la foto ---- */
