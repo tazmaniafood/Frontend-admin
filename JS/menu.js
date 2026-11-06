@@ -87,29 +87,35 @@ function cabeza(id){ // contenido de la tarjeta: solo lo necesario para reconoce
 const inIng=(id,i,j,v,u,lab)=>`<span class="unidad"><input class="fld" type="number" inputmode="decimal" min="0" max="${LIM.g}" step="1" value="${v==null?'':v}" placeholder="—" data-id="${id}" data-campo="ing" data-i="${i}" data-k="g"${j!=null?` data-j="${j}"`:''} aria-label="${esc(lab)}"><i aria-hidden="true">${u}</i></span>`;
 function tablaIng(id,it,s){
   const tam=porTam(it.ing),T=tam?s.tamanos:[null];
-  return `<div class="bloque"><h4>Ingredientes <small>porción de cada uno en ${s.u}${tam?', por tamaño':''}</small></h4>
+  return `<div class="bloque"><h5><span>3</span> Ingredientes <small>${it.ing.length} · porción de cada uno en ${s.u}${tam?', por tamaño':''}</small></h5>
   <table class="ing${tam?' tam3':''}"><thead><tr><th scope="col">Ingrediente</th>${T.map(t=>`<th scope="col" class="g">${t?esc(t):'Porción'}</th>`).join('')}</tr></thead>
   <tbody>${it.ing.map((x,i)=>`<tr${i>=BASE[id].ing.length?' class="nuevo-ing"':''}><td class="n"><span class="n-cel"><input class="fld fld-txt" type="text" maxlength="${LIM.n}" value="${esc(x.n)}" placeholder="Nombre del ingrediente" data-id="${id}" data-campo="ing" data-i="${i}" data-k="n" aria-label="Ingrediente ${i+1}">${i>=BASE[id].ing.length?`<button class="quitar" type="button" data-quitar="${id}|${i}" title="Quitar este ingrediente" aria-label="Quitar ${esc(x.n||'ingrediente')}">✕</button>`:''}</span></td>
     ${T.map((t,j)=>`<td class="g" data-l="${t?esc(t):'Porción'}">${inIng(id,i,tam?j:null,tam?x.g[j]:x.g,s.u,`${x.n}${t?' '+t:''}`)}</td>`).join('')}</tr>`).join('')}</tbody>
   <tfoot><tr><th scope="row">Porción total</th>${T.map((t,j)=>`<td class="g tot" data-l="${t?esc(t):'Total'}" data-total="${tam?j:''}">${porcion(total(it.ing,tam?j:null),s.u)}</td>`).join('')}</tr></tfoot></table>
-  <button class="anadir" type="button" data-anadir="${id}">+ Añadir ingrediente</button></div>`;
+  <button class="anadir" type="button" data-anadir="${id}">Añadir ingrediente</button></div>`;
 }
 function editor(id){
   const s=SEC[seccionDe(id)],it=val(id),o=BASE[id];
-  /* precios (y porción directa en bordes y bebidas) por tamaño, en filas cortas */
+  /* precios por tamaño como "fichas": círculo que crece (P, M, F), precio y porción */
   const T=Array.isArray(o.p)?s.tamanos:[null];
-  const conG=it.g!==undefined;
-  const precios=`<table class="tams"><thead><tr><th scope="col"><span class="sr">Tamaño</span></th><th scope="col">Precio</th>${conG?`<th scope="col">Porción</th>`:''}</tr></thead><tbody>
-    ${T.map((t,i)=>`<tr><th scope="row">${t?esc(t):'Precio'}</th><td>${inPrecio(id,t?it.p[i]:it.p,t?i:null,t?`Precio ${t}`:'Precio')}</td>${conG?`<td>${inPorcion(id,Array.isArray(o.g)?it.g[i]:it.g,Array.isArray(o.g)?i:null,s.u,t?`Porción ${t}`:'Porción')}</td>`:''}</tr>`).join('')}</tbody></table>`;
+  const conG=it.g!==undefined,tamIng=it.ing&&porTam(it.ing);
+  const ficha=(t,i)=>{
+    const tot=it.ing?`<span class="talla-tot"><small>Porción</small><b data-total="${tamIng?i:''}">${porcion(total(it.ing,tamIng?i:null),s.u)}</b></span>`:'';
+    const g=conG?`<span class="talla-g"><small>Porción</small>${inPorcion(id,Array.isArray(o.g)?it.g[i]:it.g,Array.isArray(o.g)?i:null,s.u,t?`Porción ${t}`:'Porción')}</span>`:'';
+    return `<div class="talla t${t?i:1}"><span class="talla-cab"><i class="talla-ico" aria-hidden="true"></i><b>${t?esc(t):'Precio'}</b></span>
+      ${inPrecio(id,t?it.p[i]:it.p,t?i:null,t?`Precio ${t}`:'Precio')}${tot}${g}</div>`;
+  };
   return `<div class="editor">
-    <div class="ed-top">
-      <div class="ed-info">
-        <label class="campo"><span>Nombre</span><input class="fld" type="text" maxlength="${LIM.n}" value="${esc(it.n)}" data-id="${id}" data-campo="n"></label>
-        ${o.d!==undefined?`<label class="campo"><span>Descripción <small class="cont">${(it.d||'').length}/${LIM.d}</small></span><textarea class="fld" rows="3" maxlength="${LIM.d}" data-id="${id}" data-campo="d">${esc(it.d)}</textarea></label>`:''}
-      </div>
-      <div class="campo ed-precios"><span>${conG?'Precio y porción':'Precio'}${Array.isArray(o.p)?(s.id==='bordes'?' por tamaño de pizza':' por tamaño'):''}</span>${precios}</div>
-    </div>
-    ${it.ing?tablaIng(id,it,s):''}
+    <section class="ed-card ed-info">
+      <h5><span>1</span> Información</h5>
+      <label class="campo"><span>Nombre</span><input class="fld" type="text" maxlength="${LIM.n}" value="${esc(it.n)}" data-id="${id}" data-campo="n"></label>
+      ${o.d!==undefined?`<label class="campo"><span>Descripción <small class="cont">${(it.d||'').length}/${LIM.d}</small></span><textarea class="fld" rows="2" maxlength="${LIM.d}" data-id="${id}" data-campo="d">${esc(it.d)}</textarea></label>`:''}
+    </section>
+    <section class="ed-card ed-precios">
+      <h5><span>2</span> ${conG?'Precio y porción':'Precio'}${Array.isArray(o.p)?(s.id==='bordes'?' por tamaño de pizza':' por tamaño'):''}</h5>
+      <div class="tallas n${T.length}">${T.map(ficha).join('')}</div>
+    </section>
+    ${it.ing?`<section class="ed-card ed-ing">${tablaIng(id,it,s)}</section>`:''}
     <div class="pie-ed">${estado(id)?`<p class="orig">Original: ${esc(o.n)} · ${Array.isArray(o.p)?o.p.map(p=>'$'+dinero(p)).join(' / '):'$'+dinero(o.p)}</p><button class="btn-txt" type="button" data-restaurar="${id}">Volver al original</button>`:''}</div>
     <p class="err" role="alert"></p>
   </div>`;
@@ -126,7 +132,8 @@ function pintarDlg(){
   if(!actual)return;
   const s=SEC[seccionDe(actual)];
   dlg.className=`editor-dlg ${COLOR[s.id]||'c-crema'}`;
-  dlg.innerHTML=`<div class="dlg-top"><span class="dlg-foto">${foto(actual,s.id)}</span><span class="dlg-nom"><small>${esc(s.t)}</small><b id="ed-tit">${esc(val(actual).n)}</b></span><button class="dlg-x" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+  const v=val(actual);
+  dlg.innerHTML=`<div class="dlg-top"><span class="dlg-foto">${foto(actual,s.id)}</span><span class="dlg-nom"><small>${esc(s.t)}</small><b id="ed-tit">${esc(v.n)}</b>${v.d?`<em id="ed-desc">${esc(v.d)}</em>`:''}<span class="dlg-precios" id="ed-precios">${precioCorto(v,s)}</span></span><button class="dlg-x" type="button" data-cerrar aria-label="Cerrar">✕</button></div>
     <div class="dlg-cuerpo">${editor(actual)}</div>
     <div class="dlg-pie"><span class="sub">Los cambios se guardan con el botón de abajo.</span><button class="btn ok" type="button" data-cerrar>Listo</button></div>`;
 }
@@ -238,7 +245,9 @@ document.addEventListener('input',e=>{
   /* el nombre de un topping aparece en las 5 tablas: se actualiza el estado de su fila */
   document.querySelectorAll(`[data-fila="${id}"],[data-fila^="${id}@"]`).forEach(f=>refrescarFila(f.dataset.fila));
   if(!document.querySelector(`[data-fila="${id}"]`))refrescarFila(id);
-  if(actual===id){const t=dlg.querySelector('#ed-tit');if(t)t.textContent=val(id).n}
+  if(actual===id){const t=dlg.querySelector('#ed-tit');if(t)t.textContent=val(id).n;
+    const de=dlg.querySelector('#ed-desc');if(de)de.textContent=val(id).d||'';
+    const pr=dlg.querySelector('#ed-precios');if(pr)pr.innerHTML=precioCorto(val(id),SEC[seccionDe(id)])}
 });
 document.addEventListener('change',e=>{const el=e.target;if(el.dataset&&el.dataset.campo==='p'&&el.value!==''&&!isNaN(parseFloat(el.value)))el.value=dinero(parseFloat(el.value))});
 
