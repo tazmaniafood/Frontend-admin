@@ -1609,6 +1609,36 @@ window.TAZ_MENU_BASE={
    "nota": "Precio y porción de cada salsa según el plato",
    "items": [
     {
+     "id": "salsa-salsa-taz",
+     "n": "Salsa TAZ",
+     "plato": {
+      "pizza": {
+       "p": 0.5,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 0.5,
+       "g": null
+      },
+      "perro": {
+       "p": 0.5,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 0.5,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 0.5,
+       "g": null
+      }
+     }
+    },
+    {
      "id": "salsa-salsa-de-tomate",
      "n": "Salsa de tomate",
      "plato": {
@@ -1671,6 +1701,96 @@ window.TAZ_MENU_BASE={
     {
      "id": "salsa-salsa-verde",
      "n": "Salsa verde",
+     "plato": {
+      "pizza": {
+       "p": 0.5,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 0.5,
+       "g": null
+      },
+      "perro": {
+       "p": 0.5,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 0.5,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 0.5,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "salsa-salsa-bbq",
+     "n": "Salsa BBQ",
+     "plato": {
+      "pizza": {
+       "p": 0.5,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 0.5,
+       "g": null
+      },
+      "perro": {
+       "p": 0.5,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 0.5,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 0.5,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "salsa-salsa-de-chile",
+     "n": "Salsa de chile",
+     "plato": {
+      "pizza": {
+       "p": 0.5,
+       "g": [
+        null,
+        null,
+        null
+       ]
+      },
+      "burger": {
+       "p": 0.5,
+       "g": null
+      },
+      "perro": {
+       "p": 0.5,
+       "g": null
+      },
+      "salchipapas": {
+       "p": 0.5,
+       "g": null
+      },
+      "mazorcada": {
+       "p": 0.5,
+       "g": null
+      }
+     }
+    },
+    {
+     "id": "salsa-salsa-de-tocino",
+     "n": "Salsa de tocino",
      "plato": {
       "pizza": {
        "p": 0.5,
