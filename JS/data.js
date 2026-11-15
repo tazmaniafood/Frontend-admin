@@ -38,7 +38,7 @@ function seed(){
     o(1038,17,'nuevo','Miguel S.','+1 650 555 0190','2010 The Alameda, San Jose',[{q:2,n:'Gran Burguer',d:'Extra: Tocineta'},{q:2,n:'Pepsi'}],35),
     o(1037,24,'listo','Valentina C.','+1 408 555 0133','63 N Keeble Ave, San Jose',[{q:1,n:'Pizza La 4K',d:'Personal'}],22),
     o(1036,31,'listo','Pedro G.','+1 669 555 0118','300 Meridian Ave, San Jose',[{q:1,n:'La Mazorcada de la Esquina',d:'Extra: Queso extra'},{q:1,n:'Sprite'}],20),
-    o(1035,38,'listo','Sofía L.','+1 408 555 0165','901 Bird Ave, San Jose',[{q:1,n:'Pizza Mexicana',d:'Familiar'}],29,'Carlos'),
+    o(1035,38,'listo','Sofía L.','+1 408 555 0165','901 Bird Ave, San Jose',[{q:1,n:'Pizza Californiana',d:'Familiar'}],29,'Carlos'),
     o(1034,55,'entregado','Camilo H.','+1 650 555 0124','150 Stockton Ave, San Jose',[{q:3,n:'Perro salvaje'}],30,'Daniela'),
     o(1033,70,'entregado','Isabel T.','+1 408 555 0187','520 W San Carlos St, San Jose',[{q:1,n:'Pizza Camarones',d:'Medium'},{q:1,n:'Coca-Cola'}],28.5,'Andrés'),
     o(1032,95,'cancelado','Tomás V.','+1 408 555 0199','88 S 4th St, San Jose',[{q:1,n:'Pizza Pepperoni',d:'Medium'}],19)

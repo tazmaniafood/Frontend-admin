@@ -23,7 +23,7 @@ const HORAS=[[11,3,52],[12,6,118],[13,8,161],[14,5,96],[15,3,61],[16,4,79],[17,7
 const hora=h=>(h%12||12)+(h<12?' am':' pm');
 
 /* ---------- Lo más vendido (unidades en la semana) ---------- */
-const PIZZAS=[['Hawaiana',64],['Pepperoni',52],['Mexicana',41],['La 4K',37],['Pizza a tu gusto',33],['Camarones',26],['Tropical',22],['Californiana',19],['Legendaria',15],['Ay Dios Mío',12]];
+const PIZZAS=[['Hawaiana',64],['Pepperoni',52],['La 4K',37],['Pizza a tu gusto',33],['Camarones',26],['Tropical',22],['Californiana',19],['Legendaria',15],['Ay Dios Mío',12]];
 const BURGUERS=[['Gran Burguer',58],['Burguer de carne',34],['Burguer de pollo',27]];
 const OTROS=[['La Rebosá',61],['Perro salvaje',55],['La Pa\'l Filo',38],['La Mazorcada de la Esquina',36]];
 const BEBIDAS=[['Coca-Cola',74,21,18],['Pepsi',39,12,9],['Sprite',31,10,6]]; // [marca, lata, 1.5 L, 2 L]
