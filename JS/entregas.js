@@ -18,8 +18,8 @@ function tarjeta(o){
     <div class="cab"><b>#${o.id}</b>${PF.pastilla(o)}<span class="t">${PF.hace(o.creado)}</span><b class="total">${PF.fmt(o.total)}</b></div>
     <div class="cliente">
       <p class="nom">${o.cliente}</p>
-      ${tipo(o)==='domicilio'&&o.dir?`<p>📍 <a href="https://maps.google.com/?q=${encodeURIComponent(o.dir)}" target="_blank" rel="noopener">${o.dir}</a></p>`:''}
-      <p>📞 <a href="tel:${o.tel.replace(/\s/g,'')}">${o.tel}</a></p>
+      ${tipo(o)==='domicilio'&&o.dir?`<p><a href="https://maps.google.com/?q=${encodeURIComponent(o.dir)}" target="_blank" rel="noopener">${o.dir}</a></p>`:''}
+      <p><a href="tel:${o.tel.replace(/\s/g,'')}">${o.tel}</a></p>
     </div>
     <ul class="items">${o.items.map(i=>`<li><b>${i.q}×</b> ${i.n}</li>`).join('')}</ul>
     <div class="acc"><div class="desliza" role="button" tabindex="0" aria-label="Desliza para entregar el pedido #${o.id}. Se abrirá la cámara para la foto de entrega">
@@ -39,8 +39,8 @@ function pintar(){
   const n=document.getElementById('n');
   if(n)n.textContent=lista.length===1?'1 pedido por entregar':`${lista.length} pedidos por entregar`;
   const p=document.getElementById('pend'),np=d.filter(o=>o.fotoPendiente).length;
-  if(p)p.textContent=np?`⏳ ${np} foto${np>1?'s':''} sin enviar`:'';
-  document.getElementById('entregas').innerHTML=lista.length?lista.map(tarjeta).join(''):'<p class="empty">No hay pedidos por entregar 🎉</p>';
+  if(p)p.textContent=np?`${np} foto${np>1?'s':''} sin enviar`:'';
+  document.getElementById('entregas').innerHTML=lista.length?lista.map(tarjeta).join(''):'<p class="empty">No hay pedidos por entregar</p>';
 }
 function volver(el){
   if(!el||!el.isConnected)return;
@@ -76,7 +76,7 @@ async function encender(){
 function abrirCamara(el){
   const o=d.find(x=>x.id===+el.closest('.entrega').dataset.id);if(!o||o.estado!=='listo')return volver(el);
   actual={el,o};blob=null;
-  el.classList.add('foto');el.querySelector('.txt').textContent='Toma la foto de la entrega';el.querySelector('.perilla').textContent='📷';
+  el.classList.add('foto');el.querySelector('.txt').textContent='Toma la foto de la entrega';el.querySelector('.perilla').textContent='✓';
   document.getElementById('cam-ped').textContent='#'+o.id;
   dlg.classList.remove('tomada','enviando');img.removeAttribute('src');
   dlg.showModal();encender();
@@ -106,13 +106,13 @@ async function enviar(){
   if(ok){delete o.foto;delete o.fotoPendiente;o.fotoEnviada=true}
   else{o.foto=await aTexto(blob);o.fotoPendiente=true}
   if(!guardar()){ // sin espacio en el celular: no se pierde la entrega, pero avisa
-    delete o.foto;delete o.miniatura;guardar();PF.aviso('⚠️ No hay espacio para guardar la foto en el celular');
+    delete o.foto;delete o.miniatura;guardar();PF.aviso('No hay espacio para guardar la foto en el celular');
   }
   msg.textContent='';cerrarCamara(false);
   el.classList.remove('foto');el.classList.add('hecho');
   el.querySelector('.txt').textContent='¡Entregado!';el.querySelector('.perilla').textContent='✓';
   if(navigator.vibrate)try{navigator.vibrate(30)}catch(e){}
-  setTimeout(()=>{pintar();PF.aviso(ok?`Pedido #${o.id}: entregado y foto enviada ✅`:`Pedido #${o.id}: entregado. La foto se enviará cuando haya conexión ⏳`)},900);
+  setTimeout(()=>{pintar();PF.aviso(ok?`Pedido #${o.id}: entregado y foto enviada`:`Pedido #${o.id}: entregado. La foto se enviará cuando haya conexión`)},900);
 }
 dlg.addEventListener('click',e=>{
   const b=e.target.closest('[data-cam]');if(!b)return;
@@ -148,7 +148,7 @@ async function reintentar(){
   try{
     for(const o of d.filter(x=>x.fotoPendiente&&x.foto)){
       if(!(await subir(o.id,await aBlob(o.foto))))break;
-      delete o.foto;delete o.fotoPendiente;o.fotoEnviada=true;guardar();pintar();PF.aviso(`Foto del pedido #${o.id} enviada ✅`);
+      delete o.foto;delete o.fotoPendiente;o.fotoEnviada=true;guardar();pintar();PF.aviso(`Foto del pedido #${o.id} enviada`);
     }
   }finally{reintentando=false}
 }

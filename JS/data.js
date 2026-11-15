@@ -3,19 +3,19 @@
    Cuando exista el backend, solo hay que cambiar load()/save() por llamadas a la API. */
 (()=>{
 const KEY='palfilo-admin',KEY_VIEJA='taz-admin',MIN=60000;
-/* Estados del pedido (los mismos colores en todo el panel; ver --e-* en base.css):
+/* Estados del pedido (los mismos colores en todo el panel; ver --e-* en panel.css):
    nuevo -> listo -> entregado, o cancelado en cualquier momento.
    (Cocina trabaja con dos columnas: Nuevos y Listos.)
    Un pedido "listo" se muestra como "En reparto" si es a domicilio y "Para llevar" si se recoge. */
 const ESTADOS={
-  nuevo:{t:'Nuevo',c:'#7fb2ee'},
-  listo:{t:'Listo',c:'#ffc933'},
-  entregado:{t:'Entregado',c:'#5fc27a'},
-  cancelado:{t:'Cancelado',c:'#ff6b52'}
+  nuevo:{t:'Nuevo',c:'#00B9FF'},
+  listo:{t:'Listo',c:'#FFB700'},
+  entregado:{t:'Entregado',c:'#7CFF6B'},
+  cancelado:{t:'Cancelado',c:'#FF2440'}
 };
 /* Estado visible: clave de color + texto */
 function vis(o){
-  if(o.estado==='listo')return o.tipo==='llevar'?{k:'llevar',t:'Para llevar',c:'#c49bff'}:{k:'reparto',t:'En reparto',c:'#ffc933'};
+  if(o.estado==='listo')return o.tipo==='llevar'?{k:'llevar',t:'Para llevar',c:'#FFF1DC'}:{k:'reparto',t:'En reparto',c:'#FFB700'};
   const e=ESTADOS[o.estado]||ESTADOS.nuevo;return {k:o.estado in ESTADOS?o.estado:'nuevo',t:e.t,c:e.c};
 }
 const pastilla=o=>{const v=vis(o);return `<span class="estado e-${v.k}">${v.t}</span>`};

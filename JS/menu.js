@@ -48,8 +48,9 @@ if(!SEC[tab])tab=M.secciones[0].id;
 let actual=null; // plato abierto en la ventana de edición
 /* Fotos de la tienda (miniaturas en IMG/Menu). Los platos que aún no tienen foto muestran su dibujo. */
 const FOTOS={"pizza-hawaiana": "Menu/pizza-hawaiana.webp", "pizza-tropical": "Menu/pizza-tropical.webp", "pizza-ay-dios-mio": "Menu/pizza-ay-dios-mio.webp", "pizza-californiana": "Menu/pizza-californiana.webp", "pizza-mexicana": "Menu/pizza-mexicana.webp", "pizza-camarones": "Menu/pizza-camarones.webp", "pizza-la-4k": "Menu/pizza-la-4k.webp", "pizza-pizza-a-tu-gusto": "Menu/pizza-pizza-a-tu-gusto.webp", "bebida-coca-cola": "Menu/bebida-coca-cola.webp", "bebida-pepsi": "Menu/bebida-pepsi.webp", "bebida-sprite": "Menu/bebida-sprite.webp", "salsa-salsa-de-tomate": "Menu/salsa-salsa-de-tomate.svg", "salsa-salsa-rosada": "Menu/salsa-salsa-rosada.svg", "salsa-salsa-verde": "Menu/salsa-salsa-verde.svg", "topping-chorizo": "Menu/topping-chorizo.webp", "salsa-salsa-pal-filo": "Menu/salsa-salsa-pal-filo.svg", "salsa-salsa-bbq": "Menu/salsa-salsa-bbq.svg", "salsa-salsa-de-chile": "Menu/salsa-salsa-de-chile.svg", "salsa-salsa-de-tocino": "Menu/salsa-salsa-de-tocino.svg"};
-const DIBUJO={pizzas:'🍕',bordes:'🧀',burger:'🍔',perro:'🌭',salchipapas:'🍟',mazorcada:'🌽',bebidas:'🥤',toppings:'🧀',salsas:'🥫'};
-const foto=(id,sec,cls='')=>FOTOS[id]?`<img class="${cls}" src="../IMG/${FOTOS[id]}" alt="" loading="lazy">`:`<i class="dibujo ${cls}" aria-hidden="true">${DIBUJO[sec]||'🍽️'}</i>`;
+/* Platos sin foto: el ícono de comida de la marca */
+const DIBUJO={pizzas:'pizza',bordes:'pizza',burger:'burguer',perro:'perro',salchipapas:'salchipapa',mazorcada:'mazorcada',bebidas:'bebida',toppings:'pizza',salsas:'salchipapa'};
+const foto=(id,sec,cls='')=>FOTOS[id]?`<img class="${cls}" src="../IMG/${FOTOS[id]}" alt="" loading="lazy">`:`<img class="dibujo ${cls}" src="../IMG/Iconos/${DIBUJO[sec]||'pizza'}.svg" alt="" loading="lazy">`;
 
 /* ---- Formatos ---- */
 const porcion=(g,u)=>g==null||g===''?'—':`${g} ${u}`;
@@ -144,15 +145,15 @@ const seccionDe=id=>M.secciones.find(s=>s.items.some(i=>i.id===id.split('@')[0])
 
 /* ---- Tabla de toppings / salsas por plato ---- */
 /* ---- Toppings y salsas: tarjetas por plato ---- */
-const ICO_EX=[['queso','🧀'],['jamón','🍖'],['tocineta','🥓'],['pepperoni','🍕'],['pollo','🍗'],['carne','🥩'],['chorizo','🌭'],['camaron','🦐'],
-  ['champiñon','🍄'],['piña','🍍'],['maíz','🌽'],['cebolla','🧅'],['pimentón','🫑'],['tomate','🍅'],['jalapeño','🌶️'],['durazno','🍑'],['cereza','🍒'],['salsa','🥫']];
-const icoEx=n=>(ICO_EX.find(([k])=>n.toLowerCase().includes(k))||[,'✨'])[1];
-const ICO_PL={pizza:'🍕',burger:'🍔',perro:'🌭',salchipapas:'🍟',mazorcada:'🌽'};
+/* Toppings sin foto propia: la foto del ingrediente si existe; si no, su inicial */
+const ICO_EX=[['queso','queso'],['jamón','jamon'],['tocineta','tocineta'],['pepperoni','pepperoni'],['pollo','pollo-desmechado'],['carne molida','carne-molida'],['carne','carne-desmechada'],['chorizo','chorizo'],['camaron','camarones']];
+const icoEx=n=>{const f=(ICO_EX.find(([k])=>n.toLowerCase().includes(k))||[])[1];return f?`<img src="../IMG/Toppings/${f}.webp" alt="">`:`<i aria-hidden="true">${esc(n.trim()[0]||'')}</i>`};
+const ICO_PL={};
 function tablaExtras(s){
   const pl=M.platos.find(p=>p.id===plato),esPizza=plato==='pizza',T=M.tamanosPizza;
   const tarjeta=it=>{
     const k=`${it.id}@${plato}`,v=val(k),base=val(it.id),n=base.n,e=estado(k)||estado(it.id);
-    const ico=FOTOS[it.id]?`<img src="../IMG/${FOTOS[it.id]}" alt="">`:`<i aria-hidden="true">${icoEx(BASE[it.id].n)}</i>`;
+    const ico=FOTOS[it.id]?`<img src="../IMG/${FOTOS[it.id]}" alt="">`:icoEx(BASE[it.id].n);
     const porciones=esPizza
       ?`<div class="ex-g tres">${T.map((t,i)=>`<label><span>${esc(t[0])}<em>${esc(t)}</em></span>${inPorcion(k,v.g[i],i,s.u,`${n} ${t}`)}</label>`).join('')}</div>`
       :`<div class="ex-g"><label><span>Porción</span>${inPorcion(k,v.g,null,s.u,`Porción de ${n}`)}</label></div>`;
@@ -163,8 +164,8 @@ function tablaExtras(s){
       <div class="ex-cuerpo"><label class="ex-p"><span>Precio</span>${inPrecio(k,v.p,null,`Precio de ${n} en ${pl.t}`)}</label>${porciones}</div>
     </article>`;
   };
-  return `<div class="chips platos" role="tablist" aria-label="Plato">${M.platos.map(p=>`<button type="button" role="tab" class="pl${p.id===plato?' on':''}" aria-selected="${p.id===plato}" data-plato="${p.id}"><span aria-hidden="true">${ICO_PL[p.id]||''}</span> ${esc(p.t)}${cuenta(s,p.id)}</button>`).join('')}</div>
-  <p class="sub">${s.id==='toppings'?'Toppings':'Salsas'} en <b>${ICO_PL[plato]||''} ${esc(pl.t)}</b>: precio y cuánto se le echa${esPizza?' según el tamaño (P · M · F)':''}. El nombre cambia en todos los platos.</p>
+  return `<div class="chips platos" role="tablist" aria-label="Plato">${M.platos.map(p=>`<button type="button" role="tab" class="pl${p.id===plato?' on':''}" aria-selected="${p.id===plato}" data-plato="${p.id}">${esc(p.t)}${cuenta(s,p.id)}</button>`).join('')}</div>
+  <p class="sub">${s.id==='toppings'?'Toppings':'Salsas'} en <b>${esc(pl.t)}</b>: precio y cuánto se le echa${esPizza?' según el tamaño (P · M · F)':''}. El nombre cambia en todos los platos.</p>
   <div class="extras-grid${esPizza?' pizza':''}">${s.items.map(tarjeta).join('')}</div>`;
 }
 const cuenta=(s,pid)=>{const n=s.items.filter(it=>estado(`${it.id}@${pid}`)).length;return n?` <b class="n">${n}</b>`:''};
@@ -204,8 +205,8 @@ function refrescarFila(id){ // actualiza el resumen sin tocar los campos que se 
 function barra(){
   const n=Object.keys(borrador).length,b=document.getElementById('barra');
   b.hidden=!n&&!guardado.pendiente;b.classList.toggle('solo-pendiente',!n&&!!guardado.pendiente);
-  document.getElementById('barra-txt').textContent=n?`✏️ ${n} ${n===1?'cambio':'cambios'} sin guardar`:guardado.pendiente?'⏳ Guardado aquí, falta enviarlo al servidor':'';
-  document.getElementById('guardar').textContent=n?'💾 Guardar':'↻ Reintentar envío';
+  document.getElementById('barra-txt').textContent=n?`${n} ${n===1?'cambio':'cambios'} sin guardar`:guardado.pendiente?'Guardado aquí, falta enviarlo al servidor':'';
+  document.getElementById('guardar').textContent=n?'Guardar':'↻ Reintentar envío';
   document.getElementById('descartar').hidden=!n;
 }
 
@@ -308,10 +309,10 @@ document.getElementById('guardar').addEventListener('click',()=>{
 });
 async function guardarTodo(msg){
   guardado.actualizado=Date.now();guardado.pendiente=true;
-  if(!escribir(guardado)){PF.aviso('⚠️ No se pudo guardar en este navegador');return}
+  if(!escribir(guardado)){PF.aviso('No se pudo guardar en este navegador');return}
   pintar();
   const ok=await enviar(true);
-  PF.aviso(ok?`✅ ${msg} · enviado al servidor`:`💾 ${msg} · se enviará al servidor cuando esté disponible`);
+  PF.aviso(ok?`${msg} · enviado al servidor`:`${msg} · se enviará al servidor cuando esté disponible`);
 }
 let enviando=false;
 async function enviar(callado){
@@ -322,7 +323,7 @@ async function enviar(callado){
       body:JSON.stringify({cambios:guardado.cambios,actualizado:guardado.actualizado})});
     if(!r.ok)throw new Error(r.status);
     guardado.pendiente=false;escribir(guardado);
-    if(!callado)PF.aviso('✅ Cambios enviados al servidor');
+    if(!callado)PF.aviso('Cambios enviados al servidor');
     return true;
   }catch(e){if(!callado)PF.aviso('El servidor no respondió; se reintentará solo');return false}
   finally{clearTimeout(t);enviando=false;barra()}

@@ -13,7 +13,7 @@ function ticket(o){
   const min=PF.minutos(o.creado),tarde=o.estado!=='listo'&&min>=15;
   return `<article class="ticket${tarde?' tarde':''}" data-id="${o.id}" tabindex="0" aria-roledescription="ticket arrastrable"
       aria-label="Pedido ${o.id}. ${PF.vis(o).t}. Arrástralo a otra columna o usa las flechas izquierda y derecha.">
-    <header><b>#${o.id}</b>${PF.pastilla(o)}<span class="t">${tarde?'⏰ ':''}${PF.hace(o.creado)}</span></header>
+    <header><b>#${o.id}</b>${PF.pastilla(o)}<span class="t">${PF.hace(o.creado)}</span></header>
     <ul>${o.items.map(i=>`<li><b>${esc(i.q)}×</b> ${esc(i.n)}${i.d?`<small>${esc(i.d)}</small>`:''}</li>`).join('')}</ul>
     <span class="agarre" aria-hidden="true"><i></i><i></i><i></i></span>
   </article>`;

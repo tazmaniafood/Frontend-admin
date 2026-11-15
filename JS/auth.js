@@ -37,18 +37,18 @@ if(enPages){
   if(!u){location.replace('../index.html');return}
   if(TODAS.includes(pagina)&&!u.paginas.includes(pagina)){location.replace(u.inicio);return}
   /* Esconder del menú las secciones que este usuario no ve (antes de pintar) */
-  const css=TODAS.filter(p=>!u.paginas.includes(p)).map(p=>`.top nav a[href="${p}"]`).join(',');
-  const solo=u.paginas.length<2?'.top nav{display:none!important}':'';
+  const css=TODAS.filter(p=>!u.paginas.includes(p)).map(p=>`.carpa .menu a[href="${p}"]`).join(',');
+  const solo=u.paginas.length<2?'.carpa .menu{display:none!important}':'';
   if(css||solo)document.write(`<style>${css?css+'{display:none!important}':''}${solo}</style>`);
   document.addEventListener('DOMContentLoaded',()=>{
-    const top=document.querySelector('.top'),brand=document.querySelector('.top .brand');
+    const top=document.querySelector('.carpa'),brand=document.querySelector('.carpa .sello');
     if(!top||!brand)return;
     /* Con una sola sección (repartidor) no hace falta el menú de secciones */
     if(u.paginas.length<2)top.classList.add('solo');
     /* El logo abre un menú con el usuario y el botón Salir */
     const m=document.createElement('div');
     m.className='cuenta-menu';m.id='cuenta-menu';m.setAttribute('role','menu');
-    m.innerHTML=`<span class="rol">Conectado como <b>${u.rol}</b></span><button class="salir" type="button" role="menuitem">🚪 Salir</button>`;
+    m.innerHTML=`<span class="rol">Conectado como <b>${u.rol}</b></span><button class="salir btn btn--primario btn--chico" type="button" role="menuitem">Salir</button>`;
     top.appendChild(m);brand.setAttribute('aria-controls','cuenta-menu');
     const abrir=on=>{m.classList.toggle('on',on);brand.setAttribute('aria-expanded',on);if(on)m.querySelector('.salir').focus()};
     brand.addEventListener('click',e=>{e.preventDefault();abrir(!m.classList.contains('on'))});
