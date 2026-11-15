@@ -8,13 +8,13 @@
    Pantalla compacta: una pestaña por sección; cada plato es una tarjeta pequeña (nombre y precios)
    que abre el editor en una ventana; toppings y salsas son una tabla por plato.
 
-   Guardado: por id en este navegador (localStorage 'taz-menu') y se envía al servidor
+   Guardado: por id en este navegador (localStorage 'palfilo-menu') y se envía al servidor
        PUT /api/menu   { cambios: { "<id>": { n?, d?, p?, g? } }, actualizado }
    ids de toppings/salsas por plato: "<id>@<plato>" (ej. "topping-queso-extra@pizza").
    Si el servidor no responde, queda pendiente y se reintenta solo. */
 (()=>{
-const API='/api',KEY='taz-menu',LIM={n:60,d:220,p:999,g:99999};
-const M=window.TAZ_MENU_BASE||{secciones:[],platos:[]};
+const API='/api',KEY='palfilo-menu',KEY_VIEJA='taz-menu',LIM={n:60,d:220,p:999,g:99999};
+const M=window.PF_MENU_BASE||{secciones:[],platos:[]};
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 const dinero=n=>(Math.round(n*100)/100).toFixed(2);
 const iguales=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -27,7 +27,7 @@ M.secciones.forEach(s=>{SEC[s.id]=s;s.items.forEach(it=>{
 })});
 
 /* ---- Estado guardado y borrador ---- */
-function leer(){try{const g=JSON.parse(localStorage.getItem(KEY));return g&&typeof g==='object'?g:{}}catch(e){return {}}}
+function leer(){try{const g=JSON.parse(localStorage.getItem(KEY)||localStorage.getItem(KEY_VIEJA));return g&&typeof g==='object'?g:{}}catch(e){return {}}}
 function escribir(g){try{localStorage.setItem(KEY,JSON.stringify(g));return true}catch(e){return false}}
 const guardado=leer();guardado.cambios=guardado.cambios||{};
 /* quita lo que ya no existe en el menú base (por si cambió la tienda) */
@@ -47,7 +47,7 @@ let tab=(location.hash.slice(1)||M.secciones[0].id),plato=M.platos[0].id;
 if(!SEC[tab])tab=M.secciones[0].id;
 let actual=null; // plato abierto en la ventana de edición
 /* Fotos de la tienda (miniaturas en IMG/Menu). Los platos que aún no tienen foto muestran su dibujo. */
-const FOTOS={"pizza-hawaiana": "Menu/pizza-hawaiana.webp", "pizza-tropical": "Menu/pizza-tropical.webp", "pizza-ay-dios-mio": "Menu/pizza-ay-dios-mio.webp", "pizza-californiana": "Menu/pizza-californiana.webp", "pizza-mexicana": "Menu/pizza-mexicana.webp", "pizza-camarones": "Menu/pizza-camarones.webp", "pizza-la-4k": "Menu/pizza-la-4k.webp", "pizza-pizza-a-tu-gusto": "Menu/pizza-pizza-a-tu-gusto.webp", "bebida-coca-cola": "Menu/bebida-coca-cola.webp", "bebida-pepsi": "Menu/bebida-pepsi.webp", "bebida-sprite": "Menu/bebida-sprite.webp", "salsa-salsa-de-tomate": "Menu/salsa-salsa-de-tomate.svg", "salsa-salsa-rosada": "Menu/salsa-salsa-rosada.svg", "salsa-salsa-verde": "Menu/salsa-salsa-verde.svg", "topping-chorizo": "Menu/topping-chorizo.webp", "salsa-salsa-taz": "Menu/salsa-salsa-taz.svg", "salsa-salsa-bbq": "Menu/salsa-salsa-bbq.svg", "salsa-salsa-de-chile": "Menu/salsa-salsa-de-chile.svg", "salsa-salsa-de-tocino": "Menu/salsa-salsa-de-tocino.svg"};
+const FOTOS={"pizza-hawaiana": "Menu/pizza-hawaiana.webp", "pizza-tropical": "Menu/pizza-tropical.webp", "pizza-ay-dios-mio": "Menu/pizza-ay-dios-mio.webp", "pizza-californiana": "Menu/pizza-californiana.webp", "pizza-mexicana": "Menu/pizza-mexicana.webp", "pizza-camarones": "Menu/pizza-camarones.webp", "pizza-la-4k": "Menu/pizza-la-4k.webp", "pizza-pizza-a-tu-gusto": "Menu/pizza-pizza-a-tu-gusto.webp", "bebida-coca-cola": "Menu/bebida-coca-cola.webp", "bebida-pepsi": "Menu/bebida-pepsi.webp", "bebida-sprite": "Menu/bebida-sprite.webp", "salsa-salsa-de-tomate": "Menu/salsa-salsa-de-tomate.svg", "salsa-salsa-rosada": "Menu/salsa-salsa-rosada.svg", "salsa-salsa-verde": "Menu/salsa-salsa-verde.svg", "topping-chorizo": "Menu/topping-chorizo.webp", "salsa-salsa-pal-filo": "Menu/salsa-salsa-pal-filo.svg", "salsa-salsa-bbq": "Menu/salsa-salsa-bbq.svg", "salsa-salsa-de-chile": "Menu/salsa-salsa-de-chile.svg", "salsa-salsa-de-tocino": "Menu/salsa-salsa-de-tocino.svg"};
 const DIBUJO={pizzas:'🍕',bordes:'🧀',burger:'🍔',perro:'🌭',salchipapas:'🍟',mazorcada:'🌽',bebidas:'🥤',toppings:'🧀',salsas:'🥫'};
 const foto=(id,sec,cls='')=>FOTOS[id]?`<img class="${cls}" src="../IMG/${FOTOS[id]}" alt="" loading="lazy">`:`<i class="dibujo ${cls}" aria-hidden="true">${DIBUJO[sec]||'🍽️'}</i>`;
 
@@ -279,12 +279,12 @@ document.addEventListener('click',e=>{
   if(r){const ids=r.dataset.restaurar.split('|'),o=BASE[ids[0]];
     if(!confirm(`¿Volver "${val(ids[0]).n}" a como está en la tienda${ids[1]?` (en ${M.platos.find(x=>ids[1].endsWith('@'+x.id)).t})`:''}?`))return;
     let habia=false;ids.forEach(id=>{delete borrador[id];if(guardado.cambios[id]){delete guardado.cambios[id];habia=true}});
-    if(habia)guardarTodo(`"${o.n}" volvió al original`);else{pintar();TAZ.aviso('Cambios descartados')}
+    if(habia)guardarTodo(`"${o.n}" volvió al original`);else{pintar();PF.aviso('Cambios descartados')}
   }
 });
 document.getElementById('descartar').addEventListener('click',()=>{
   const n=Object.keys(borrador).length;if(!n||!confirm(`¿Descartar ${n} ${n===1?'cambio':'cambios'} sin guardar?`))return;
-  borrador={};pintar();TAZ.aviso('Cambios descartados');
+  borrador={};pintar();PF.aviso('Cambios descartados');
 });
 document.getElementById('guardar').addEventListener('click',()=>{
   const ids=Object.keys(borrador);
@@ -296,7 +296,7 @@ document.getElementById('guardar').addEventListener('click',()=>{
     else abrir(malo);
     document.querySelectorAll('[data-campo]').forEach(el=>marcarError(el,valido(el.dataset.campo==='ing'?el.dataset.k:el.dataset.campo,leerCampo(el))));
     const el=document.querySelector('[aria-invalid="true"]');if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.focus({preventScroll:true})}
-    return TAZ.aviso('Revisa los campos marcados en rojo');
+    return PF.aviso('Revisa los campos marcados en rojo');
   }
   ids.forEach(id=>{
     const c={...(guardado.cambios[id]||{}),...borrador[id]},o=BASE[id],r={};
@@ -308,10 +308,10 @@ document.getElementById('guardar').addEventListener('click',()=>{
 });
 async function guardarTodo(msg){
   guardado.actualizado=Date.now();guardado.pendiente=true;
-  if(!escribir(guardado)){TAZ.aviso('⚠️ No se pudo guardar en este navegador');return}
+  if(!escribir(guardado)){PF.aviso('⚠️ No se pudo guardar en este navegador');return}
   pintar();
   const ok=await enviar(true);
-  TAZ.aviso(ok?`✅ ${msg} · enviado al servidor`:`💾 ${msg} · se enviará al servidor cuando esté disponible`);
+  PF.aviso(ok?`✅ ${msg} · enviado al servidor`:`💾 ${msg} · se enviará al servidor cuando esté disponible`);
 }
 let enviando=false;
 async function enviar(callado){
@@ -322,9 +322,9 @@ async function enviar(callado){
       body:JSON.stringify({cambios:guardado.cambios,actualizado:guardado.actualizado})});
     if(!r.ok)throw new Error(r.status);
     guardado.pendiente=false;escribir(guardado);
-    if(!callado)TAZ.aviso('✅ Cambios enviados al servidor');
+    if(!callado)PF.aviso('✅ Cambios enviados al servidor');
     return true;
-  }catch(e){if(!callado)TAZ.aviso('El servidor no respondió; se reintentará solo');return false}
+  }catch(e){if(!callado)PF.aviso('El servidor no respondió; se reintentará solo');return false}
   finally{clearTimeout(t);enviando=false;barra()}
 }
 window.addEventListener('beforeunload',e=>{if(Object.keys(borrador).length){e.preventDefault();e.returnValue=''}});

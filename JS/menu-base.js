@@ -8,7 +8,7 @@
         null = todavía sin definir.
    - Toppings y salsas: el nombre es uno solo, pero el precio y la porción van POR PLATO
      (no se le echa lo mismo a una pizza que a un perro). En pizza la porción va por tamaño. */
-window.TAZ_MENU_BASE={
+window.PF_MENU_BASE={
  "platos": [
   {
    "id": "pizza",
@@ -854,8 +854,8 @@ window.TAZ_MENU_BASE={
    "u": "g",
    "items": [
     {
-     "id": "salchipapas-salchi-californiana",
-     "n": "Salchi Californiana",
+     "id": "salchipapas-la-pal-filo",
+     "n": "La Pa'l Filo",
      "d": "Papas, salchicha, pollo, carne, maíz, lechuga, queso, chorizo y salsa de la casa",
      "p": 16.0,
      "ing": [
@@ -898,8 +898,8 @@ window.TAZ_MENU_BASE={
      ]
     },
     {
-     "id": "salchipapas-salchi-tazmania",
-     "n": "Salchi Tazmania",
+     "id": "salchipapas-la-rebosa",
+     "n": "La Rebosá",
      "d": "Todo lo de la Californiana con camarones y tocineta",
      "p": 19.0,
      "ing": [
@@ -958,8 +958,8 @@ window.TAZ_MENU_BASE={
    "u": "g",
    "items": [
     {
-     "id": "mazorcada-mazorcada-taz",
-     "n": "Mazorcada TAZ",
+     "id": "mazorcada-la-mazorcada-de-la-esquina",
+     "n": "La Mazorcada de la Esquina",
      "d": "Maíz, carne y pollo picado, lechuga, queso rayado, chorizo y salsa de la casa",
      "p": 16.0,
      "ing": [
@@ -1609,8 +1609,8 @@ window.TAZ_MENU_BASE={
    "nota": "Precio y porción de cada salsa según el plato",
    "items": [
     {
-     "id": "salsa-salsa-taz",
-     "n": "Salsa TAZ",
+     "id": "salsa-salsa-pal-filo",
+     "n": "Salsa Pa'l Filo",
      "plato": {
       "pizza": {
        "p": 0.5,

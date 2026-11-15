@@ -7,12 +7,12 @@
 (()=>{
 const API='/api';
 /* Filtro por estado: por defecto solo los ACTIVOS (nuevo, en cocina, en reparto o para llevar) */
-let d=TAZ.load(),filtro='activos',texto='';
+let d=PF.load(),filtro='activos',texto='';
 /* activos: todo lo que no está entregado ni cancelado */
 const pasa=(o,f)=>f==='todos'?true:f==='activos'?!['entregado','cancelado'].includes(o.estado):o.estado===f;
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 
-const MEDIO=TAZ.MEDIOS;
+const MEDIO=PF.MEDIOS;
 function evidencia(o){
   const mini=o.miniatura||o.foto;
   if(mini)return `<button class="foto" type="button" data-ver="${o.id}" aria-label="Ver foto de entrega del pedido #${o.id}"><img src="${mini}" alt=""></button>${o.fotoPendiente?'<small class="sub">Sin enviar</small>':''}`;
@@ -20,7 +20,7 @@ function evidencia(o){
   return '<span class="nada">—</span>';
 }
 /* Estado del pedido: la pastilla común (mismos colores que Cocina y Entregas) */
-const status=o=>TAZ.pastilla(o);
+const status=o=>PF.pastilla(o);
 function fila(o){
   const dir=o.tipo==='llevar'?'<span class="tag llevar">Para llevar</span>'
     :`<span class="tag dom">Domicilio</span>${o.dir?` <a class="dir" href="https://maps.google.com/?q=${encodeURIComponent(o.dir)}" target="_blank" rel="noopener">${esc(o.dir)}</a>`:''}`;
@@ -28,7 +28,7 @@ function fila(o){
     <td data-l="Pedido"><div><b class="num">#${esc(o.id)}</b></div></td>
     <td data-l="Cliente"><div><span class="cli">${esc(o.cliente)}</span><a class="tel" href="tel:${esc(String(o.tel).replace(/\s/g,''))}">${esc(o.tel)}</a><span class="lugar">${dir}</span></div></td>
     <td data-l="Orden"><div><ul class="orden">${o.items.map(i=>`<li><b>${esc(i.q)}×</b> ${esc(i.n)}${i.d?`<small>${esc(i.d)}</small>`:''}</li>`).join('')}</ul></div></td>
-    <td data-l="Pago" class="c-pago"><div><b class="total">${TAZ.fmt(o.total)}</b><span class="pago ${o.pagado?'si':'no'}">${o.pagado?'Pagado':'Sin pagar'}</span><small class="sub">${esc(MEDIO[o.medio]||o.medio||'—')}</small></div></td>
+    <td data-l="Pago" class="c-pago"><div><b class="total">${PF.fmt(o.total)}</b><span class="pago ${o.pagado?'si':'no'}">${o.pagado?'Pagado':'Sin pagar'}</span><small class="sub">${esc(MEDIO[o.medio]||o.medio||'—')}</small></div></td>
     <td data-l="Estado"><div>${status(o)}</div></td>
     <td data-l="Foto" class="c-foto"><div>${evidencia(o)}</div></td>
   </tr>`;
@@ -64,5 +64,5 @@ document.addEventListener('click',e=>{
 });
 document.getElementById('buscar').addEventListener('input',e=>{texto=e.target.value;pintar()});
 pintar();
-setInterval(()=>{if(!vis.open){d=TAZ.load();pintar()}},30000);
+setInterval(()=>{if(!vis.open){d=PF.load();pintar()}},30000);
 })();

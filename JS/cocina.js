@@ -5,15 +5,15 @@
    Con teclado: enfocar un ticket y usar ← / → para moverlo de columna.
    Al quedar listo pasa a Entregas (En reparto si es a domicilio, Para llevar si se recoge). */
 (()=>{
-let d=TAZ.load();
+let d=PF.load();
 const ORDEN=['nuevo','listo'];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 
 function ticket(o){
-  const min=TAZ.minutos(o.creado),tarde=o.estado!=='listo'&&min>=15;
+  const min=PF.minutos(o.creado),tarde=o.estado!=='listo'&&min>=15;
   return `<article class="ticket${tarde?' tarde':''}" data-id="${o.id}" tabindex="0" aria-roledescription="ticket arrastrable"
-      aria-label="Pedido ${o.id}. ${TAZ.vis(o).t}. Arrástralo a otra columna o usa las flechas izquierda y derecha.">
-    <header><b>#${o.id}</b>${TAZ.pastilla(o)}<span class="t">${tarde?'⏰ ':''}${TAZ.hace(o.creado)}</span></header>
+      aria-label="Pedido ${o.id}. ${PF.vis(o).t}. Arrástralo a otra columna o usa las flechas izquierda y derecha.">
+    <header><b>#${o.id}</b>${PF.pastilla(o)}<span class="t">${tarde?'⏰ ':''}${PF.hace(o.creado)}</span></header>
     <ul>${o.items.map(i=>`<li><b>${esc(i.q)}×</b> ${esc(i.n)}${i.d?`<small>${esc(i.d)}</small>`:''}</li>`).join('')}</ul>
     <span class="agarre" aria-hidden="true"><i></i><i></i><i></i></span>
   </article>`;
@@ -29,8 +29,8 @@ function pintar(){
 function mover(id,estado){
   const o=d.find(x=>x.id===+id);if(!o||o.estado===estado)return;
   if(estado==='cancelado'&&!confirm(`¿Cancelar el pedido #${o.id}?`))return pintar();
-  o.estado=estado;TAZ.save(d);pintar();
-  TAZ.aviso(`Pedido #${o.id}: ${TAZ.vis(o).t}`);
+  o.estado=estado;PF.save(d);pintar();
+  PF.aviso(`Pedido #${o.id}: ${PF.vis(o).t}`);
   document.querySelector(`.ticket[data-id="${o.id}"]`)?.focus({preventScroll:true});
 }
 
@@ -94,5 +94,5 @@ document.addEventListener('keydown',e=>{
 });
 
 pintar();
-setInterval(()=>{d=TAZ.load();pintar()},30000);
+setInterval(()=>{d=PF.load();pintar()},30000);
 })();

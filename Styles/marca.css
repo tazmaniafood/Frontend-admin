@@ -1,0 +1,10 @@
+/* ===== Marca Pa'l Filo en el panel =====
+   Se carga al final. Carpa noche en vez del toldo rojo, colores de estado con la paleta. */
+:root{--noche:#0D0919;--uva:#5B0DA8;--crema:#FFF1DC;--mango:#FFB700;--tomate:#FF2440;--cian:#00B9FF;--lima:#7CFF6B;--carpa:#160C2B;
+  --e-nuevo:#00B9FF;--e-cocina:#FFB700;--e-reparto:#FFF1DC;--e-llevar:#B48CFF;--e-cancelado:#FF2440;--e-entregado:#7CFF6B}
+body{background:var(--noche) radial-gradient(rgb(255 241 220 / .05) 1.5px,transparent 2px) 0 0/22px 22px!important}
+.top{background:radial-gradient(rgb(255 241 220 / .07) 2px,transparent 2.5px) 0 0/16px 16px,var(--carpa)!important;border-bottom:3px solid var(--uva)!important}
+.top::after{background:radial-gradient(circle at 17px 0,var(--carpa) 13px,var(--uva) 13px 16px,transparent 16.5px) 0 0/34px 18px repeat-x!important}
+.brand{background:var(--noche)!important}
+footer{background:radial-gradient(rgb(255 241 220 / .07) 2px,transparent 2.5px) 0 0/16px 16px,var(--carpa)!important}
+footer::before{background:radial-gradient(circle at 17px 18px,var(--carpa) 13px,var(--uva) 13px 16px,transparent 16.5px) 0 0/34px 18px repeat-x!important}

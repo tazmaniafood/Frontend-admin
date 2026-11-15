@@ -5,7 +5,7 @@
    backend, login() debe llamar a la API y la sesión debe validarse en el servidor.
    Para volver a tener varios perfiles, basta con agregar usuarios aquí con sus páginas. */
 (()=>{
-const KEY='taz-admin-sesion';
+const KEY='palfilo-admin-sesion';
 const USUARIOS={
   admin:{clave:'Admin2026*', rol:'ADMIN', inicio:'estadisticas.html', paginas:['estadisticas.html','cocina.html','entregas.html','todos-pedidos.html','menu.html']}
 };
@@ -29,7 +29,7 @@ const AUTH={
   /* Página de inicio del usuario, relativa a Pages/ */
   inicio:()=>{const u=AUTH.usuario();return u?u.inicio:'estadisticas.html'}
 };
-window.TAZ_AUTH=AUTH;
+window.PF_AUTH=AUTH;
 
 if(enPages){
   const u=AUTH.usuario();

@@ -10,12 +10,12 @@
    Sin foto no se entrega. Con teclado: enfocar el botón y presionar Enter o Espacio. */
 (()=>{
 const API='/api'; // Nginx manda /api/ al backend (Server-TAZ)
-let d=TAZ.load(),filtro='domicilio';
+let d=PF.load(),filtro='domicilio';
 const tipo=o=>o.tipo||'domicilio';
 
 function tarjeta(o){
-  return `<article class="entrega panel" data-id="${o.id}" style="--c:${TAZ.vis(o).c}">
-    <div class="cab"><b>#${o.id}</b>${TAZ.pastilla(o)}<span class="t">${TAZ.hace(o.creado)}</span><b class="total">${TAZ.fmt(o.total)}</b></div>
+  return `<article class="entrega panel" data-id="${o.id}" style="--c:${PF.vis(o).c}">
+    <div class="cab"><b>#${o.id}</b>${PF.pastilla(o)}<span class="t">${PF.hace(o.creado)}</span><b class="total">${PF.fmt(o.total)}</b></div>
     <div class="cliente">
       <p class="nom">${o.cliente}</p>
       ${tipo(o)==='domicilio'&&o.dir?`<p>📍 <a href="https://maps.google.com/?q=${encodeURIComponent(o.dir)}" target="_blank" rel="noopener">${o.dir}</a></p>`:''}
@@ -47,7 +47,7 @@ function volver(el){
   el.classList.remove('hecho','foto');el.style.setProperty('--x','0px');el.style.setProperty('--p',0);
   el.querySelector('.txt').textContent='Desliza para entregar';el.querySelector('.perilla').textContent='➜';
 }
-function guardar(){try{localStorage.setItem('taz-admin',JSON.stringify(d));return true}catch(e){return false}}
+function guardar(){try{localStorage.setItem('palfilo-admin',JSON.stringify(d));return true}catch(e){return false}}
 
 /* =================== Cámara en el navegador =================== */
 const dlg=document.getElementById('camara'),video=document.getElementById('cam-video'),
@@ -83,7 +83,7 @@ function abrirCamara(el){
 }
 function cerrarCamara(cancelado){
   apagar();if(dlg.open)dlg.close();
-  if(cancelado&&actual){volver(actual.el);TAZ.aviso('Sin foto no se puede entregar')}
+  if(cancelado&&actual){volver(actual.el);PF.aviso('Sin foto no se puede entregar')}
   actual=null;blob=null;
 }
 function tomar(){
@@ -106,13 +106,13 @@ async function enviar(){
   if(ok){delete o.foto;delete o.fotoPendiente;o.fotoEnviada=true}
   else{o.foto=await aTexto(blob);o.fotoPendiente=true}
   if(!guardar()){ // sin espacio en el celular: no se pierde la entrega, pero avisa
-    delete o.foto;delete o.miniatura;guardar();TAZ.aviso('⚠️ No hay espacio para guardar la foto en el celular');
+    delete o.foto;delete o.miniatura;guardar();PF.aviso('⚠️ No hay espacio para guardar la foto en el celular');
   }
   msg.textContent='';cerrarCamara(false);
   el.classList.remove('foto');el.classList.add('hecho');
   el.querySelector('.txt').textContent='¡Entregado!';el.querySelector('.perilla').textContent='✓';
   if(navigator.vibrate)try{navigator.vibrate(30)}catch(e){}
-  setTimeout(()=>{pintar();TAZ.aviso(ok?`Pedido #${o.id}: entregado y foto enviada ✅`:`Pedido #${o.id}: entregado. La foto se enviará cuando haya conexión ⏳`)},900);
+  setTimeout(()=>{pintar();PF.aviso(ok?`Pedido #${o.id}: entregado y foto enviada ✅`:`Pedido #${o.id}: entregado. La foto se enviará cuando haya conexión ⏳`)},900);
 }
 dlg.addEventListener('click',e=>{
   const b=e.target.closest('[data-cam]');if(!b)return;
@@ -148,7 +148,7 @@ async function reintentar(){
   try{
     for(const o of d.filter(x=>x.fotoPendiente&&x.foto)){
       if(!(await subir(o.id,await aBlob(o.foto))))break;
-      delete o.foto;delete o.fotoPendiente;o.fotoEnviada=true;guardar();pintar();TAZ.aviso(`Foto del pedido #${o.id} enviada ✅`);
+      delete o.foto;delete o.fotoPendiente;o.fotoEnviada=true;guardar();pintar();PF.aviso(`Foto del pedido #${o.id} enviada ✅`);
     }
   }finally{reintentando=false}
 }
@@ -184,5 +184,5 @@ document.addEventListener('pointerup',soltar);
 document.addEventListener('pointercancel',soltar);
 
 pintar();reintentar();
-setInterval(()=>{if(!actual&&!arr){d=TAZ.load();pintar();reintentar()}},30000);
+setInterval(()=>{if(!actual&&!arr){d=PF.load();pintar();reintentar()}},30000);
 })();
