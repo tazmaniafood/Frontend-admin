@@ -109,7 +109,7 @@ main { width: min(100% - 2 * var(--e-4), 1240px); margin-inline: auto; padding-b
 .login-main { display: grid; place-items: center; min-height: 100dvh; padding: var(--e-5) var(--e-4); }
 .login { position: relative; width: min(420px, 100%); padding: 64px var(--e-5) var(--e-5); display: grid; gap: var(--e-4); text-align: center; box-shadow: var(--sombra); }
 .login .logo { position: absolute; left: 50%; top: 0; translate: -50% -50%; width: 104px; height: 104px; border-radius: 50%; background: var(--noche); border: 3px solid var(--crema); box-shadow: var(--sombra); }
-.login .logo img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+.login .logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
 .login h1 { font-size: var(--t-3); }
 .login .sub { color: var(--texto-2); }
 .login form { display: grid; gap: var(--e-4); text-align: left; }
