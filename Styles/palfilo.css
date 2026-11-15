@@ -52,6 +52,13 @@
     --carpa-alto: 76px;
     --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
     --rebote: cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Faldón de la carpa: copia literal de la guía (tokens.css) */
+    --falda-borde: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='54' viewBox='0 0 56 54'%3E%3Cpath d='M0 45 C 10 46, 24 35, 28 26 C 32 35, 46 46, 56 45' fill='none' stroke='%23FFF1DC' stroke-opacity='.28' stroke-width='1.5'/%3E%3C/svg%3E");
+    --falda-borde-arriba: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='54' viewBox='0 0 56 54'%3E%3Cg transform='translate(0 54) scale(1 -1)'%3E%3Cpath d='M0 45 C 10 46, 24 35, 28 26 C 32 35, 46 46, 56 45' fill='none' stroke='%23FFF1DC' stroke-opacity='.28' stroke-width='1.5'/%3E%3C/g%3E%3C/svg%3E");
+    --falda-forma: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='54' viewBox='0 0 56 54'%3E%3Cpath d='M0 0 H56 V45 C 46 46, 32 35, 28 26 C 24 35, 10 46, 0 45 Z' fill='%23000'/%3E%3C/svg%3E");
+    --falda-forma-arriba: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='54' viewBox='0 0 56 54'%3E%3Cg transform='translate(0 54) scale(1 -1)'%3E%3Cpath d='M0 0 H56 V45 C 46 46, 32 35, 28 26 C 24 35, 10 46, 0 45 Z' fill='%23000'/%3E%3C/g%3E%3C/svg%3E");
+    --velo: linear-gradient(rgb(13 9 25 / 0.55), rgb(13 9 25 / 0.55));
+    --baldosa: url("../IMG/Marca/azulejos-costenos.svg") 0 0 / 320px 160px, var(--noche);
   }
 }
 
@@ -65,6 +72,8 @@
   button { cursor: pointer; }
   fieldset { border: 0; padding: 0; min-width: 0; }
   [hidden] { display: none !important; }
+  /* pizza a tu gusto: todas las bandejas de ingredientes a la vista */
+  .tp.all .catpanel[hidden] { display: block !important; }
 }
 
 @layer base {
@@ -105,27 +114,30 @@
   .plana { font-family: var(--f-letrero); font-weight: 400; text-transform: uppercase; letter-spacing: 0.02em; line-height: 1.05; }
 
   /* ---------- Carpa (barra de arriba) ---------- */
+  /* La carpa es UNA sola pieza de baldosa (::before) que cubre el menú y baja
+     hasta las ondas, recortada con --falda-forma; encima, el hilo crema (::after). */
   .carpa {
     position: sticky; top: 0; z-index: 40; isolation: isolate;
-    background: var(--noche);
     padding-top: env(safe-area-inset-top, 0px);
   }
+  .carpa::before, .carpa::after, .pie::before, .pie::after { content: ""; position: absolute; left: 0; right: 0; z-index: -1; pointer-events: none; }
   .carpa::before {
-    content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0.2;
-    background: url("../IMG/Marca/azulejos-costenos.svg") 0 0 / 420px auto repeat;
+    top: 0; height: calc(100% + 54px);
+    background: linear-gradient(rgb(13 9 25 / 0.55), rgb(13 9 25 / 0.15) 70%, transparent), var(--velo), var(--baldosa);
+    -webkit-mask: linear-gradient(#000, #000) 0 0 / 100% calc(100% - 54px) no-repeat, var(--falda-forma) 0 100% / 56px 54px repeat-x;
+    mask: linear-gradient(#000, #000) 0 0 / 100% calc(100% - 54px) no-repeat, var(--falda-forma) 0 100% / 56px 54px repeat-x;
   }
-  .carpa::after {
-    content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 12px; pointer-events: none;
-    background: radial-gradient(circle at 14px 0, var(--noche) 11px, var(--linea-fuerte) 11px 12.5px, transparent 13px) 0 0 / 28px 12px repeat-x;
-  }
+  .carpa::after { top: 100%; height: 54px; background: var(--falda-borde) 0 0 / 56px 54px repeat-x; }
   .carpa__fila { display: flex; align-items: center; gap: var(--e-3); min-height: var(--carpa-alto); padding-inline: max(var(--e-4), env(safe-area-inset-left)); }
+  /* el sello sobresale de la carpa y cuelga sobre el festón */
   .sello {
-    flex: none; display: block; width: 56px; height: 56px; border-radius: 50%;
-    background: var(--noche); border: 3px solid var(--crema); box-shadow: var(--sombra-chica);
+    position: relative; z-index: 2; align-self: flex-start; margin: 10px 0 -46px;
+    flex: none; display: block; width: 96px; height: 96px; border-radius: 50%;
+    background: var(--noche); border: 3px solid var(--crema); box-shadow: 5px 6px 0 var(--uva);
     view-transition-name: sello; transition: transform 0.2s var(--ease);
   }
   .sello:hover { transform: rotate(-8deg) scale(1.05); }
-  .sello img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+  .sello img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
   .menu { flex: 1; min-width: 0; display: flex; gap: var(--e-2); overflow-x: auto; scrollbar-width: none; padding: 6px 4px 9px; }
   .menu::-webkit-scrollbar { display: none; }
   .menu a {
@@ -137,11 +149,31 @@
   }
   .menu a:hover { background: var(--crema); transform: translateY(-2px); }
   .menu a[aria-current="page"] { background: var(--mango); }
-  .carrito-btn { flex: none; display: inline-flex; align-items: center; gap: 0.5rem; }
-  .carrito-btn img { width: 22px; height: 22px; }
-  .carrito-btn b { min-width: 1.6em; padding: 0.15em 0.4em; border-radius: var(--r-pill); background: var(--tomate); color: var(--crema); font: 900 0.8rem/1.2 var(--f-texto); text-align: center; }
+  /* Carrito: canasto mango que se ladea y brinca cuando le cae algo */
+  .carrito-btn {
+    position: relative; flex: none; display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer;
+    padding: 0.55rem 1.1rem 0.5rem 0.8rem; border-radius: var(--r-pill); background: var(--mango); color: var(--noche);
+    border: var(--borde); box-shadow: 4px 5px 0 var(--uva); rotate: -3deg; transition: rotate 0.2s var(--rebote), translate 0.15s;
+  }
+  .carrito-btn:hover { rotate: 3deg; translate: 0 -2px; }
+  .carrito-btn:active { translate: 3px 4px; box-shadow: 0 0 0 var(--uva); }
+  .carrito-btn__ic { width: 28px; height: 28px; }
+  .carrito-btn__txt { font-size: 1.05rem; }
+  .carrito-btn b {
+    position: absolute; top: -12px; right: -10px; display: grid; place-items: center; min-width: 28px; height: 28px; padding: 0 6px;
+    border-radius: var(--r-pill); background: var(--tomate); color: var(--crema); border: 2px solid var(--crema); font: 400 0.95rem/1 var(--f-letrero);
+  }
+  .carrito-btn.lleno .carrito-btn__ic { animation: canasto 2.4s ease-in-out infinite; }
+  .carrito-btn.brinca { animation: brinca 0.55s var(--rebote); }
+  .carrito-btn.brinca b { animation: globo 0.55s var(--rebote); }
+  @keyframes canasto { 0%, 80%, 100% { rotate: 0deg; } 86% { rotate: -14deg; } 93% { rotate: 10deg; } }
+  @keyframes brinca { 40% { translate: 0 -10px; rotate: 6deg; } }
+  @keyframes globo { 40% { scale: 1.45; } }
+  .rebota { animation: brinca 0.5s var(--rebote); }
   @media (max-width: 720px) {
     .carpa__fila { flex-wrap: wrap; row-gap: 0; padding-top: 8px; }
+    .sello { width: 66px; height: 66px; margin: 4px 0; align-self: center; }
+    .carrito-btn__txt { display: none; }
     .menu { order: 3; flex-basis: 100%; margin-inline: calc(-1 * var(--e-4)); padding-inline: var(--e-4); }
     .carrito-btn { margin-left: auto; }
   }
@@ -228,9 +260,14 @@
   .cenefa { display: block; height: 10px; width: 120px; background: radial-gradient(circle at 5px 5px, var(--n, var(--mango)) 3px, transparent 3.5px) 0 0 / 14px 10px repeat-x; }
 
   /* ---------- Pie ---------- */
-  .pie { position: relative; margin-top: var(--e-8); padding: var(--e-7) 0 calc(var(--e-6) + env(safe-area-inset-bottom, 0px)); background: var(--noche); isolation: isolate; text-align: center; }
-  .pie::before { content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0.14; background: url("../IMG/Marca/azulejos-costenos.svg") 0 0 / 420px auto repeat; }
-  .pie::after { content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: 12px; background: radial-gradient(circle at 14px 12px, var(--noche) 11px, var(--linea-fuerte) 11px 12.5px, transparent 13px) 0 0 / 28px 12px repeat-x; }
+  .pie { position: relative; margin-top: calc(var(--e-8) + 54px); padding: var(--e-6) 0 calc(var(--e-6) + env(safe-area-inset-bottom, 0px)); isolation: isolate; text-align: center; }
+  /* El mismo faldón, con las puntas hacia arriba */
+  .pie::before {
+    top: -54px; bottom: 0; background: var(--velo), var(--baldosa);
+    -webkit-mask: var(--falda-forma-arriba) 0 0 / 56px 54px repeat-x, linear-gradient(#000, #000) 0 54px / 100% calc(100% - 54px) no-repeat;
+    mask: var(--falda-forma-arriba) 0 0 / 56px 54px repeat-x, linear-gradient(#000, #000) 0 54px / 100% calc(100% - 54px) no-repeat;
+  }
+  .pie::after { top: -54px; height: 54px; background: var(--falda-borde-arriba) 0 0 / 56px 54px repeat-x; }
   .pie__logo { width: min(280px, 70vw); margin: 0 auto var(--e-3); }
   .pie__lema { font: 400 var(--t-2)/1.1 var(--f-letrero); text-transform: uppercase; color: var(--crema); }
   .pie__redes { display: flex; justify-content: center; gap: var(--e-3); margin: var(--e-5) 0; padding: 0; list-style: none; }
@@ -274,3 +311,6 @@
   .centro { text-align: center; }
   .apilado > * + * { margin-top: var(--e-4); }
 }
+
+/* El sello cuelga sobre el contenido: en pantallas medianas se le deja espacio */
+@media (min-width: 721px) and (max-width: 1320px) { main#contenido::before { content: ""; display: block; height: 30px; } }

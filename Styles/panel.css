@@ -100,7 +100,7 @@ main { width: min(100% - 2 * var(--e-4), 1240px); margin-inline: auto; padding-b
 .toast.on { translate: -50% 0; visibility: visible; }
 
 /* ---------- Pie ---------- */
-.pie--panel { margin-top: var(--e-6); padding-block: var(--e-6) calc(var(--e-5) + env(safe-area-inset-bottom, 0px)); }
+.pie--panel { margin-top: calc(var(--e-6) + 54px); padding-block: var(--e-6) calc(var(--e-5) + env(safe-area-inset-bottom, 0px)); }
 .pie--panel .pie__logo { width: 200px; }
 
 /* =====================================================================
