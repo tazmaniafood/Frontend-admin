@@ -125,10 +125,13 @@ main { width: min(100% - 2 * var(--e-4), 1240px); margin-inline: auto; padding-b
 /* =====================================================================
    Cocina: tablero de tickets que se arrastran
    ===================================================================== */
-.tablero { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-5); align-items: start; max-width: 1000px; margin-inline: auto; }
+.tablero { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--e-4); align-items: start; }
 .col { background: var(--sup-1); border: 1.5px solid var(--linea); border-radius: var(--r-4); overflow: hidden; transition: transform 0.12s, box-shadow 0.12s; }
 .col[data-estado="nuevo"] { --c: var(--e-nuevo); }
 .col[data-estado="listo"] { --c: var(--e-reparto); }
+.col[data-estado="cocina1"], .col[data-estado="cocina2"] { --c: var(--crema); }
+.col h2 small { display: block; margin-top: 3px; font: 900 0.72rem/1 var(--f-texto); text-transform: none; letter-spacing: 0; }
+.e-cocina1, .e-cocina2 { --e: var(--crema); }
 .col h2 { display: flex; align-items: center; justify-content: space-between; gap: var(--e-3); padding: var(--e-3) var(--e-4); font: 400 var(--t-2)/1 var(--f-letrero); text-transform: uppercase; color: var(--noche); background: var(--c); border-bottom: var(--borde); }
 .col h2 .n { min-width: 2.2rem; padding: 0.15rem 0.5rem; text-align: center; background: var(--noche); color: var(--crema); border-radius: var(--r-pill); font: 400 1rem/1.4 var(--f-letrero); }
 .lista { display: grid; gap: var(--e-4); padding: var(--e-4); min-height: 160px; }
@@ -164,6 +167,7 @@ body.arrastrando { cursor: grabbing; }
 }
 body.arrastrando .cancelar { translate: -50% 0; pointer-events: auto; }
 .cancelar.sobre { background: var(--tomate); border-style: solid; scale: 1.06; }
+@media (max-width: 1100px) { .tablero { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .tablero { grid-template-columns: 1fr; } }
 
 /* =====================================================================
