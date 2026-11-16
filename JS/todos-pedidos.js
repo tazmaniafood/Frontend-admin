@@ -7,9 +7,10 @@
 (()=>{
 const API='/api';
 /* Filtro por estado: por defecto solo los ACTIVOS (nuevo, en cocina, en reparto o para llevar) */
-let d=PF.load(),filtro='activos',texto='';
+let d=PF.load(),filtro='todos',texto='';
 /* activos: todo lo que no está entregado ni cancelado */
-const pasa=(o,f)=>f==='todos'?true:f==='activos'?!['entregado','cancelado'].includes(o.estado):o.estado===f;
+/* Nuevos incluye los que están en cocina; En delivery son los listos (domicilio o para llevar) */
+const pasa=(o,f)=>f==='todos'?true:f==='nuevo'?['nuevo','cocina1','cocina2'].includes(o.estado):o.estado===f;
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 
 const MEDIO=PF.MEDIOS;
